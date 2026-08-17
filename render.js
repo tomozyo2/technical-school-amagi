@@ -398,9 +398,11 @@
           if (editable) {
             var div = document.createElement("div");
             div.className = "player admin-editing-item";
-            div.innerHTML = "<strong></strong>：<span></span>";
+            div.innerHTML = '<span class="player-num"></span><strong></strong>：<span class="player-comment-text"></span>';
+            var numEl = div.querySelector(".player-num");
             var nameEl = div.querySelector("strong");
-            var commentEl = div.querySelector("span");
+            var commentEl = div.querySelector(".player-comment-text");
+            numEl.textContent = (idx + 1) + ".";
             nameEl.textContent = p.name || "";
             commentEl.textContent = p.comment || "";
             bindEditable(nameEl, p, "name");
@@ -412,7 +414,11 @@
             var details = document.createElement("details");
             details.className = "player";
             var summary = document.createElement("summary");
-            summary.textContent = p.name || "";
+            var numSpan = document.createElement("span");
+            numSpan.className = "player-num";
+            numSpan.textContent = (idx + 1) + ".";
+            summary.appendChild(numSpan);
+            summary.appendChild(document.createTextNode(p.name || ""));
             details.appendChild(summary);
             var commentP = document.createElement("p");
             commentP.className = "player-comment";

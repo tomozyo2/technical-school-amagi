@@ -404,6 +404,11 @@ section.dark .section-head p { color: var(--gray); }
 }
 .diary-body div.player { padding: 14px 18px; } /* 管理者モードの編集用（div）はそのまま表示 */
 .diary-body .player strong { color: var(--green-bright); }
+.diary-body .player-num {
+  color: var(--orange);
+  font-weight: 900;
+  margin-right: 8px;
+}
 
 .diary-body details.player summary {
   cursor: pointer;
