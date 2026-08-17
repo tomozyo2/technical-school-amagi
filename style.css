@@ -224,6 +224,20 @@ nav.main-nav a.admin-nav-link:hover {
 }
 .btn.mail-btn:hover { box-shadow: 0 10px 22px rgba(31,138,61,.45); }
 
+.hero-cta-row {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+#hero-admin-fields { max-width: 360px; margin: 16px auto 0; }
+
+.btn.instagram-btn {
+  background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af, #515bd4);
+  box-shadow: 0 8px 24px rgba(221,42,123,.35);
+}
+.btn.instagram-btn:hover { box-shadow: 0 12px 28px rgba(221,42,123,.45); }
+
 /* 斜めの区切り */
 .hero-divider {
   position: absolute;
@@ -363,6 +377,14 @@ section.dark .section-head p { color: var(--gray); }
   font-weight: 800;
   color: var(--dark);
   box-shadow: 0 4px 12px rgba(10,28,19,.05);
+}
+.date-chip.admin-chip { cursor: pointer; }
+.date-chip.is-off {
+  border-color: #c0392b;
+  color: #a33;
+  background: #fdeceb;
+  text-decoration: line-through;
+  opacity: .75;
 }
 .date-chip .day { color: var(--orange); }
 

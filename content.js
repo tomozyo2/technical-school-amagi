@@ -66,25 +66,8 @@ window.SITE_CONTENT = {
   },
   "schedule": {
     "lead": "基本は毎週火曜日 17:45〜19:30／丸山公園多目的広場での開催です。",
-    "months": [
-      {
-        "label": "8月の日程",
-        "dates": [
-          "8/18 (火)",
-          "8/25 (火)"
-        ]
-      },
-      {
-        "label": "9月の日程",
-        "dates": [
-          "9/1 (火)",
-          "9/8 (火)",
-          "9/15 (火)",
-          "9/22 (火)",
-          "9/29 (火)"
-        ]
-      }
-    ]
+    "weekday": 2,
+    "offDates": []
   },
   "training": {
     "items": [
@@ -178,7 +161,8 @@ window.SITE_CONTENT = {
     "lineUrl": "https://line.me/ti/p/~hirowataritomoaki",
     "lineNote": "QRコードを読み取るか、下のボタンから友だち追加",
     "mailto": "amagifc@gmail.com",
-    "mailNote": "お問い合わせ・体験申込みはこちらから"
+    "mailNote": "お問い合わせ・体験申込みはこちらから",
+    "instagramUrl": "https://www.instagram.com/amagifct/"
   },
   "footer": {
     "note": "毎週火曜日 17:45〜19:30／丸山公園多目的広場",

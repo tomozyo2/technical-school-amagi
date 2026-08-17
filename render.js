@@ -128,6 +128,30 @@
       text("hero-headline2", c.hero, "headline2");
       linesText("hero-lead", c.hero, "lead");
       text("hero-cta", c.hero, "ctaText");
+
+      var igLink = byId("hero-instagram-link");
+      if (igLink) igLink.href = (c.contact && c.contact.instagramUrl) || "#";
+
+      var heroAdminFields = byId("hero-admin-fields");
+      if (heroAdminFields) {
+        clear(heroAdminFields);
+        if (editable && c.contact) {
+          var igWrap = document.createElement("div");
+          igWrap.className = "admin-hidden-field";
+          var igLabel = document.createElement("label");
+          igLabel.textContent = "InstagramのURL";
+          igWrap.appendChild(igLabel);
+          var igInput = document.createElement("input");
+          igInput.type = "text";
+          igInput.value = c.contact.instagramUrl || "";
+          igInput.addEventListener("input", function () {
+            c.contact.instagramUrl = igInput.value;
+            if (igLink) igLink.href = igInput.value || "#";
+          });
+          igWrap.appendChild(igInput);
+          heroAdminFields.appendChild(igWrap);
+        }
+      }
     }
 
     // ---- スクールとは ----
@@ -253,56 +277,128 @@
       }
     }
 
-    // ---- 日程 ----
+    // ---- 日程（毎週◯曜日を自動計算し、お休みの日だけ管理者が除外） ----
     if (c.schedule) {
       text("schedule-lead", c.schedule, "lead");
-      var scheduleContainer = byId("schedule-months");
-      if (scheduleContainer && Array.isArray(c.schedule.months)) {
-        clear(scheduleContainer);
-        c.schedule.months.forEach(function (month, mIdx) {
-          var block = document.createElement("div");
-          block.className = "schedule-month" + (editable ? " admin-editing-item" : "");
-          var h3 = document.createElement("h3");
-          h3.textContent = month.label || "";
-          var chips = document.createElement("div");
-          chips.className = "date-chips";
-          (month.dates || []).forEach(function (dateStr, dIdx) {
-            var chip = document.createElement("div");
-            chip.className = "date-chip" + (editable ? " admin-chip" : "");
-            if (editable) {
+      var weekdayNames = ["日", "月", "火", "水", "木", "金", "土"];
+      var scheduleWeekday = (c.schedule.weekday !== undefined && c.schedule.weekday !== null) ? c.schedule.weekday : 2;
+      c.schedule.offDates = c.schedule.offDates || [];
+
+      // 管理者モード：練習曜日の設定＋お休みの日一覧
+      var scheduleAdminFields = byId("schedule-admin-fields");
+      if (scheduleAdminFields) {
+        clear(scheduleAdminFields);
+        if (editable) {
+          var weekdayWrap = document.createElement("div");
+          weekdayWrap.className = "admin-hidden-field";
+          var weekdayLabel = document.createElement("label");
+          weekdayLabel.textContent = "練習の曜日";
+          weekdayWrap.appendChild(weekdayLabel);
+          var weekdaySelect = document.createElement("select");
+          weekdayNames.forEach(function (name, i) {
+            var opt = document.createElement("option");
+            opt.value = i;
+            opt.textContent = name + "曜日";
+            if (i === scheduleWeekday) opt.selected = true;
+            weekdaySelect.appendChild(opt);
+          });
+          weekdaySelect.addEventListener("change", function () {
+            c.schedule.weekday = parseInt(weekdaySelect.value, 10);
+            onChange();
+          });
+          weekdayWrap.appendChild(weekdaySelect);
+          scheduleAdminFields.appendChild(weekdayWrap);
+
+          if (c.schedule.offDates.length > 0) {
+            var offWrap = document.createElement("div");
+            offWrap.className = "admin-hidden-field";
+            var offLabel = document.createElement("label");
+            offLabel.textContent = "お休みに設定した日（下の日程表の日付をクリックでも切り替えられます）";
+            offWrap.appendChild(offLabel);
+            var offList = document.createElement("div");
+            offList.className = "date-chips";
+            c.schedule.offDates.slice().forEach(function (key) {
+              var chip = document.createElement("div");
+              chip.className = "date-chip admin-chip is-off";
               var span = document.createElement("span");
-              span.textContent = dateStr;
+              span.textContent = key + "（お休み）";
               chip.appendChild(span);
-              bindEditable(span, month.dates, dIdx);
               var rm = document.createElement("span");
               rm.className = "admin-chip-remove";
               rm.textContent = "×";
-              rm.addEventListener("click", function () { month.dates.splice(dIdx, 1); onChange(); });
+              rm.addEventListener("click", function () {
+                var idx = c.schedule.offDates.indexOf(key);
+                if (idx !== -1) c.schedule.offDates.splice(idx, 1);
+                onChange();
+              });
               chip.appendChild(rm);
-            } else {
-              chip.textContent = dateStr;
+              offList.appendChild(chip);
+            });
+            offWrap.appendChild(offList);
+            scheduleAdminFields.appendChild(offWrap);
+          }
+        }
+      }
+
+      var scheduleContainer = byId("schedule-months");
+      if (scheduleContainer) {
+        clear(scheduleContainer);
+        var scheduleToday = new Date();
+        scheduleToday.setHours(0, 0, 0, 0);
+
+        var monthWeekdays = function (year, monthIndex, weekday) {
+          var out = [];
+          var d = new Date(year, monthIndex, 1);
+          while (d.getMonth() === monthIndex) {
+            if (d.getDay() === weekday) out.push(new Date(d));
+            d.setDate(d.getDate() + 1);
+          }
+          return out;
+        };
+        var dateKey = function (d) { return (d.getMonth() + 1) + "/" + d.getDate(); };
+        var formatDate = function (d) { return dateKey(d) + " (" + weekdayNames[d.getDay()] + ")"; };
+
+        var monthsToShow = [
+          { year: scheduleToday.getFullYear(), month: scheduleToday.getMonth() },
+          { year: scheduleToday.getMonth() === 11 ? scheduleToday.getFullYear() + 1 : scheduleToday.getFullYear(), month: (scheduleToday.getMonth() + 1) % 12 }
+        ];
+
+        monthsToShow.forEach(function (my) {
+          var allDates = monthWeekdays(my.year, my.month, scheduleWeekday);
+          var visibleDates = editable ? allDates : allDates.filter(function (d) {
+            if (c.schedule.offDates.indexOf(dateKey(d)) !== -1) return false;
+            if (d < scheduleToday) return false;
+            return true;
+          });
+          if (!editable && visibleDates.length === 0) return; // 訪問者向け表示では、全日程が終わった月は表示しない
+
+          var block = document.createElement("div");
+          block.className = "schedule-month";
+          var h3 = document.createElement("h3");
+          h3.textContent = (my.month + 1) + "月の日程";
+          block.appendChild(h3);
+          var chips = document.createElement("div");
+          chips.className = "date-chips";
+          visibleDates.forEach(function (d) {
+            var key = dateKey(d);
+            var isOff = c.schedule.offDates.indexOf(key) !== -1;
+            var chip = document.createElement("div");
+            chip.className = "date-chip" + (editable ? " admin-chip" : "") + (isOff ? " is-off" : "");
+            chip.textContent = formatDate(d) + (editable && isOff ? "（お休み）" : "");
+            if (editable) {
+              chip.title = "クリックで「お休み」に設定／解除できます";
+              chip.addEventListener("click", function () {
+                var idx = c.schedule.offDates.indexOf(key);
+                if (idx === -1) c.schedule.offDates.push(key);
+                else c.schedule.offDates.splice(idx, 1);
+                onChange();
+              });
             }
             chips.appendChild(chip);
           });
-          block.appendChild(h3);
           block.appendChild(chips);
-          if (editable) {
-            bindEditable(h3, month, "label");
-            addRemoveButton(block, function () { c.schedule.months.splice(mIdx, 1); onChange(); });
-            addAddButton(block, "＋ 日付を追加", function () {
-              month.dates = month.dates || [];
-              month.dates.push("");
-              onChange();
-            });
-          }
           scheduleContainer.appendChild(block);
         });
-        if (editable) {
-          addAddButton(scheduleContainer, "＋ 月のブロックを追加", function () {
-            c.schedule.months.push({ label: "新しい月の日程", dates: [] });
-            onChange();
-          });
-        }
       }
     }
 
