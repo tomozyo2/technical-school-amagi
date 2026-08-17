@@ -11,6 +11,8 @@
 
 (function () {
 
+  var diaryUndoSnapshot = null; // 「バックナンバーへ移動」の直前状態（1回分だけ・保存前のみ有効）
+
   window.renderSite = function (data, opts) {
     opts = opts || {};
     var editable = !!opts.editable;
@@ -349,6 +351,7 @@
         moveBtn.className = "admin-move-btn";
         moveBtn.textContent = "📥 今の「独り言」をバックナンバーへ移動して、新しい回を書きはじめる";
         moveBtn.addEventListener("click", function () {
+          diaryUndoSnapshot = JSON.parse(JSON.stringify(c.diary));
           var l = c.diary.latest;
           var body = (l.topicHeading || "") + "\n" + (l.topicText || "") + "\n\n" + (l.analysisHeading || "") + "\n" + (l.analysisText || "");
           (l.players || []).forEach(function (p) { body += "\n" + (p.name || "") + "：" + (p.comment || ""); });
@@ -365,6 +368,19 @@
           onChange();
         });
         diaryActions.appendChild(moveBtn);
+
+        if (diaryUndoSnapshot) {
+          var undoBtn = document.createElement("button");
+          undoBtn.type = "button";
+          undoBtn.className = "admin-move-btn admin-undo-btn";
+          undoBtn.textContent = "↩ 直前の「バックナンバーへ移動」を元に戻す（保存前のみ有効）";
+          undoBtn.addEventListener("click", function () {
+            c.diary = diaryUndoSnapshot;
+            diaryUndoSnapshot = null;
+            onChange();
+          });
+          diaryActions.appendChild(undoBtn);
+        }
       }
     }
     if (c.diary && c.diary.latest) {
@@ -379,19 +395,31 @@
       if (playersContainer && Array.isArray(d.players)) {
         clear(playersContainer);
         d.players.forEach(function (p, idx) {
-          var div = document.createElement("div");
-          div.className = "player" + (editable ? " admin-editing-item" : "");
-          div.innerHTML = "<strong></strong>：<span></span>";
-          var nameEl = div.querySelector("strong");
-          var commentEl = div.querySelector("span");
-          nameEl.textContent = p.name || "";
-          commentEl.textContent = p.comment || "";
           if (editable) {
+            var div = document.createElement("div");
+            div.className = "player admin-editing-item";
+            div.innerHTML = "<strong></strong>：<span></span>";
+            var nameEl = div.querySelector("strong");
+            var commentEl = div.querySelector("span");
+            nameEl.textContent = p.name || "";
+            commentEl.textContent = p.comment || "";
             bindEditable(nameEl, p, "name");
             bindEditable(commentEl, p, "comment", { multiline: true });
             addRemoveButton(div, function () { d.players.splice(idx, 1); onChange(); }, { onDark: true });
+            playersContainer.appendChild(div);
+          } else {
+            // 選手名をクリックするとコメントが開く（アコーディオン）
+            var details = document.createElement("details");
+            details.className = "player";
+            var summary = document.createElement("summary");
+            summary.textContent = p.name || "";
+            details.appendChild(summary);
+            var commentP = document.createElement("p");
+            commentP.className = "player-comment";
+            setTextWithBreaks(commentP, p.comment);
+            details.appendChild(commentP);
+            playersContainer.appendChild(details);
           }
-          playersContainer.appendChild(div);
         });
         if (editable) {
           addAddButton(playersContainer, "＋ 選手コメントを追加", function () {

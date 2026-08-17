@@ -399,10 +399,42 @@ section.dark .section-head p { color: var(--gray); }
 .diary-body .player {
   background: #132a1c;
   border-radius: 10px;
-  padding: 14px 18px;
+  padding: 4px 18px;
   margin-bottom: 12px;
 }
+.diary-body div.player { padding: 14px 18px; } /* 管理者モードの編集用（div）はそのまま表示 */
 .diary-body .player strong { color: var(--green-bright); }
+
+.diary-body details.player summary {
+  cursor: pointer;
+  padding: 14px 0;
+  font-weight: 800;
+  color: var(--green-bright);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.diary-body details.player summary::-webkit-details-marker { display: none; }
+.diary-body details.player summary::after {
+  content: "選手コメントを見る ▼";
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--gray);
+  white-space: nowrap;
+  transition: transform .2s;
+}
+.diary-body details.player[open] summary::after {
+  content: "閉じる ▲";
+}
+.diary-body details.player summary:hover { color: var(--white); }
+.diary-body .player-comment {
+  color: #dfe6e1;
+  margin: 0 0 16px;
+  padding-top: 10px;
+  border-top: 1px solid #1e3d2a;
+}
 
 .diary-archive-link {
   text-align: center;
@@ -563,7 +595,7 @@ footer .foot-logo {
 }
 .admin-hidden-field input:focus { outline: 2px solid var(--orange); background: rgba(255,255,255,.14); }
 
-.admin-diary-actions { max-width: 760px; margin: 0 auto 24px; }
+.admin-diary-actions { max-width: 760px; margin: 0 auto 24px; display: flex; flex-direction: column; gap: 10px; }
 .admin-move-btn {
   background: #143b25;
   color: var(--green-bright);
@@ -577,6 +609,12 @@ footer .foot-logo {
   text-align: center;
 }
 .admin-move-btn:hover { background: #1c4c31; }
+.admin-undo-btn {
+  background: #3b1f14;
+  color: var(--orange);
+  border-color: var(--orange);
+}
+.admin-undo-btn:hover { background: #4c281c; }
 
 /* パスワード／ファイル選択モーダル */
 .admin-modal-overlay {
