@@ -5,7 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>コーチの独り言｜テクニカルスクール甘木</title>
 <meta name="description" content="テクニカルスクール甘木コーチの独り言アーカイブ。高校サッカーやワールドカップの話題、試合分析などを毎週更新しています。">
-<link rel="stylesheet" href="style.css">
+<script>
+  window.__cacheBustVersion = Date.now();
+  document.write('<link rel="stylesheet" href="style.css?v=' + window.__cacheBustVersion + '">');
+</script>
 </head>
 <body>
 
@@ -52,8 +55,13 @@
   <p id="footer-copyright"></p>
 </footer>
 
-<script src="content.js"></script>
-<script src="render.js"></script>
-<script src="admin.js"></script>
+<script>
+  (function () {
+    var v = window.__cacheBustVersion || Date.now();
+    document.write('<script src="content.js?v=' + v + '"><\/script>');
+    document.write('<script src="render.js?v=' + v + '"><\/script>');
+    document.write('<script src="admin.js?v=' + v + '"><\/script>');
+  })();
+</script>
 </body>
 </html>

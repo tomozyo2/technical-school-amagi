@@ -5,7 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>テクニカルスクール甘木｜1対1に負けないスキルを、サッカーをもっと好きに</title>
 <meta name="description" content="テクニカルスクール甘木は1年生〜6年生対象のサッカースクールです。毎週火曜日、丸山公園多目的広場で1対1に負けないスキルを楽しく身につけます。">
-<link rel="stylesheet" href="style.css">
+<script>
+  window.__cacheBustVersion = Date.now();
+  document.write('<link rel="stylesheet" href="style.css?v=' + window.__cacheBustVersion + '">');
+</script>
 </head>
 <body>
 
@@ -181,8 +184,13 @@
   <p id="footer-copyright"></p>
 </footer>
 
-<script src="content.js"></script>
-<script src="render.js"></script>
-<script src="admin.js"></script>
+<script>
+  (function () {
+    var v = window.__cacheBustVersion || Date.now();
+    document.write('<script src="content.js?v=' + v + '"><\/script>');
+    document.write('<script src="render.js?v=' + v + '"><\/script>');
+    document.write('<script src="admin.js?v=' + v + '"><\/script>');
+  })();
+</script>
 </body>
 </html>
