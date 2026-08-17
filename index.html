@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>テクニカルスクール甘木｜1対1に負けないスキルを、サッカーをもっと好きに</title>
+<meta name="description" content="テクニカルスクール甘木は1年生〜6年生対象のサッカースクールです。毎週火曜日、丸山公園多目的広場で1対1に負けないスキルを楽しく身につけます。">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="#top" class="logo"><span class="ball">⚽</span><span class="js-site-name"></span></a>
+    <input type="checkbox" id="nav-toggle">
+    <label for="nav-toggle" class="hamburger"><span></span><span></span><span></span></label>
+    <nav class="main-nav">
+      <ul>
+        <li><a href="#about">スクールとは</a></li>
+        <li><a href="#info">練習日・場所</a></li>
+        <li><a href="#price">料金</a></li>
+        <li><a href="#schedule">日程</a></li>
+        <li><a href="#training">トレーニング</a></li>
+        <li><a href="#diary">独り言</a></li>
+        <li><a href="#contact">お問い合わせ</a></li>
+        <li><a href="#" id="admin-toggle-link" class="admin-nav-link">⚙ 管理者</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="hero-inner">
+    <span class="eyebrow" id="hero-eyebrow"></span>
+    <h1><span id="hero-headline1"></span><span class="accent" id="hero-headline-accent"></span><br><span id="hero-headline2"></span></h1>
+    <p class="lead" id="hero-lead"></p>
+    <a href="#contact" class="btn" id="hero-cta"></a>
+  </div>
+  <div class="hero-divider"></div>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="tag">ABOUT</span>
+      <h2 id="about-heading"></h2>
+      <p id="about-lead"></p>
+    </div>
+    <div class="grid-3" id="about-cards"></div>
+  </div>
+</section>
+
+<section class="alt" id="info">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="tag">SCHEDULE INFO</span>
+      <h2>練習日・場所・時間</h2>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <span class="icon">📅</span>
+        <h3>練習日</h3>
+        <p class="value" id="info-day"></p>
+      </div>
+      <div class="card">
+        <span class="icon">📍</span>
+        <h3>場所</h3>
+        <p class="value" id="info-place"></p>
+      </div>
+      <div class="card">
+        <span class="icon">⏰</span>
+        <h3>時間</h3>
+        <p class="value" id="info-time"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="price">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="tag">PRICE</span>
+      <h2>料金案内</h2>
+      <p id="price-lead"></p>
+    </div>
+    <table class="price-table">
+      <thead>
+        <tr><th>対象学年</th><th>月謝</th></tr>
+      </thead>
+      <tbody id="price-rows"></tbody>
+    </table>
+    <ul class="price-note" id="price-notes"></ul>
+  </div>
+</section>
+
+<section class="alt" id="schedule">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="tag">MONTHLY SCHEDULE</span>
+      <h2>今月・来月の日程</h2>
+      <p id="schedule-lead"></p>
+    </div>
+    <div id="schedule-months"></div>
+  </div>
+</section>
+
+<section id="training">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="tag">TRAINING</span>
+      <h2>トレーニング内容予定</h2>
+    </div>
+    <div class="grid-3" id="training-items"></div>
+  </div>
+</section>
+
+<section class="dark" id="diary">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="tag">COACH'S DIARY</span>
+      <div class="diary-heading-row">
+        <h2>コーチの独り言</h2>
+        <a href="#" id="diary-admin-toggle-link" class="admin-nav-link">⚙ 管理者</a>
+      </div>
+      <p>毎週日曜日の夜に更新。サッカーのこと、選手たちのことを綴ります。</p>
+    </div>
+
+    <div class="admin-diary-actions" id="diary-admin-actions"></div>
+
+    <div class="diary-card">
+      <div class="diary-meta">
+        <h3 id="diary-title"></h3>
+        <span class="date" id="diary-date"></span>
+      </div>
+      <div class="diary-body">
+        <h4 id="diary-topic-heading"></h4>
+        <p id="diary-topic-text"></p>
+
+        <h4 id="diary-analysis-heading"></h4>
+        <p id="diary-analysis-text"></p>
+        <div id="diary-players"></div>
+      </div>
+    </div>
+
+    <div class="diary-archive-link">
+      <a href="diary.html" class="btn outline">過去の独り言を見る</a>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="dark">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="tag">CONTACT</span>
+      <h2>お問い合わせ・体験申込み</h2>
+      <p id="contact-lead"></p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-card">
+        <div class="icon">💬</div>
+        <h3>LINE</h3>
+        <a href="#" class="js-line-link" target="_blank" rel="noopener">
+          <img src="line-qr.jpg" alt="テクニカルスクール甘木 LINE公式アカウント QRコード" class="qr-image">
+        </a>
+        <p id="line-note"></p>
+        <a href="#" class="js-line-link btn line-btn" target="_blank" rel="noopener">LINEで送る</a>
+      </div>
+      <div class="contact-card">
+        <div class="icon">✉️</div>
+        <h3>メール</h3>
+        <p id="mail-note"></p>
+        <a href="#" id="mail-link" class="btn mail-btn">メールを送る</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-logo">⚽ <span class="js-site-name"></span></div>
+  <p id="footer-note"></p>
+  <p id="footer-copyright"></p>
+</footer>
+
+<script src="content.js"></script>
+<script src="render.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
