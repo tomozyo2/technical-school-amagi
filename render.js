@@ -419,7 +419,11 @@
           iconEl.textContent = item.icon || "";
           titleEl.textContent = item.title || "";
           boldEl.textContent = item.bold || "";
-          descEl.textContent = item.text || "";
+          if (editable) {
+            descEl.textContent = item.text || "";
+          } else {
+            setTextWithBreaks(descEl, item.text);
+          }
           if (editable) {
             bindEditable(iconEl, item, "icon");
             bindEditable(titleEl, item, "title");
