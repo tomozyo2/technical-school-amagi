@@ -543,22 +543,40 @@
       if (archiveContainer) {
         clear(archiveContainer);
         c.diary.archive.forEach(function (entry, idx) {
-          var div = document.createElement("div");
-          div.className = "archive-item" + (editable ? " admin-editing-item" : "");
-          div.innerHTML = '<span class="date"></span><h3></h3><p class="excerpt"></p>';
-          var dateEl = div.querySelector(".date");
-          var titleEl = div.querySelector("h3");
-          var excerptEl = div.querySelector(".excerpt");
-          dateEl.textContent = entry.date || "";
-          titleEl.textContent = entry.title || "";
-          excerptEl.textContent = entry.excerpt || "";
           if (editable) {
+            var div = document.createElement("div");
+            div.className = "archive-item admin-editing-item";
+            div.innerHTML = '<span class="date"></span><h3></h3><p class="excerpt"></p>';
+            var dateEl = div.querySelector(".date");
+            var titleEl = div.querySelector("h3");
+            var excerptEl = div.querySelector(".excerpt");
+            dateEl.textContent = entry.date || "";
+            titleEl.textContent = entry.title || "";
+            excerptEl.textContent = entry.excerpt || "";
             bindEditable(dateEl, entry, "date");
             bindEditable(titleEl, entry, "title");
             bindEditable(excerptEl, entry, "excerpt", { multiline: true });
             addRemoveButton(div, function () { c.diary.archive.splice(idx, 1); onChange(); });
+            archiveContainer.appendChild(div);
+          } else {
+            // タイトルをクリックすると本文が開く（アコーディオン）
+            var details = document.createElement("details");
+            details.className = "archive-item";
+            var summary = document.createElement("summary");
+            var dateSpan = document.createElement("span");
+            dateSpan.className = "date";
+            dateSpan.textContent = entry.date || "";
+            var titleH3 = document.createElement("h3");
+            titleH3.textContent = entry.title || "";
+            summary.appendChild(dateSpan);
+            summary.appendChild(titleH3);
+            details.appendChild(summary);
+            var excerptP = document.createElement("p");
+            excerptP.className = "excerpt";
+            setTextWithBreaks(excerptP, entry.excerpt);
+            details.appendChild(excerptP);
+            archiveContainer.appendChild(details);
           }
-          archiveContainer.appendChild(div);
         });
         if (editable) {
           addAddButton(archiveContainer, "＋ バックナンバーを追加", function () {
