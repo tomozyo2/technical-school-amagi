@@ -129,6 +129,7 @@
       linesText("hero-lead", c.hero, "lead");
       text("hero-cta", c.hero, "ctaText");
 
+      if (c.contact) text("hero-instagram-link", c.contact, "instagramLabel");
       var igLink = byId("hero-instagram-link");
       if (igLink) igLink.href = (c.contact && c.contact.instagramUrl) || "#";
 

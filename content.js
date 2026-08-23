@@ -162,7 +162,8 @@ window.SITE_CONTENT = {
     "lineNote": "QRコードを読み取るか、下のボタンから友だち追加",
     "mailto": "amagifc@gmail.com",
     "mailNote": "お問い合わせ・体験申込みはこちらから",
-    "instagramUrl": "https://www.instagram.com/amagifct/"
+    "instagramUrl": "https://www.instagram.com/amagifct/",
+    "instagramLabel": "📷 Instagramを見る"
   },
   "footer": {
     "note": "毎週火曜日 17:45〜19:30／丸山公園多目的広場",
