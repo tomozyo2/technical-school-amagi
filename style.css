@@ -542,25 +542,6 @@ section.dark .section-head p { color: var(--gray); }
   border-top: 1px solid #1e3d2a;
 }
 
-.diary-manga {
-  margin-bottom: 26px;
-  padding-bottom: 26px;
-  border-bottom: 1px solid #1e3d2a;
-  text-align: center;
-}
-.diary-manga img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 10px;
-  box-shadow: 0 10px 30px rgba(10,28,19,.35);
-}
-.diary-manga p {
-  color: var(--green-bright);
-  font-weight: 800;
-  font-size: .85rem;
-  margin: 0 0 12px;
-}
-
 .diary-archive-link {
   text-align: center;
   margin-top: 34px;
