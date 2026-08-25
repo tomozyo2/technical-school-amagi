@@ -23,6 +23,25 @@
     function byId(id) { return document.getElementById(id); }
     function clear(el) { while (el && el.firstChild) el.removeChild(el.firstChild); }
 
+    // 画像ファイルを指定の最大辺サイズにリサイズしてJPEGに変換（アップロード容量を抑えるため）
+    function resizeImageFile(file, maxDim, quality, cb) {
+      var img = new Image();
+      var url = URL.createObjectURL(file);
+      img.onload = function () {
+        var scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+        var w = Math.round(img.width * scale);
+        var h = Math.round(img.height * scale);
+        var canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+        URL.revokeObjectURL(url);
+        canvas.toBlob(function (blob) { cb(blob || file); }, "image/jpeg", quality);
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); cb(file); };
+      img.src = url;
+    }
+
     function setTextWithBreaks(el, value) {
       el.textContent = "";
       var lines = String(value || "").split("\n");
@@ -151,6 +170,56 @@
           });
           igWrap.appendChild(igInput);
           heroAdminFields.appendChild(igWrap);
+        }
+      }
+
+      // ---- Instagramの写真（管理者が手動でアップロード） ----
+      var igPhotoImg = byId("instagram-photo-img");
+      var igFeedSection = byId("instagram-feed");
+      if (igPhotoImg && igFeedSection) {
+        var photoV = c.contact.instagramPhotoUpdatedAt || "";
+        if (photoV) {
+          igPhotoImg.onerror = function () { igFeedSection.hidden = true; };
+          igPhotoImg.onload = function () { igFeedSection.hidden = false; };
+          igPhotoImg.src = "instagram-photo.jpg?v=" + encodeURIComponent(photoV);
+        } else {
+          igFeedSection.hidden = !editable;
+        }
+
+        var igAdminFields = byId("instagram-admin-fields");
+        if (igAdminFields) {
+          clear(igAdminFields);
+          if (editable) {
+            igFeedSection.hidden = false;
+            var photoWrap = document.createElement("div");
+            photoWrap.className = "admin-hidden-field";
+            var photoLabel = document.createElement("label");
+            photoLabel.textContent = "Instagramの写真をアップロード";
+            photoWrap.appendChild(photoLabel);
+            var photoInput = document.createElement("input");
+            photoInput.type = "file";
+            photoInput.accept = "image/*";
+            photoInput.addEventListener("change", function () {
+              var file = photoInput.files && photoInput.files[0];
+              if (!file) return;
+              resizeImageFile(file, 1200, 0.82, function (blob) {
+                var reader = new FileReader();
+                reader.onload = function () {
+                  window.__adminPendingUploads = window.__adminPendingUploads || {};
+                  window.__adminPendingUploads.instagramPhoto = reader.result;
+                  igPhotoImg.onerror = null;
+                  igPhotoImg.src = reader.result;
+                };
+                reader.readAsDataURL(blob);
+              });
+            });
+            photoWrap.appendChild(photoInput);
+            var photoNote = document.createElement("p");
+            photoNote.className = "admin-modal-note";
+            photoNote.textContent = "選んだ写真は「保存する」を押したときにアップロードされます。";
+            photoWrap.appendChild(photoNote);
+            igAdminFields.appendChild(photoWrap);
+          }
         }
       }
     }

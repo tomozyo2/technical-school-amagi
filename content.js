@@ -116,7 +116,8 @@ window.SITE_CONTENT = {
     "mailto": "amagifc@gmail.com",
     "mailNote": "お問い合わせ・体験申込みはこちらから",
     "instagramUrl": "https://www.instagram.com/p/DcOfICZpADb/?hl=ja",
-    "instagramLabel": "📷 8/18Instagramを見る"
+    "instagramLabel": "📷 8/18Instagramを見る",
+    "instagramPhotoUpdatedAt": ""
   },
   "footer": {
     "note": "毎週火曜日 17:45〜19:30／丸山公園多目的広場",

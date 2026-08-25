@@ -244,6 +244,39 @@
     }
   }
 
+  async function uploadBinaryFile(path, dataUrl, token) {
+    var base64 = dataUrl.split(",")[1];
+    var url = "https://api.github.com/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + path;
+    var sha = null;
+    var getRes = await fetch(url + "?ref=" + GITHUB_BRANCH, {
+      headers: { "Authorization": "token " + token, "Accept": "application/vnd.github+json" }
+    });
+    if (getRes.ok) {
+      sha = (await getRes.json()).sha;
+    } else if (getRes.status !== 404) {
+      throw new Error("写真の確認に失敗しました（エラー" + getRes.status + "）");
+    }
+    var body = {
+      message: "Instagram写真を更新（管理者モード） " + new Date().toLocaleString("ja-JP"),
+      content: base64,
+      branch: GITHUB_BRANCH
+    };
+    if (sha) body.sha = sha;
+    var putRes = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Authorization": "token " + token,
+        "Accept": "application/vnd.github+json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    });
+    if (!putRes.ok) {
+      var errJson = await putRes.json().catch(function () { return {}; });
+      throw new Error("写真のアップロードに失敗しました（エラー" + putRes.status + "）：" + (errJson.message || ""));
+    }
+  }
+
   async function saveToGitHub() {
     if (!data) return;
     var token = localStorage.getItem(TOKEN_KEY);
@@ -253,6 +286,15 @@
     }
     barMsg.textContent = "保存中...";
     try {
+      var pendingUploads = window.__adminPendingUploads;
+      if (pendingUploads && pendingUploads.instagramPhoto) {
+        barMsg.textContent = "写真をアップロード中...";
+        await uploadBinaryFile("instagram-photo.jpg", pendingUploads.instagramPhoto, token);
+        data.contact.instagramPhotoUpdatedAt = String(Date.now());
+        pendingUploads.instagramPhoto = null;
+        barMsg.textContent = "保存中...";
+      }
+
       var json = JSON.stringify(data, null, 2);
       var output = HEADER + "window.SITE_CONTENT = " + json + ";\n";
       var res = await fetch(apiUrl().split("?")[0], {
