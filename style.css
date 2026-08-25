@@ -186,6 +186,85 @@ nav.main-nav a.admin-nav-link:hover {
   margin: 0 0 34px;
 }
 
+.mascot-row {
+  display: flex;
+  gap: 28px;
+  justify-content: center;
+  margin: 0 0 30px;
+}
+.mascot-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--white);
+  font-weight: 800;
+  font-size: .85rem;
+  transition: transform .2s;
+}
+.mascot-btn:hover { transform: translateY(-3px); }
+.mascot-btn img {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  border: 3px solid var(--green-bright);
+  box-shadow: 0 8px 20px rgba(0,0,0,.35);
+}
+
+/* 4コマ漫画ポップアップ */
+.manga-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5,14,9,.86);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.manga-modal-overlay[hidden] { display: none; }
+.manga-modal-box {
+  background: var(--darker);
+  border: 1px solid #1e3d2a;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 420px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 20px 50px rgba(0,0,0,.4);
+}
+.manga-modal-title {
+  color: var(--green-bright);
+  font-weight: 800;
+  font-size: .9rem;
+  margin: 0 0 14px;
+}
+.manga-modal-box img {
+  width: 100%;
+  border-radius: 10px;
+}
+.manga-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: #132a1c;
+  color: var(--white);
+  font-size: 1rem;
+  cursor: pointer;
+}
+.manga-modal-close:hover { background: var(--orange); }
+
 .btn {
   display: inline-block;
   background: var(--orange);
@@ -464,9 +543,9 @@ section.dark .section-head p { color: var(--gray); }
 }
 
 .diary-manga {
-  margin-top: 30px;
-  padding-top: 26px;
-  border-top: 1px solid #1e3d2a;
+  margin-bottom: 26px;
+  padding-bottom: 26px;
+  border-bottom: 1px solid #1e3d2a;
   text-align: center;
 }
 .diary-manga img {
