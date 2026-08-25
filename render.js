@@ -175,22 +175,21 @@
 
       // ---- Instagramの写真（管理者が手動でアップロード） ----
       var igPhotoImg = byId("instagram-photo-img");
-      var igFeedSection = byId("instagram-feed");
-      if (igPhotoImg && igFeedSection) {
+      var igPhotoWrap = byId("instagram-photo-wrap");
+      if (igPhotoImg && igPhotoWrap) {
         var photoV = c.contact.instagramPhotoUpdatedAt || "";
         if (photoV) {
-          igPhotoImg.onerror = function () { igFeedSection.hidden = true; };
-          igPhotoImg.onload = function () { igFeedSection.hidden = false; };
+          igPhotoImg.onerror = function () { igPhotoWrap.hidden = true; };
+          igPhotoImg.onload = function () { igPhotoWrap.hidden = false; };
           igPhotoImg.src = "instagram-photo.jpg?v=" + encodeURIComponent(photoV);
         } else {
-          igFeedSection.hidden = !editable;
+          igPhotoWrap.hidden = true;
         }
 
         var igAdminFields = byId("instagram-admin-fields");
         if (igAdminFields) {
           clear(igAdminFields);
           if (editable) {
-            igFeedSection.hidden = false;
             var photoWrap = document.createElement("div");
             photoWrap.className = "admin-hidden-field";
             var photoLabel = document.createElement("label");
@@ -209,6 +208,7 @@
                   window.__adminPendingUploads.instagramPhoto = reader.result;
                   igPhotoImg.onerror = null;
                   igPhotoImg.src = reader.result;
+                  igPhotoWrap.hidden = false;
                 };
                 reader.readAsDataURL(blob);
               });
