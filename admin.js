@@ -187,9 +187,9 @@
       });
       if (res.status === 401 || res.status === 403) {
         localStorage.removeItem(TOKEN_KEY);
+        showTokenStep();
         modalNote.textContent = "";
         modalErr.textContent = "トークンが無効です。もう一度入力してください。";
-        showTokenStep();
         submitBtn.disabled = false;
         return;
       }
