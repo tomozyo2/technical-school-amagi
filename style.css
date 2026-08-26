@@ -422,6 +422,10 @@ section.dark .section-head p { color: var(--gray); }
 }
 @media (max-width: 760px) { .grid-3 { grid-template-columns: 1fr; } }
 
+.grid-info { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 900px) { .grid-info { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .grid-info { grid-template-columns: 1fr; } }
+
 .card {
   background: var(--card-bg);
   border-radius: 16px;

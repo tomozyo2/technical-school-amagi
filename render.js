@@ -260,10 +260,10 @@
 
     // ---- 練習日・場所・時間 ----
     if (c.info) {
-      text("info-lead", c.info, "lead");
       text("info-day", c.info, "day");
       text("info-place", c.info, "place");
       text("info-time", c.info, "time");
+      text("info-area", c.info, "area");
     }
 
     // ---- 料金 ----
