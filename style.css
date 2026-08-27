@@ -183,7 +183,20 @@ nav.main-nav a.admin-nav-link:hover {
 .hero p.lead {
   font-size: 1.05rem;
   color: var(--gray);
-  margin: 0 0 34px;
+  margin: 0 0 22px;
+}
+
+.hero-badge {
+  display: inline-block;
+  background: var(--orange);
+  color: var(--white);
+  font-weight: 900;
+  font-size: 1.02rem;
+  letter-spacing: .02em;
+  padding: 10px 24px;
+  border-radius: 999px;
+  margin: 0 0 28px;
+  box-shadow: 0 8px 22px rgba(255,90,31,.35);
 }
 
 .mascot-hint {
@@ -426,6 +439,22 @@ section.dark .section-head p { color: var(--gray); }
 @media (max-width: 900px) { .grid-info { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 480px) { .grid-info { grid-template-columns: 1fr; } }
 
+/* ---------- 地図 ---------- */
+.map-embed {
+  margin-top: 30px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(10,28,19,.07);
+}
+.map-embed:empty { display: none; }
+.map-embed iframe {
+  display: block;
+  width: 100%;
+  height: 320px;
+  border: 0;
+}
+#info-admin-fields { max-width: 420px; margin: 16px auto 0; }
+
 .card {
   background: var(--card-bg);
   border-radius: 16px;
@@ -443,6 +472,31 @@ section.dark .section-head p { color: var(--gray); }
 .card .value {
   color: var(--green);
   font-weight: 900;
+}
+
+/* ---------- よくある質問 ---------- */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+.faq-item { border-top: none; border-left: 4px solid var(--orange); padding: 26px 28px; }
+.faq-item .faq-q {
+  margin: 0 0 10px;
+  font-size: 1.02rem;
+  color: var(--dark);
+}
+.faq-item .faq-q::before {
+  content: "Q. ";
+  color: var(--orange);
+}
+.faq-item .faq-a { color: #444; margin: 0; }
+.faq-item .faq-a::before {
+  content: "A. ";
+  font-weight: 900;
+  color: var(--green);
 }
 
 /* ---------- 料金テーブル ---------- */

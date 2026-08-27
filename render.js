@@ -146,6 +146,7 @@
       text("hero-headline-accent", c.hero, "headlineAccent");
       text("hero-headline2", c.hero, "headline2");
       linesText("hero-lead", c.hero, "lead");
+      text("hero-badge", c.hero, "badge");
       text("hero-cta", c.hero, "ctaText");
 
       if (c.contact) text("hero-instagram-link", c.contact, "instagramLabel");
@@ -264,6 +265,39 @@
       text("info-place", c.info, "place");
       text("info-time", c.info, "time");
       text("info-area", c.info, "area");
+
+      var mapEl = byId("info-map");
+      if (mapEl) {
+        clear(mapEl);
+        if (c.info.mapQuery) {
+          var iframe = document.createElement("iframe");
+          iframe.loading = "lazy";
+          iframe.referrerPolicy = "no-referrer-when-downgrade";
+          iframe.src = "https://www.google.com/maps?q=" + encodeURIComponent(c.info.mapQuery) + "&output=embed";
+          mapEl.appendChild(iframe);
+        }
+      }
+
+      var infoAdminFields = byId("info-admin-fields");
+      if (infoAdminFields) {
+        clear(infoAdminFields);
+        if (editable) {
+          var mapWrap = document.createElement("div");
+          mapWrap.className = "admin-hidden-field";
+          var mapLabel = document.createElement("label");
+          mapLabel.textContent = "地図の検索キーワード（住所や施設名）";
+          mapWrap.appendChild(mapLabel);
+          var mapInput = document.createElement("input");
+          mapInput.type = "text";
+          mapInput.value = c.info.mapQuery || "";
+          mapInput.addEventListener("input", function () {
+            c.info.mapQuery = mapInput.value;
+          });
+          mapInput.addEventListener("change", function () { onChange(); });
+          mapWrap.appendChild(mapInput);
+          infoAdminFields.appendChild(mapWrap);
+        }
+      }
     }
 
     // ---- 料金 ----
@@ -508,6 +542,37 @@
             c.training.items.push({ icon: "⚽", title: "今月のテーマ", bold: "", text: "" });
             onChange();
           }, { fullGrid: true });
+        }
+      }
+    }
+
+    // ---- よくある質問 ----
+    if (c.faq) {
+      text("faq-heading", c.faq, "heading");
+      text("faq-lead", c.faq, "lead");
+      var faqContainer = byId("faq-items");
+      if (faqContainer && Array.isArray(c.faq.items)) {
+        clear(faqContainer);
+        c.faq.items.forEach(function (item, idx) {
+          var div = document.createElement("div");
+          div.className = "card faq-item" + (editable ? " admin-editing-item" : "");
+          div.innerHTML = '<h3 class="faq-q"></h3><p class="faq-a"></p>';
+          var qEl = div.querySelector(".faq-q");
+          var aEl = div.querySelector(".faq-a");
+          qEl.textContent = item.q || "";
+          aEl.textContent = item.a || "";
+          if (editable) {
+            bindEditable(qEl, item, "q");
+            bindEditable(aEl, item, "a", { multiline: true });
+            addRemoveButton(div, function () { c.faq.items.splice(idx, 1); onChange(); });
+          }
+          faqContainer.appendChild(div);
+        });
+        if (editable) {
+          addAddButton(faqContainer, "＋ 質問を追加", function () {
+            c.faq.items.push({ q: "新しい質問", a: "" });
+            onChange();
+          });
         }
       }
     }
