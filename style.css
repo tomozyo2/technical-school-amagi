@@ -67,13 +67,19 @@ header.site-header {
   display: flex;
   align-items: center;
   gap: 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .logo .ball { color: var(--green-bright); }
 
+nav.main-nav {
+  min-width: 0;
+}
 nav.main-nav ul {
   list-style: none;
   display: flex;
-  gap: 28px;
+  align-items: center;
+  gap: 16px;
   margin: 0;
   padding: 0;
 }
@@ -81,8 +87,9 @@ nav.main-nav a {
   color: var(--gray);
   text-decoration: none;
   font-weight: 700;
-  font-size: .92rem;
-  letter-spacing: .03em;
+  font-size: .82rem;
+  letter-spacing: .02em;
+  white-space: nowrap;
   transition: color .2s;
 }
 nav.main-nav a:hover { color: var(--green-bright); }
@@ -91,7 +98,7 @@ nav.main-nav a.admin-nav-link {
   border: 1px solid #2a4636;
   border-radius: 999px;
   padding: 5px 14px;
-  font-size: .78rem;
+  font-size: .74rem;
   color: #8fa398;
 }
 nav.main-nav a.admin-nav-link:hover {
@@ -99,19 +106,20 @@ nav.main-nav a.admin-nav-link:hover {
   border-color: var(--orange);
 }
 
-/* ハンバーガー（スマホ用・JSなしのcheckboxハック） */
+/* ハンバーガー（スマホ・タブレット用・JSなしのcheckboxハック） */
 #nav-toggle { display: none; }
 .hamburger {
   display: none;
   cursor: pointer;
   flex-direction: column;
   gap: 5px;
+  flex-shrink: 0;
 }
 .hamburger span {
   width: 26px; height: 3px; background: var(--white); display: block;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 1100px) {
   .hamburger { display: flex; }
   nav.main-nav {
     display: none;
