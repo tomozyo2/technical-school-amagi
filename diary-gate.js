@@ -11,7 +11,7 @@
 (function () {
   "use strict";
 
-  var MEMBER_PASSWORD = "amagifc2026";
+  var MEMBER_PASSWORD = "1112";
   var STORAGE_KEY = "amagi-diary-unlocked";
 
   var GATES = [
