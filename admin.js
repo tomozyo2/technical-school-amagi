@@ -19,6 +19,7 @@
   var GITHUB_REPO = "technical-school-amagi";
   var GITHUB_BRANCH = "main";
   var GITHUB_PATH = "content.js";
+  var GITHUB_PATH_DIARY = "diary-data.js";
   var TOKEN_KEY = "amagi-gh-pat";
 
   var HEADER = "/* =========================================================\n" +
@@ -29,12 +30,23 @@
     "   　対応を崩さないよう注意してください（JSON形式です）。\n" +
     "   ========================================================= */\n\n";
 
+  var HEADER_DIARY = "/* =========================================================\n" +
+    "   テクニカルスクール甘木 「コーチの独り言」本文データ（会員限定）\n\n" +
+    "   ★このファイルは通常のページ読み込みでは読み込まれません。\n" +
+    "   　合言葉が正しく入力されたときだけ、diary-gate.js が\n" +
+    "   　このファイルを取得して表示します。\n\n" +
+    "   ★このファイルはサイトの「独り言」管理者モードから編集・保存できます。\n" +
+    "   　手動で書き換える場合は、ダブルクォート \" や カンマ , の\n" +
+    "   　対応を崩さないよう注意してください（JSON形式です）。\n" +
+    "   ========================================================= */\n\n";
+
   var data = null;
   var currentSha = null;
+  var currentDiarySha = null;
   var scrollTargetId = null;
 
-  function apiUrl() {
-    return "https://api.github.com/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + GITHUB_PATH + "?ref=" + GITHUB_BRANCH;
+  function apiUrl(path) {
+    return "https://api.github.com/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + (path || GITHUB_PATH) + "?ref=" + GITHUB_BRANCH;
   }
 
   function b64ToUtf8(b64) {
@@ -200,6 +212,30 @@
       var match = text.match(/window\.SITE_CONTENT\s*=\s*([\s\S]*?);\s*$/);
       if (!match) throw new Error("content.js の中身を読み取れませんでした。");
       data = JSON.parse(match[1]);
+
+      var diaryRes = await fetch(apiUrl(GITHUB_PATH_DIARY), {
+        headers: {
+          "Authorization": "token " + token,
+          "Accept": "application/vnd.github+json"
+        }
+      });
+      if (diaryRes.status === 404) {
+        currentDiarySha = null;
+        data.diary = {
+          latest: { title: "", date: "", topicHeading: "高校サッカー・W杯の話題", topicText: "", analysisHeading: "チームの試合分析", analysisText: "", players: [] },
+          archive: []
+        };
+      } else if (diaryRes.ok) {
+        var diaryJson = await diaryRes.json();
+        currentDiarySha = diaryJson.sha;
+        var diaryText = b64ToUtf8(diaryJson.content);
+        var diaryMatch = diaryText.match(/window\.DIARY_CONTENT\s*=\s*([\s\S]*?);\s*$/);
+        if (!diaryMatch) throw new Error("diary-data.js の中身を読み取れませんでした。");
+        data.diary = JSON.parse(diaryMatch[1]);
+      } else {
+        throw new Error("diary-data.js の読み込みに失敗しました（エラー" + diaryRes.status + "）");
+      }
+
       submitBtn.disabled = false;
       closeLoginModal();
       enterAdminMode();
@@ -295,9 +331,11 @@
         barMsg.textContent = "保存中...";
       }
 
-      var json = JSON.stringify(data, null, 2);
+      var contentOnly = {};
+      for (var k in data) { if (k !== "diary") contentOnly[k] = data[k]; }
+      var json = JSON.stringify(contentOnly, null, 2);
       var output = HEADER + "window.SITE_CONTENT = " + json + ";\n";
-      var res = await fetch(apiUrl().split("?")[0], {
+      var res = await fetch(apiUrl(GITHUB_PATH).split("?")[0], {
         method: "PUT",
         headers: {
           "Authorization": "token " + token,
@@ -317,6 +355,33 @@
       }
       var resJson = await res.json();
       currentSha = resJson.content.sha;
+
+      if (data.diary) {
+        barMsg.textContent = "独り言を保存中...";
+        var diaryOutput = HEADER_DIARY + "window.DIARY_CONTENT = " + JSON.stringify(data.diary, null, 2) + ";\n";
+        var diaryBody = {
+          message: "独り言を更新（管理者モード） " + new Date().toLocaleString("ja-JP"),
+          content: utf8ToB64(diaryOutput),
+          branch: GITHUB_BRANCH
+        };
+        if (currentDiarySha) diaryBody.sha = currentDiarySha;
+        var diaryRes = await fetch(apiUrl(GITHUB_PATH_DIARY).split("?")[0], {
+          method: "PUT",
+          headers: {
+            "Authorization": "token " + token,
+            "Accept": "application/vnd.github+json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(diaryBody)
+        });
+        if (!diaryRes.ok) {
+          var diaryErrJson = await diaryRes.json().catch(function () { return {}; });
+          throw new Error("独り言の保存に失敗しました（エラー" + diaryRes.status + "）：" + (diaryErrJson.message || ""));
+        }
+        var diaryResJson = await diaryRes.json();
+        currentDiarySha = diaryResJson.content.sha;
+      }
+
       barMsg.textContent = "✅ GitHubに保存しました（" + new Date().toLocaleTimeString("ja-JP") + "）。1分ほどでサイトに反映されます。";
     } catch (err) {
       barMsg.textContent = (err && err.message) ? err.message : String(err);

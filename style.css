@@ -564,6 +564,43 @@ section.dark .section-head p { color: var(--gray); }
 }
 .date-chip .day { color: var(--orange); }
 
+/* ---------- 独り言（会員限定ゲート） ---------- */
+.diary-gate {
+  background: #0f2318;
+  border: 1px solid #1e3d2a;
+  border-radius: 18px;
+  padding: 40px;
+  max-width: 380px;
+  margin: 0 auto;
+  text-align: center;
+}
+.diary-gate-icon { font-size: 2rem; margin: 0 0 10px; }
+.diary-gate-desc { color: var(--gray); margin: 0 0 22px; }
+.diary-gate-form {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.diary-gate-form input[type="password"] {
+  flex: 1 1 160px;
+  min-width: 0;
+  padding: 13px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.25);
+  background: rgba(255,255,255,.08);
+  color: var(--white);
+  font-size: .95rem;
+}
+.diary-gate-form input[type="password"]:focus { outline: 2px solid var(--orange); }
+.diary-gate-form .btn { padding: 13px 24px; }
+.diary-gate-err { color: #ff8a65; font-size: .85rem; min-height: 1.2em; margin: 14px 0 0; }
+
+body.admin-mode-on #diary-content-wrap[hidden],
+body.admin-mode-on #archive-list[hidden] { display: block !important; }
+body.admin-mode-on #diary-gate,
+body.admin-mode-on #diary-archive-gate { display: none !important; }
+
 /* ---------- 独り言 ---------- */
 .diary-card {
   background: #0f2318;

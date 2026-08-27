@@ -45,7 +45,18 @@
 <section class="alt">
   <div class="wrap">
     <a href="index.html#diary" class="back-link">← 最新の独り言はトップページへ</a>
-    <div class="archive-list" id="archive-list"></div>
+
+    <div class="diary-gate" id="diary-archive-gate">
+      <p class="diary-gate-icon">🔒</p>
+      <p class="diary-gate-desc">会員限定コンテンツです。<br>合言葉をご存知の方はご入力ください。</p>
+      <form class="diary-gate-form" id="diary-archive-gate-form" autocomplete="off">
+        <input type="password" id="diary-archive-gate-input" placeholder="合言葉" autocomplete="off">
+        <button type="submit" class="btn outline">見る</button>
+      </form>
+      <p class="diary-gate-err" id="diary-archive-gate-err"></p>
+    </div>
+
+    <div class="archive-list" id="archive-list" hidden></div>
   </div>
 </section>
 
@@ -60,6 +71,7 @@
     var v = window.__cacheBustVersion || Date.now();
     document.write('<script src="content.js?v=' + v + '"><\/script>');
     document.write('<script src="render.js?v=' + v + '"><\/script>');
+    document.write('<script src="diary-gate.js?v=' + v + '"><\/script>');
     document.write('<script src="admin.js?v=' + v + '"><\/script>');
   })();
 </script>

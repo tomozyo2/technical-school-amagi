@@ -220,25 +220,37 @@
       <p>毎週日曜日の夜に更新。サッカーのこと、選手たちのことを綴ります。</p>
     </div>
 
-    <div class="admin-diary-actions" id="diary-admin-actions"></div>
-
-    <div class="diary-card">
-      <div class="diary-meta">
-        <h3 id="diary-title"></h3>
-        <span class="date" id="diary-date"></span>
-      </div>
-      <div class="diary-body">
-        <h4 id="diary-topic-heading"></h4>
-        <p id="diary-topic-text"></p>
-
-        <h4 id="diary-analysis-heading"></h4>
-        <p id="diary-analysis-text"></p>
-        <div id="diary-players"></div>
-      </div>
+    <div class="diary-gate" id="diary-gate">
+      <p class="diary-gate-icon">🔒</p>
+      <p class="diary-gate-desc">会員限定コンテンツです。<br>合言葉をご存知の方はご入力ください。</p>
+      <form class="diary-gate-form" id="diary-gate-form" autocomplete="off">
+        <input type="password" id="diary-gate-input" placeholder="合言葉" autocomplete="off">
+        <button type="submit" class="btn outline">見る</button>
+      </form>
+      <p class="diary-gate-err" id="diary-gate-err"></p>
     </div>
 
-    <div class="diary-archive-link">
-      <a href="diary.html" class="btn outline">過去の独り言を見る</a>
+    <div id="diary-content-wrap" hidden>
+      <div class="admin-diary-actions" id="diary-admin-actions"></div>
+
+      <div class="diary-card">
+        <div class="diary-meta">
+          <h3 id="diary-title"></h3>
+          <span class="date" id="diary-date"></span>
+        </div>
+        <div class="diary-body">
+          <h4 id="diary-topic-heading"></h4>
+          <p id="diary-topic-text"></p>
+
+          <h4 id="diary-analysis-heading"></h4>
+          <p id="diary-analysis-text"></p>
+          <div id="diary-players"></div>
+        </div>
+      </div>
+
+      <div class="diary-archive-link">
+        <a href="diary.html" class="btn outline">過去の独り言を見る</a>
+      </div>
     </div>
   </div>
 </section>
@@ -319,6 +331,7 @@
     var v = window.__cacheBustVersion || Date.now();
     document.write('<script src="content.js?v=' + v + '"><\/script>');
     document.write('<script src="render.js?v=' + v + '"><\/script>');
+    document.write('<script src="diary-gate.js?v=' + v + '"><\/script>');
     document.write('<script src="admin.js?v=' + v + '"><\/script>');
   })();
 </script>
