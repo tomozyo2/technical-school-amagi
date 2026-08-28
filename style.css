@@ -241,7 +241,13 @@ nav.main-nav a.admin-nav-link:hover {
   display: flex;
   gap: 28px;
   justify-content: center;
-  margin: 0 0 30px;
+  margin: 0 0 20px;
+}
+.mascot-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
 }
 .mascot-btn {
   background: none;
@@ -985,18 +991,17 @@ footer .foot-logo {
 
 body.admin-mode-on { padding-bottom: 76px; }
 
-/* ---- 4コマ漫画：最新回メタ表示（トップページ） ---- */
+/* ---- 4コマ漫画：最新回メタ表示（トップページ、マスコットごと） ---- */
 .manga-meta {
-  margin: 4px 0 0;
-  font-size: .82rem;
+  margin: 0;
+  font-size: .76rem;
   color: var(--gray);
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  text-align: center;
+  max-width: 130px;
+  line-height: 1.5;
 }
-.manga-meta #manga-date { color: var(--green-bright); font-weight: 700; }
-.manga-meta #manga-title { font-weight: 700; }
+.manga-meta span[id^="manga-date-"] { display: block; color: var(--green-bright); font-weight: 700; }
+.manga-meta span[id^="manga-title-"] { display: block; font-weight: 700; }
 
 /* ---- 4コマ漫画：モーダル内の日付・シェア・バックナンバー導線 ---- */
 .manga-modal-date {
@@ -1029,6 +1034,24 @@ body.admin-mode-on { padding-bottom: 76px; }
   font-weight: 800;
   font-size: .82rem;
   text-decoration: underline;
+}
+
+/* ---- manga.html：キャラごとのセクション ---- */
+.manga-character-block { margin-bottom: 56px; }
+.manga-character-block:last-child { margin-bottom: 0; }
+.manga-character-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  font-weight: 900;
+  margin: 0 0 22px;
+}
+.manga-character-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--green);
 }
 
 /* ---- manga.html：最新回ハイライトカード ---- */

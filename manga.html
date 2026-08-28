@@ -61,16 +61,31 @@
   <div class="wrap">
     <a href="index.html#top" class="back-link">← トップページへ</a>
 
-    <div class="manga-latest-card" id="manga-latest-card">
-      <span class="manga-latest-tag">最新回</span>
-      <img id="manga-latest-img" alt="最新のサッカー4コマ漫画">
-      <div class="manga-latest-meta">
-        <span class="date" id="manga-latest-date"></span>
-        <h3 id="manga-latest-title"></h3>
+    <div class="manga-character-block">
+      <h3 class="manga-character-heading"><img src="mero-icon.png" alt="" class="manga-character-icon">メロんぽの4コマ</h3>
+      <div class="manga-latest-card" id="manga-latest-card-mero">
+        <span class="manga-latest-tag">最新回</span>
+        <img id="manga-latest-img-mero" alt="メロんぽの最新のサッカー4コマ漫画">
+        <div class="manga-latest-meta">
+          <span class="date" id="manga-latest-date-mero"></span>
+          <h3 id="manga-latest-title-mero"></h3>
+        </div>
       </div>
+      <div class="manga-archive-grid" id="manga-archive-list-mero"></div>
     </div>
 
-    <div class="manga-archive-grid" id="manga-archive-list"></div>
+    <div class="manga-character-block">
+      <h3 class="manga-character-heading"><img src="chiro-icon.png" alt="" class="manga-character-icon">チロんぽの4コマ</h3>
+      <div class="manga-latest-card" id="manga-latest-card-chiro">
+        <span class="manga-latest-tag">最新回</span>
+        <img id="manga-latest-img-chiro" alt="チロんぽの最新のサッカー4コマ漫画">
+        <div class="manga-latest-meta">
+          <span class="date" id="manga-latest-date-chiro"></span>
+          <h3 id="manga-latest-title-chiro"></h3>
+        </div>
+      </div>
+      <div class="manga-archive-grid" id="manga-archive-list-chiro"></div>
+    </div>
   </div>
 </section>
 
@@ -92,42 +107,6 @@
     </div>
   </div>
 </div>
-
-<script>
-  (function () {
-    var overlay = document.getElementById("manga-modal-overlay");
-    var titleEl = document.getElementById("manga-modal-title");
-    var dateEl = document.getElementById("manga-modal-date");
-    var imgEl = document.getElementById("manga-modal-img");
-    var closeBtn = document.getElementById("manga-modal-close");
-    var lineShare = document.getElementById("manga-share-line");
-    var xShare = document.getElementById("manga-share-x");
-
-    function pageUrl() {
-      return new URL("manga.html", location.href).href;
-    }
-
-    window.openMangaViewer = function (entry) {
-      var title = (entry && entry.title) || "サッカー4コマ漫画";
-      titleEl.textContent = title + " ⚽";
-      dateEl.textContent = (entry && entry.date) || "";
-      imgEl.src = (entry && entry.image) ? entry.image + (entry.imageUpdatedAt ? "?v=" + encodeURIComponent(entry.imageUpdatedAt) : "") : "";
-      var shareText = "テクニカルスクール甘木の4コマ漫画「" + title + "」⚽";
-      var url = pageUrl();
-      if (lineShare) lineShare.href = "https://social-plugins.line.me/lineit/share?url=" + encodeURIComponent(url) + "&text=" + encodeURIComponent(shareText);
-      if (xShare) xShare.href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText) + "&url=" + encodeURIComponent(url);
-      overlay.hidden = false;
-      document.body.style.overflow = "hidden";
-    };
-    function closeModal() {
-      overlay.hidden = true;
-      document.body.style.overflow = "";
-    }
-    if (closeBtn) closeBtn.addEventListener("click", closeModal);
-    if (overlay) overlay.addEventListener("click", function (e) { if (e.target === overlay) closeModal(); });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !overlay.hidden) closeModal(); });
-  })();
-</script>
 
 <script>
   (function () {

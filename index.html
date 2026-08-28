@@ -71,26 +71,33 @@
     <span class="eyebrow" id="hero-eyebrow">TECHNICAL SCHOOL AMAGI</span>
     <h1><span id="hero-headline1">基礎を学ぼう</span><span class="accent" id="hero-headline-accent">自分で考えてプレイする</span><br><span id="hero-headline2">サッカーを、もっと知ることで楽しもう</span></h1>
 
-    <p class="mascot-hint">下のアイコンをタップすると<br>今週の4コマが読めるよ <span class="mascot-hint-arrow">👇</span></p>
+    <p class="mascot-hint">下のアイコンをタップすると<br>それぞれの今週の4コマが読めるよ <span class="mascot-hint-arrow">👇</span></p>
     <div class="mascot-row">
-      <button type="button" class="mascot-btn" id="mascot-mero-btn">
-        <span class="mascot-avatar">
-          <img src="mero-icon.png" alt="メロんぽ">
-          <span class="mascot-badge">📖</span>
-        </span>
-        <span>メロんぽ</span>
-      </button>
-      <button type="button" class="mascot-btn" id="mascot-chiro-btn">
-        <span class="mascot-avatar">
-          <img src="chiro-icon.png" alt="チロんぽ">
-          <span class="mascot-badge">📖</span>
-        </span>
-        <span>チロんぽ</span>
-      </button>
+      <div class="mascot-col">
+        <button type="button" class="mascot-btn" id="mascot-mero-btn">
+          <span class="mascot-avatar">
+            <img src="mero-icon.png" alt="メロんぽ">
+            <span class="mascot-badge">📖</span>
+          </span>
+          <span>メロんぽ</span>
+        </button>
+        <p class="manga-meta"><span id="manga-date-mero"></span><span id="manga-title-mero"></span></p>
+      </div>
+      <div class="mascot-col">
+        <button type="button" class="mascot-btn" id="mascot-chiro-btn">
+          <span class="mascot-avatar">
+            <img src="chiro-icon.png" alt="チロんぽ">
+            <span class="mascot-badge">📖</span>
+          </span>
+          <span>チロんぽ</span>
+        </button>
+        <p class="manga-meta"><span id="manga-date-chiro"></span><span id="manga-title-chiro"></span></p>
+      </div>
     </div>
-    <p class="manga-meta"><span id="manga-date"></span><span id="manga-title"></span></p>
-    <div id="manga-admin-actions" class="admin-diary-actions"></div>
-    <div id="manga-admin-fields"></div>
+    <div id="manga-admin-actions-mero" class="admin-diary-actions"></div>
+    <div id="manga-admin-fields-mero"></div>
+    <div id="manga-admin-actions-chiro" class="admin-diary-actions"></div>
+    <div id="manga-admin-fields-chiro"></div>
 
     <p class="lead" id="hero-lead">テクニカルスクール甘木は、1年生から6年生までを対象にしたサッカースクールです。<br>毎週火曜日、丸山公園多目的広場で楽しくトレーニングしています</p>
     <p class="hero-badge" id="hero-badge"></p>
@@ -307,45 +314,16 @@
 
 <script>
   (function () {
-    var overlay = document.getElementById("manga-modal-overlay");
-    var titleEl = document.getElementById("manga-modal-title");
-    var dateEl = document.getElementById("manga-modal-date");
-    var closeBtn = document.getElementById("manga-modal-close");
     var meroBtn = document.getElementById("mascot-mero-btn");
     var chiroBtn = document.getElementById("mascot-chiro-btn");
-    var lineShare = document.getElementById("manga-share-line");
-    var xShare = document.getElementById("manga-share-x");
 
-    function mangaPageUrl() {
-      return new URL("manga.html", location.href).href;
+    function openFor(key, label) {
+      var charData = window.SITE_CONTENT && window.SITE_CONTENT.manga && window.SITE_CONTENT.manga[key];
+      if (window.openMangaViewer) window.openMangaViewer(charData && charData.latest, label);
     }
 
-    function openModal(name) {
-      var m = (window.SITE_CONTENT && window.SITE_CONTENT.manga && window.SITE_CONTENT.manga.latest) || {};
-      var title = m.title || "今週の4コマ";
-      titleEl.textContent = name + "と読む「" + title + "」⚽";
-      dateEl.textContent = m.date || "";
-      var shareText = "テクニカルスクール甘木の4コマ漫画「" + title + "」⚽";
-      var pageUrl = mangaPageUrl();
-      if (lineShare) lineShare.href = "https://social-plugins.line.me/lineit/share?url=" + encodeURIComponent(pageUrl) + "&text=" + encodeURIComponent(shareText);
-      if (xShare) xShare.href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText) + "&url=" + encodeURIComponent(pageUrl);
-      overlay.hidden = false;
-      document.body.style.overflow = "hidden";
-    }
-    function closeModal() {
-      overlay.hidden = true;
-      document.body.style.overflow = "";
-    }
-
-    if (meroBtn) meroBtn.addEventListener("click", function () { openModal("メロんぽ"); });
-    if (chiroBtn) chiroBtn.addEventListener("click", function () { openModal("チロんぽ"); });
-    if (closeBtn) closeBtn.addEventListener("click", closeModal);
-    if (overlay) overlay.addEventListener("click", function (e) {
-      if (e.target === overlay) closeModal();
-    });
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && !overlay.hidden) closeModal();
-    });
+    if (meroBtn) meroBtn.addEventListener("click", function () { openFor("mero", "メロんぽ"); });
+    if (chiroBtn) chiroBtn.addEventListener("click", function () { openFor("chiro", "チロんぽ"); });
   })();
 </script>
 

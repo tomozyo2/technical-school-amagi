@@ -5,17 +5,31 @@
    　バックナンバーページ（manga.html）から読み込まれます。
    　合言葉は不要で、誰でも見られる公開コンテンツです。
 
+   ★メロんぽ・チロんぽ、それぞれ1本ずつ独立した最新回を持ちます。
+   　どちらかを更新すると、そのキャラの更新日だけが変わります。
+
    ★このファイルはサイトの「4コマ漫画」管理者モードから編集・保存できます。
    　手動で書き換える場合は、ダブルクォート " や カンマ , の
    　対応を崩さないよう注意してください（JSON形式です）。
    ========================================================= */
 
 window.MANGA_CONTENT = {
-  "latest": {
-    "date": "2026年8月28日",
-    "title": "今週の4コマ",
-    "image": "diary-comic.jpg",
-    "imageUpdatedAt": "1"
+  "mero": {
+    "latest": {
+      "date": "2026年8月28日",
+      "title": "今週の4コマ",
+      "image": "diary-comic.jpg",
+      "imageUpdatedAt": "1"
+    },
+    "archive": []
   },
-  "archive": []
+  "chiro": {
+    "latest": {
+      "date": "2026年8月28日",
+      "title": "今週の4コマ",
+      "image": "diary-comic.jpg",
+      "imageUpdatedAt": "1"
+    },
+    "archive": []
+  }
 };
