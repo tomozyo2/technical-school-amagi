@@ -20,6 +20,7 @@
   var GITHUB_BRANCH = "main";
   var GITHUB_PATH = "content.js";
   var GITHUB_PATH_DIARY = "diary-data.js";
+  var GITHUB_PATH_MANGA = "manga-data.js";
   var TOKEN_KEY = "amagi-gh-pat";
 
   var HEADER = "/* =========================================================\n" +
@@ -40,9 +41,20 @@
     "   　対応を崩さないよう注意してください（JSON形式です）。\n" +
     "   ========================================================= */\n\n";
 
+  var HEADER_MANGA = "/* =========================================================\n" +
+    "   テクニカルスクール甘木 「サッカー4コマ漫画」データ（公開）\n\n" +
+    "   ★このファイルはトップページの4コマモーダルと、\n" +
+    "   　バックナンバーページ（manga.html）から読み込まれます。\n" +
+    "   　合言葉は不要で、誰でも見られる公開コンテンツです。\n\n" +
+    "   ★このファイルはサイトの「4コマ漫画」管理者モードから編集・保存できます。\n" +
+    "   　手動で書き換える場合は、ダブルクォート \" や カンマ , の\n" +
+    "   　対応を崩さないよう注意してください（JSON形式です）。\n" +
+    "   ========================================================= */\n\n";
+
   var data = null;
   var currentSha = null;
   var currentDiarySha = null;
+  var currentMangaSha = null;
   var scrollTargetId = null;
 
   function apiUrl(path) {
@@ -236,6 +248,29 @@
         throw new Error("diary-data.js の読み込みに失敗しました（エラー" + diaryRes.status + "）");
       }
 
+      var mangaRes = await fetch(apiUrl(GITHUB_PATH_MANGA), {
+        headers: {
+          "Authorization": "token " + token,
+          "Accept": "application/vnd.github+json"
+        }
+      });
+      if (mangaRes.status === 404) {
+        currentMangaSha = null;
+        data.manga = {
+          latest: { date: "", title: "", image: "", imageUpdatedAt: "" },
+          archive: []
+        };
+      } else if (mangaRes.ok) {
+        var mangaJson = await mangaRes.json();
+        currentMangaSha = mangaJson.sha;
+        var mangaText = b64ToUtf8(mangaJson.content);
+        var mangaMatch = mangaText.match(/window\.MANGA_CONTENT\s*=\s*([\s\S]*?);\s*$/);
+        if (!mangaMatch) throw new Error("manga-data.js の中身を読み取れませんでした。");
+        data.manga = JSON.parse(mangaMatch[1]);
+      } else {
+        throw new Error("manga-data.js の読み込みに失敗しました（エラー" + mangaRes.status + "）");
+      }
+
       submitBtn.disabled = false;
       closeLoginModal();
       enterAdminMode();
@@ -330,9 +365,18 @@
         pendingUploads.instagramPhoto = null;
         barMsg.textContent = "保存中...";
       }
+      if (pendingUploads && pendingUploads.mangaLatest) {
+        barMsg.textContent = "4コマ漫画をアップロード中...";
+        var mangaImagePath = "manga/" + Date.now() + ".jpg";
+        await uploadBinaryFile(mangaImagePath, pendingUploads.mangaLatest, token);
+        data.manga.latest.image = mangaImagePath;
+        data.manga.latest.imageUpdatedAt = String(Date.now());
+        pendingUploads.mangaLatest = null;
+        barMsg.textContent = "保存中...";
+      }
 
       var contentOnly = {};
-      for (var k in data) { if (k !== "diary") contentOnly[k] = data[k]; }
+      for (var k in data) { if (k !== "diary" && k !== "manga") contentOnly[k] = data[k]; }
       var json = JSON.stringify(contentOnly, null, 2);
       var output = HEADER + "window.SITE_CONTENT = " + json + ";\n";
       var res = await fetch(apiUrl(GITHUB_PATH).split("?")[0], {
@@ -380,6 +424,32 @@
         }
         var diaryResJson = await diaryRes.json();
         currentDiarySha = diaryResJson.content.sha;
+      }
+
+      if (data.manga) {
+        barMsg.textContent = "4コマ漫画データを保存中...";
+        var mangaOutput = HEADER_MANGA + "window.MANGA_CONTENT = " + JSON.stringify(data.manga, null, 2) + ";\n";
+        var mangaBody = {
+          message: "4コマ漫画を更新（管理者モード） " + new Date().toLocaleString("ja-JP"),
+          content: utf8ToB64(mangaOutput),
+          branch: GITHUB_BRANCH
+        };
+        if (currentMangaSha) mangaBody.sha = currentMangaSha;
+        var mangaSaveRes = await fetch(apiUrl(GITHUB_PATH_MANGA).split("?")[0], {
+          method: "PUT",
+          headers: {
+            "Authorization": "token " + token,
+            "Accept": "application/vnd.github+json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(mangaBody)
+        });
+        if (!mangaSaveRes.ok) {
+          var mangaErrJson = await mangaSaveRes.json().catch(function () { return {}; });
+          throw new Error("4コマ漫画の保存に失敗しました（エラー" + mangaSaveRes.status + "）：" + (mangaErrJson.message || ""));
+        }
+        var mangaSaveJson = await mangaSaveRes.json();
+        currentMangaSha = mangaSaveJson.content.sha;
       }
 
       barMsg.textContent = "✅ GitHubに保存しました（" + new Date().toLocaleTimeString("ja-JP") + "）。1分ほどでサイトに反映されます。";

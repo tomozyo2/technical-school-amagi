@@ -88,6 +88,9 @@
         <span>チロんぽ</span>
       </button>
     </div>
+    <p class="manga-meta"><span id="manga-date"></span><span id="manga-title"></span></p>
+    <div id="manga-admin-actions" class="admin-diary-actions"></div>
+    <div id="manga-admin-fields"></div>
 
     <p class="lead" id="hero-lead">テクニカルスクール甘木は、1年生から6年生までを対象にしたサッカースクールです。<br>毎週火曜日、丸山公園多目的広場で楽しくトレーニングしています</p>
     <p class="hero-badge" id="hero-badge"></p>
@@ -292,7 +295,13 @@
   <div class="manga-modal-box">
     <button type="button" class="manga-modal-close" id="manga-modal-close" aria-label="閉じる">✕</button>
     <p class="manga-modal-title" id="manga-modal-title"></p>
-    <img src="diary-comic.jpg" alt="サッカー4コマ漫画" id="manga-modal-img">
+    <img alt="サッカー4コマ漫画" id="manga-modal-img">
+    <p class="manga-modal-date" id="manga-modal-date"></p>
+    <div class="manga-share-row">
+      <a href="#" class="share-btn share-line" id="manga-share-line" target="_blank" rel="noopener">LINEで送る</a>
+      <a href="#" class="share-btn share-x" id="manga-share-x" target="_blank" rel="noopener">Xでシェア</a>
+    </div>
+    <a href="manga.html" class="manga-archive-link">📚 バックナンバーを見る</a>
   </div>
 </div>
 
@@ -300,12 +309,26 @@
   (function () {
     var overlay = document.getElementById("manga-modal-overlay");
     var titleEl = document.getElementById("manga-modal-title");
+    var dateEl = document.getElementById("manga-modal-date");
     var closeBtn = document.getElementById("manga-modal-close");
     var meroBtn = document.getElementById("mascot-mero-btn");
     var chiroBtn = document.getElementById("mascot-chiro-btn");
+    var lineShare = document.getElementById("manga-share-line");
+    var xShare = document.getElementById("manga-share-x");
+
+    function mangaPageUrl() {
+      return new URL("manga.html", location.href).href;
+    }
 
     function openModal(name) {
-      titleEl.textContent = name + "と読む今週の4コマ⚽";
+      var m = (window.SITE_CONTENT && window.SITE_CONTENT.manga && window.SITE_CONTENT.manga.latest) || {};
+      var title = m.title || "今週の4コマ";
+      titleEl.textContent = name + "と読む「" + title + "」⚽";
+      dateEl.textContent = m.date || "";
+      var shareText = "テクニカルスクール甘木の4コマ漫画「" + title + "」⚽";
+      var pageUrl = mangaPageUrl();
+      if (lineShare) lineShare.href = "https://social-plugins.line.me/lineit/share?url=" + encodeURIComponent(pageUrl) + "&text=" + encodeURIComponent(shareText);
+      if (xShare) xShare.href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText) + "&url=" + encodeURIComponent(pageUrl);
       overlay.hidden = false;
       document.body.style.overflow = "hidden";
     }
@@ -330,6 +353,7 @@
   (function () {
     var v = window.__cacheBustVersion || Date.now();
     document.write('<script src="content.js?v=' + v + '"><\/script>');
+    document.write('<script src="manga-data.js?v=' + v + '"><\/script>');
     document.write('<script src="render.js?v=' + v + '"><\/script>');
     document.write('<script src="diary-gate.js?v=' + v + '"><\/script>');
     document.write('<script src="admin.js?v=' + v + '"><\/script>');

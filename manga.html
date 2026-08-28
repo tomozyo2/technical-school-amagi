@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>サッカー4コマ漫画｜テクニカルスクール甘木</title>
+<meta name="description" content="テクニカルスクール甘木のマスコット、メロんぽ＆チロんぽが登場するサッカー4コマ漫画のバックナンバー。週2〜3回更新中。">
+
+<!-- ▼公開ドメインが決まったら、下の SITE_URL（5箇所）を実際のURLに書き換えてください -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="テクニカルスクール甘木">
+<meta property="og:title" content="サッカー4コマ漫画｜テクニカルスクール甘木">
+<meta property="og:description" content="テクニカルスクール甘木のマスコット、メロんぽ＆チロんぽが登場するサッカー4コマ漫画のバックナンバー。週2〜3回更新中。">
+<meta property="og:url" content="SITE_URL/manga.html">
+<meta property="og:image" content="SITE_URL/diary-comic.jpg">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="サッカー4コマ漫画｜テクニカルスクール甘木">
+<meta name="twitter:description" content="テクニカルスクール甘木のマスコット、メロんぽ＆チロんぽが登場するサッカー4コマ漫画のバックナンバー。週2〜3回更新中。">
+<meta name="twitter:image" content="SITE_URL/diary-comic.jpg">
+
+<script>
+  window.__cacheBustVersion = Date.now();
+  document.write('<link rel="stylesheet" href="style.css?v=' + window.__cacheBustVersion + '">');
+</script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo"><span class="ball">⚽</span><span class="js-site-name"></span></a>
+    <input type="checkbox" id="nav-toggle">
+    <label for="nav-toggle" class="hamburger"><span></span><span></span><span></span></label>
+    <nav class="main-nav">
+      <ul>
+        <li><a href="index.html#about">スクールとは</a></li>
+        <li><a href="index.html#info">練習日・場所</a></li>
+        <li><a href="index.html#price">料金</a></li>
+        <li><a href="index.html#schedule">日程</a></li>
+        <li><a href="index.html#training">トレーニング</a></li>
+        <li><a href="diary.html">独り言</a></li>
+        <li><a href="manga.html">4コマ漫画</a></li>
+        <li><a href="index.html#contact">お問い合わせ</a></li>
+        <li><a href="#" id="admin-toggle-link" class="admin-nav-link">⚙ 管理者</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="dark" style="padding:70px 0 50px;">
+  <div class="wrap">
+    <div class="section-head" style="margin-bottom:0;">
+      <span class="tag">MERONPO &amp; CHIRONPO COMICS</span>
+      <h2>サッカー4コマ漫画　バックナンバー</h2>
+      <p>メロんぽ・チロんぽと一緒に読む、テクニカルスクール甘木のサッカー4コマ。週2〜3回更新しています。</p>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <a href="index.html#top" class="back-link">← トップページへ</a>
+
+    <div class="manga-latest-card" id="manga-latest-card">
+      <span class="manga-latest-tag">最新回</span>
+      <img id="manga-latest-img" alt="最新のサッカー4コマ漫画">
+      <div class="manga-latest-meta">
+        <span class="date" id="manga-latest-date"></span>
+        <h3 id="manga-latest-title"></h3>
+      </div>
+    </div>
+
+    <div class="manga-archive-grid" id="manga-archive-list"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-logo">⚽ <span class="js-site-name"></span></div>
+  <p id="footer-note"></p>
+  <p id="footer-copyright"></p>
+</footer>
+
+<div class="manga-modal-overlay" id="manga-modal-overlay" hidden>
+  <div class="manga-modal-box">
+    <button type="button" class="manga-modal-close" id="manga-modal-close" aria-label="閉じる">✕</button>
+    <p class="manga-modal-title" id="manga-modal-title"></p>
+    <img alt="サッカー4コマ漫画" id="manga-modal-img">
+    <p class="manga-modal-date" id="manga-modal-date"></p>
+    <div class="manga-share-row">
+      <a href="#" class="share-btn share-line" id="manga-share-line" target="_blank" rel="noopener">LINEで送る</a>
+      <a href="#" class="share-btn share-x" id="manga-share-x" target="_blank" rel="noopener">Xでシェア</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var overlay = document.getElementById("manga-modal-overlay");
+    var titleEl = document.getElementById("manga-modal-title");
+    var dateEl = document.getElementById("manga-modal-date");
+    var imgEl = document.getElementById("manga-modal-img");
+    var closeBtn = document.getElementById("manga-modal-close");
+    var lineShare = document.getElementById("manga-share-line");
+    var xShare = document.getElementById("manga-share-x");
+
+    function pageUrl() {
+      return new URL("manga.html", location.href).href;
+    }
+
+    window.openMangaViewer = function (entry) {
+      var title = (entry && entry.title) || "サッカー4コマ漫画";
+      titleEl.textContent = title + " ⚽";
+      dateEl.textContent = (entry && entry.date) || "";
+      imgEl.src = (entry && entry.image) ? entry.image + (entry.imageUpdatedAt ? "?v=" + encodeURIComponent(entry.imageUpdatedAt) : "") : "";
+      var shareText = "テクニカルスクール甘木の4コマ漫画「" + title + "」⚽";
+      var url = pageUrl();
+      if (lineShare) lineShare.href = "https://social-plugins.line.me/lineit/share?url=" + encodeURIComponent(url) + "&text=" + encodeURIComponent(shareText);
+      if (xShare) xShare.href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText) + "&url=" + encodeURIComponent(url);
+      overlay.hidden = false;
+      document.body.style.overflow = "hidden";
+    };
+    function closeModal() {
+      overlay.hidden = true;
+      document.body.style.overflow = "";
+    }
+    if (closeBtn) closeBtn.addEventListener("click", closeModal);
+    if (overlay) overlay.addEventListener("click", function (e) { if (e.target === overlay) closeModal(); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !overlay.hidden) closeModal(); });
+  })();
+</script>
+
+<script>
+  (function () {
+    var v = window.__cacheBustVersion || Date.now();
+    document.write('<script src="content.js?v=' + v + '"><\/script>');
+    document.write('<script src="manga-data.js?v=' + v + '"><\/script>');
+    document.write('<script src="render.js?v=' + v + '"><\/script>');
+    document.write('<script src="admin.js?v=' + v + '"><\/script>');
+  })();
+</script>
+</body>
+</html>

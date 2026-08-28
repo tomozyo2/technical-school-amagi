@@ -984,3 +984,101 @@ footer .foot-logo {
 .admin-bar-btn.primary:hover { background: #e04d17; }
 
 body.admin-mode-on { padding-bottom: 76px; }
+
+/* ---- 4コマ漫画：最新回メタ表示（トップページ） ---- */
+.manga-meta {
+  margin: 4px 0 0;
+  font-size: .82rem;
+  color: var(--gray);
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.manga-meta #manga-date { color: var(--green-bright); font-weight: 700; }
+.manga-meta #manga-title { font-weight: 700; }
+
+/* ---- 4コマ漫画：モーダル内の日付・シェア・バックナンバー導線 ---- */
+.manga-modal-date {
+  color: var(--gray);
+  font-size: .8rem;
+  margin: 10px 0 0;
+}
+.manga-share-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+.share-btn {
+  display: inline-block;
+  padding: 9px 18px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: .78rem;
+  text-decoration: none;
+  color: var(--white);
+}
+.share-btn.share-line { background: #06C755; }
+.share-btn.share-x { background: #14171a; }
+.manga-archive-link {
+  display: inline-block;
+  margin-top: 16px;
+  color: var(--green-bright);
+  font-weight: 800;
+  font-size: .82rem;
+  text-decoration: underline;
+}
+
+/* ---- manga.html：最新回ハイライトカード ---- */
+.manga-latest-card {
+  position: relative;
+  max-width: 480px;
+  margin: 0 auto 40px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 12px 30px rgba(10,28,19,.1);
+  border: 2px solid var(--green-bright);
+}
+.manga-latest-tag {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: var(--orange);
+  color: var(--white);
+  font-weight: 900;
+  font-size: .72rem;
+  padding: 5px 14px;
+  border-radius: 999px;
+  z-index: 1;
+}
+.manga-latest-card img { width: 100%; }
+.manga-latest-meta { padding: 16px 20px 22px; }
+.manga-latest-meta .date { color: var(--orange); font-weight: 900; font-size: .8rem; letter-spacing: .04em; }
+.manga-latest-meta h3 { margin: 6px 0 0; font-weight: 900; }
+
+/* ---- manga.html：バックナンバー一覧グリッド ---- */
+.manga-archive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+.manga-archive-item {
+  background: var(--card-bg);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(10,28,19,.08);
+}
+.manga-archive-thumb { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.manga-archive-meta { padding: 12px 14px 16px; }
+.manga-archive-meta .date { color: var(--orange); font-weight: 900; font-size: .74rem; letter-spacing: .04em; }
+.manga-archive-meta h3 { margin: 6px 0 0; font-size: .95rem; font-weight: 800; }
+.manga-archive-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #777;
+}
