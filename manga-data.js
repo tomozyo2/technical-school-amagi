@@ -17,9 +17,9 @@ window.MANGA_CONTENT = {
   "mero": {
     "latest": {
       "date": "2026年8月28日",
-      "title": "今週の4コマ",
-      "image": "diary-comic.jpg",
-      "imageUpdatedAt": "1"
+      "title": "全力シュート対決",
+      "image": "manga/mero-1787908433908.jpg",
+      "imageUpdatedAt": "1787908433908"
     },
     "archive": []
   },
