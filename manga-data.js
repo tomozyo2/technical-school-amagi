@@ -11,22 +11,29 @@
    ========================================================= */
 
 window.MANGA_CONTENT = {
-  "mero": {
+  "series": {
     "latest": {
-      "date": "2026年8月28日",
-      "title": "全力シュート対決",
-      "image": "manga/mero-1787908433908.jpg",
-      "imageUpdatedAt": "1787908433908"
+      "number": 3,
+      "date": "2026年8月31日",
+      "title": "",
+      "image": "manga/episode3-1788105666748.jpg",
+      "imageUpdatedAt": "1788105666748"
     },
-    "archive": []
-  },
-  "chiro": {
-    "latest": {
-      "date": "2026年8月28日",
-      "title": "今週の4コマ",
-      "image": "diary-comic.jpg",
-      "imageUpdatedAt": "1"
-    },
-    "archive": []
+    "archive": [
+      {
+        "number": 2,
+        "date": "2026年8月28日",
+        "title": "",
+        "image": "manga/mero-1787908433908.jpg",
+        "imageUpdatedAt": "1787908433908"
+      },
+      {
+        "number": 1,
+        "date": "2026年8月28日",
+        "title": "",
+        "image": "diary-comic.jpg",
+        "imageUpdatedAt": "1"
+      }
+    ]
   }
 };

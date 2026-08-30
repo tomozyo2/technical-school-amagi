@@ -61,30 +61,34 @@
   <div class="wrap">
     <a href="index.html#top" class="back-link">← トップページへ</a>
 
-    <div class="manga-character-block">
-      <h3 class="manga-character-heading"><img src="mero-icon.png" alt="" class="manga-character-icon">メロんぽの4コマ</h3>
-      <div class="manga-latest-card" id="manga-latest-card-mero">
-        <span class="manga-latest-tag">最新回</span>
-        <img id="manga-latest-img-mero" alt="メロんぽの最新のサッカー4コマ漫画">
-        <div class="manga-latest-meta">
-          <span class="date" id="manga-latest-date-mero"></span>
-          <h3 id="manga-latest-title-mero"></h3>
+    <div class="manga-series-layout">
+      <div class="manga-series-main">
+        <h3 class="manga-character-heading">
+          <span class="manga-combo-icon">
+            <img src="chiro-icon.png" alt="">
+            <img src="mero-icon.png" alt="">
+          </span>
+          チロんぽ＆メロんぽの4コマ
+        </h3>
+        <div class="manga-latest-card" id="manga-latest-card-series">
+          <span class="manga-latest-tag" id="manga-latest-tag-series">最新話</span>
+          <img id="manga-latest-img-series" alt="最新のサッカー4コマ漫画">
+          <div class="manga-latest-meta">
+            <span class="date" id="manga-latest-date-series"></span>
+            <h3 id="manga-latest-title-series"></h3>
+          </div>
         </div>
+        <p class="manga-prev-link-wrap" id="manga-prev-link-wrap" hidden>
+          <a href="#" class="manga-prev-link" id="manga-prev-link"></a>
+        </p>
+        <div id="manga-admin-actions-series" class="admin-diary-actions"></div>
+        <div id="manga-admin-fields-series"></div>
       </div>
-      <div class="manga-archive-grid" id="manga-archive-list-mero"></div>
-    </div>
 
-    <div class="manga-character-block">
-      <h3 class="manga-character-heading"><img src="chiro-icon.png" alt="" class="manga-character-icon">チロんぽの4コマ</h3>
-      <div class="manga-latest-card" id="manga-latest-card-chiro">
-        <span class="manga-latest-tag">最新回</span>
-        <img id="manga-latest-img-chiro" alt="チロんぽの最新のサッカー4コマ漫画">
-        <div class="manga-latest-meta">
-          <span class="date" id="manga-latest-date-chiro"></span>
-          <h3 id="manga-latest-title-chiro"></h3>
-        </div>
-      </div>
-      <div class="manga-archive-grid" id="manga-archive-list-chiro"></div>
+      <aside class="manga-series-sidebar">
+        <h4>話を選ぶ</h4>
+        <div class="manga-episode-list" id="manga-episode-list"></div>
+      </aside>
     </div>
   </div>
 </section>

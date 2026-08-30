@@ -71,33 +71,22 @@
     <span class="eyebrow" id="hero-eyebrow">TECHNICAL SCHOOL AMAGI</span>
     <h1><span id="hero-headline1">基礎を学ぼう</span><span class="accent" id="hero-headline-accent">自分で考えてプレイする</span><br><span id="hero-headline2">サッカーを、もっと知ることで楽しもう</span></h1>
 
-    <p class="mascot-hint">下のアイコンをタップすると<br>それぞれの今週の4コマが読めるよ <span class="mascot-hint-arrow">👇</span></p>
+    <p class="mascot-hint">下のアイコンをタップすると<br>最新の4コマが読めるよ <span class="mascot-hint-arrow">👇</span></p>
     <div class="mascot-row">
       <div class="mascot-col">
-        <button type="button" class="mascot-btn" id="mascot-mero-btn">
-          <span class="mascot-avatar">
-            <img src="mero-icon.png" alt="メロんぽ">
+        <button type="button" class="mascot-btn" id="mascot-series-btn">
+          <span class="mascot-avatar-duo">
+            <img src="chiro-icon.png" alt="チロんぽ" class="mascot-avatar-chiro">
+            <img src="mero-icon.png" alt="メロんぽ" class="mascot-avatar-mero">
             <span class="mascot-badge">📖</span>
           </span>
-          <span>メロんぽ</span>
+          <span>チロんぽ＆メロんぽ</span>
         </button>
-        <p class="manga-meta"><span id="manga-date-mero"></span><span id="manga-title-mero"></span></p>
-      </div>
-      <div class="mascot-col">
-        <button type="button" class="mascot-btn" id="mascot-chiro-btn">
-          <span class="mascot-avatar">
-            <img src="chiro-icon.png" alt="チロんぽ">
-            <span class="mascot-badge">📖</span>
-          </span>
-          <span>チロんぽ</span>
-        </button>
-        <p class="manga-meta"><span id="manga-date-chiro"></span><span id="manga-title-chiro"></span></p>
+        <p class="manga-meta"><span id="manga-date-series"></span><span id="manga-title-series"></span></p>
       </div>
     </div>
-    <div id="manga-admin-actions-mero" class="admin-diary-actions"></div>
-    <div id="manga-admin-fields-mero"></div>
-    <div id="manga-admin-actions-chiro" class="admin-diary-actions"></div>
-    <div id="manga-admin-fields-chiro"></div>
+    <div id="manga-admin-actions-series" class="admin-diary-actions"></div>
+    <div id="manga-admin-fields-series"></div>
 
     <p class="lead" id="hero-lead">テクニカルスクール甘木は、1年生から6年生までを対象にしたサッカースクールです。<br>毎週火曜日、丸山公園多目的広場で楽しくトレーニングしています</p>
     <p class="hero-badge" id="hero-badge"></p>
@@ -314,16 +303,14 @@
 
 <script>
   (function () {
-    var meroBtn = document.getElementById("mascot-mero-btn");
-    var chiroBtn = document.getElementById("mascot-chiro-btn");
-
-    function openFor(key, label) {
-      var charData = window.SITE_CONTENT && window.SITE_CONTENT.manga && window.SITE_CONTENT.manga[key];
-      if (window.openMangaViewer) window.openMangaViewer(charData && charData.latest, label);
+    var seriesBtn = document.getElementById("mascot-series-btn");
+    if (seriesBtn) {
+      seriesBtn.addEventListener("click", function () {
+        var s = window.SITE_CONTENT && window.SITE_CONTENT.manga && window.SITE_CONTENT.manga.series;
+        var latest = s && s.latest;
+        if (window.openMangaViewer) window.openMangaViewer(latest, "第" + (latest && latest.number || "") + "話");
+      });
     }
-
-    if (meroBtn) meroBtn.addEventListener("click", function () { openFor("mero", "メロんぽ"); });
-    if (chiroBtn) chiroBtn.addEventListener("click", function () { openFor("chiro", "チロんぽ"); });
   })();
 </script>
 

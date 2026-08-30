@@ -257,8 +257,7 @@
       if (mangaRes.status === 404) {
         currentMangaSha = null;
         data.manga = {
-          mero: { latest: { date: "", title: "", image: "", imageUpdatedAt: "" }, archive: [] },
-          chiro: { latest: { date: "", title: "", image: "", imageUpdatedAt: "" }, archive: [] }
+          series: { latest: { number: 1, date: "", title: "", image: "", imageUpdatedAt: "" }, archive: [] }
         };
       } else if (mangaRes.ok) {
         var mangaJson = await mangaRes.json();
@@ -365,18 +364,15 @@
         pendingUploads.instagramPhoto = null;
         barMsg.textContent = "保存中...";
       }
-      var mangaKeys = ["mero", "chiro"];
-      for (var mi = 0; mi < mangaKeys.length; mi++) {
-        var mangaKey = mangaKeys[mi];
-        if (pendingUploads && pendingUploads["mangaLatest_" + mangaKey]) {
-          barMsg.textContent = "4コマ漫画（" + mangaKey + "）をアップロード中...";
-          var mangaImagePath = "manga/" + mangaKey + "-" + Date.now() + ".jpg";
-          await uploadBinaryFile(mangaImagePath, pendingUploads["mangaLatest_" + mangaKey], token);
-          data.manga[mangaKey].latest.image = mangaImagePath;
-          data.manga[mangaKey].latest.imageUpdatedAt = String(Date.now());
-          pendingUploads["mangaLatest_" + mangaKey] = null;
-          barMsg.textContent = "保存中...";
-        }
+      if (pendingUploads && pendingUploads.mangaLatest_series) {
+        barMsg.textContent = "4コマ漫画をアップロード中...";
+        var mangaEpNumber = (data.manga && data.manga.series && data.manga.series.latest && data.manga.series.latest.number) || 1;
+        var mangaImagePath = "manga/episode" + mangaEpNumber + "-" + Date.now() + ".jpg";
+        await uploadBinaryFile(mangaImagePath, pendingUploads.mangaLatest_series, token);
+        data.manga.series.latest.image = mangaImagePath;
+        data.manga.series.latest.imageUpdatedAt = String(Date.now());
+        pendingUploads.mangaLatest_series = null;
+        barMsg.textContent = "保存中...";
       }
 
       var contentOnly = {};

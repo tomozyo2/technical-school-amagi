@@ -12,7 +12,7 @@
 (function () {
 
   var diaryUndoSnapshot = null; // 「バックナンバーへ移動」の直前状態（1回分だけ・保存前のみ有効）
-  var mangaUndoSnapshots = { mero: null, chiro: null }; // 4コマ漫画の「バックナンバーへ移動」の直前状態（キャラごとに1回分だけ・保存前のみ有効）
+  var mangaUndoSnapshot = null; // 4コマ漫画の「バックナンバーへ移動」の直前状態（1回分だけ・保存前のみ有効）
 
   window.renderSite = function (data, opts) {
     opts = opts || {};
@@ -578,44 +578,45 @@
       }
     }
 
-    // ---- 4コマ漫画（メロんぽ・チロんぽ、それぞれ独立した最新回） ----
-    function renderMangaCharacter(key, label) {
-      var charData = c.manga && c.manga[key];
+    // ---- 4コマ漫画（チロんぽ・メロんぽ共演、話数で1本につながったシリーズ） ----
+    function renderMangaSeries() {
+      var s = c.manga && c.manga.series;
 
-      var mangaActions = byId("manga-admin-actions-" + key);
+      var mangaActions = byId("manga-admin-actions-series");
       if (mangaActions) {
         clear(mangaActions);
-        if (editable && charData && charData.latest) {
+        if (editable && s && s.latest) {
           var mangaMoveBtn = document.createElement("button");
           mangaMoveBtn.type = "button";
           mangaMoveBtn.className = "admin-move-btn";
-          mangaMoveBtn.textContent = "📥 " + label + "の今の4コマをバックナンバーへ移動して、新しい回をアップロードする";
+          mangaMoveBtn.textContent = "📥 今の話をバックナンバーへ移動して、新しい話をアップロードする";
           mangaMoveBtn.addEventListener("click", function () {
-            mangaUndoSnapshots[key] = JSON.parse(JSON.stringify(charData));
-            var l = charData.latest;
-            charData.archive = charData.archive || [];
+            mangaUndoSnapshot = JSON.parse(JSON.stringify(s));
+            var l = s.latest;
+            s.archive = s.archive || [];
             if (l.image) {
-              charData.archive.unshift({ date: l.date, title: l.title, image: l.image, imageUpdatedAt: l.imageUpdatedAt });
+              s.archive.unshift({ number: l.number, date: l.date, title: l.title, image: l.image, imageUpdatedAt: l.imageUpdatedAt });
             }
             var today = new Date();
+            l.number = (l.number || s.archive.length) + 1;
             l.date = today.getFullYear() + "年" + (today.getMonth() + 1) + "月" + today.getDate() + "日";
             l.title = "";
             l.image = "";
             l.imageUpdatedAt = "";
             window.__adminPendingUploads = window.__adminPendingUploads || {};
-            window.__adminPendingUploads["mangaLatest_" + key] = null;
+            window.__adminPendingUploads.mangaLatest_series = null;
             onChange();
           });
           mangaActions.appendChild(mangaMoveBtn);
 
-          if (mangaUndoSnapshots[key]) {
+          if (mangaUndoSnapshot) {
             var mangaUndoBtn = document.createElement("button");
             mangaUndoBtn.type = "button";
             mangaUndoBtn.className = "admin-move-btn admin-undo-btn";
-            mangaUndoBtn.textContent = "↩ " + label + "の直前の「バックナンバーへ移動」を元に戻す（保存前のみ有効）";
+            mangaUndoBtn.textContent = "↩ 直前の「バックナンバーへ移動」を元に戻す（保存前のみ有効）";
             mangaUndoBtn.addEventListener("click", function () {
-              c.manga[key] = mangaUndoSnapshots[key];
-              mangaUndoSnapshots[key] = null;
+              c.manga.series = mangaUndoSnapshot;
+              mangaUndoSnapshot = null;
               onChange();
             });
             mangaActions.appendChild(mangaUndoBtn);
@@ -623,23 +624,26 @@
         }
       }
 
-      if (charData && charData.latest) {
-        var mg = charData.latest;
-        text("manga-date-" + key, mg, "date");
-        text("manga-title-" + key, mg, "title");
+      var mangaLatestImg = byId("manga-latest-img-series");
+      if (s && s.latest) {
+        var mg = s.latest;
+        text("manga-date-series", mg, "date");
+        var mangaHeroTitle = byId("manga-title-series");
+        if (mangaHeroTitle) mangaHeroTitle.hidden = true;
 
-        var mangaLatestImg = byId("manga-latest-img-" + key);
-        var mangaLatestDate = byId("manga-latest-date-" + key);
-        var mangaLatestTitle = byId("manga-latest-title-" + key);
-        var mangaLatestCard = byId("manga-latest-card-" + key);
+        var mangaLatestDate = byId("manga-latest-date-series");
+        var mangaLatestTitle = byId("manga-latest-title-series");
+        var mangaLatestCard = byId("manga-latest-card-series");
+        var mangaLatestTag = byId("manga-latest-tag-series");
         if (mangaLatestImg && mg.image) mangaLatestImg.src = mg.image + (mg.imageUpdatedAt ? "?v=" + encodeURIComponent(mg.imageUpdatedAt) : "");
         if (mangaLatestDate) mangaLatestDate.textContent = mg.date || "";
-        if (mangaLatestTitle) mangaLatestTitle.textContent = mg.title || "";
+        if (mangaLatestTitle) mangaLatestTitle.hidden = true;
+        if (mangaLatestTag) mangaLatestTag.textContent = "第" + (mg.number || "") + "話（最新）";
         if (mangaLatestCard) {
           if (!editable) {
             mangaLatestCard.style.cursor = "pointer";
             mangaLatestCard.onclick = function () {
-              if (window.openMangaViewer) window.openMangaViewer(mg, label);
+              if (window.openMangaViewer) window.openMangaViewer(mg, "第" + (mg.number || "") + "話");
             };
           } else {
             mangaLatestCard.style.cursor = "";
@@ -647,14 +651,14 @@
           }
         }
 
-        var mangaAdminFields = byId("manga-admin-fields-" + key);
+        var mangaAdminFields = byId("manga-admin-fields-series");
         if (mangaAdminFields) {
           clear(mangaAdminFields);
           if (editable) {
             var mangaWrap = document.createElement("div");
             mangaWrap.className = "admin-hidden-field";
             var mangaLabel = document.createElement("label");
-            mangaLabel.textContent = label + "の4コマ画像をアップロード（新しい回にするときだけ選択）";
+            mangaLabel.textContent = "4コマ画像をアップロード（新しい話にするときだけ選択）";
             mangaWrap.appendChild(mangaLabel);
             var mangaInput = document.createElement("input");
             mangaInput.type = "file";
@@ -666,7 +670,7 @@
                 var reader = new FileReader();
                 reader.onload = function () {
                   window.__adminPendingUploads = window.__adminPendingUploads || {};
-                  window.__adminPendingUploads["mangaLatest_" + key] = reader.result;
+                  window.__adminPendingUploads.mangaLatest_series = reader.result;
                   if (mangaLatestImg) mangaLatestImg.src = reader.result;
                 };
                 reader.readAsDataURL(blob);
@@ -682,45 +686,74 @@
         }
       }
 
-      if (charData && Array.isArray(charData.archive)) {
-        var mangaArchiveContainer = byId("manga-archive-list-" + key);
-        if (mangaArchiveContainer) {
-          clear(mangaArchiveContainer);
-          charData.archive.forEach(function (entry, idx) {
-            var card = document.createElement("div");
-            card.className = "manga-archive-item" + (editable ? " admin-editing-item" : "");
-            card.innerHTML = '<img class="manga-archive-thumb" alt="サッカー4コマ漫画"><div class="manga-archive-meta"><span class="date"></span><h3></h3></div>';
-            var imgEl = card.querySelector("img");
-            var dateEl = card.querySelector(".date");
-            var titleEl = card.querySelector("h3");
-            if (entry.image) imgEl.src = entry.image + (entry.imageUpdatedAt ? "?v=" + encodeURIComponent(entry.imageUpdatedAt) : "");
-            dateEl.textContent = entry.date || "";
-            titleEl.textContent = entry.title || "";
-            if (!editable) {
-              imgEl.style.cursor = "pointer";
-              imgEl.addEventListener("click", function () {
-                if (window.openMangaViewer) window.openMangaViewer(entry, label);
+      // ---- 「前の話を見る」リンク（manga.html：最新話カードのすぐ下） ----
+      var prevWrap = byId("manga-prev-link-wrap");
+      var prevLink = byId("manga-prev-link");
+      if (prevWrap && prevLink) {
+        var prevEntry = s && s.archive && s.archive[0];
+        if (!editable && prevEntry) {
+          prevWrap.hidden = false;
+          prevLink.textContent = "← 第" + (prevEntry.number || "") + "話を見る";
+          prevLink.onclick = function (e) {
+            e.preventDefault();
+            if (window.openMangaViewer) window.openMangaViewer(prevEntry, "第" + (prevEntry.number || "") + "話");
+          };
+        } else {
+          prevWrap.hidden = true;
+        }
+      }
+
+      // ---- 話数の選択リスト（manga.html：右側） ----
+      var episodeListContainer = byId("manga-episode-list");
+      if (episodeListContainer && s) {
+        clear(episodeListContainer);
+        var episodes = [];
+        if (s.latest) episodes.push({ entry: s.latest, isLatest: true });
+        (s.archive || []).forEach(function (entry) { episodes.push({ entry: entry, isLatest: false }); });
+        episodes.sort(function (a, b) { return (a.entry.number || 0) - (b.entry.number || 0); });
+
+        episodes.forEach(function (item) {
+          var entry = item.entry;
+          var row = document.createElement("div");
+          row.className = "manga-episode-row" + (editable ? " admin-editing-item" : "") + (item.isLatest ? " is-latest" : "");
+
+          if (!editable) {
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "manga-episode-btn" + (item.isLatest ? " is-current" : "");
+            var numSpan = document.createElement("span");
+            numSpan.className = "manga-episode-num";
+            numSpan.textContent = "第" + (entry.number || "?") + "話";
+            btn.appendChild(numSpan);
+            btn.addEventListener("click", function () {
+              if (window.openMangaViewer) window.openMangaViewer(entry, "第" + (entry.number || "") + "話");
+            });
+            row.appendChild(btn);
+          } else {
+            var numLabel = document.createElement("span");
+            numLabel.className = "manga-episode-num";
+            numLabel.textContent = "第" + (entry.number || "?") + "話" + (item.isLatest ? "（最新・上のカードで編集）" : "");
+            row.appendChild(numLabel);
+            if (!item.isLatest) {
+              addRemoveButton(row, function () {
+                var idx = s.archive.indexOf(entry);
+                if (idx !== -1) s.archive.splice(idx, 1);
+                onChange();
               });
             }
-            if (editable) {
-              bindEditable(dateEl, entry, "date");
-              bindEditable(titleEl, entry, "title");
-              addRemoveButton(card, function () { charData.archive.splice(idx, 1); onChange(); });
-            }
-            mangaArchiveContainer.appendChild(card);
-          });
-          if (!editable && charData.archive.length === 0) {
-            var mangaEmpty = document.createElement("p");
-            mangaEmpty.className = "manga-archive-empty";
-            mangaEmpty.textContent = "まだバックナンバーはありません。最新回をお楽しみに。";
-            mangaArchiveContainer.appendChild(mangaEmpty);
           }
+          episodeListContainer.appendChild(row);
+        });
+        if (!editable && episodes.length === 0) {
+          var mangaEmpty = document.createElement("p");
+          mangaEmpty.className = "manga-archive-empty";
+          mangaEmpty.textContent = "まだ4コマはありません。お楽しみに。";
+          episodeListContainer.appendChild(mangaEmpty);
         }
       }
     }
 
-    renderMangaCharacter("mero", "メロんぽ");
-    renderMangaCharacter("chiro", "チロんぽ");
+    renderMangaSeries();
 
     // ---- 独り言（最新回・トップページ用） ----
     var diaryActions = byId("diary-admin-actions");
@@ -940,13 +973,13 @@
     var lineShare = document.getElementById("manga-share-line");
     var xShare = document.getElementById("manga-share-x");
 
-    var title = (entry && entry.title) || "今週の4コマ";
-    var displayTitle = label ? (label + "の「" + title + "」") : title;
+    var title = (entry && entry.title) || "";
+    var displayTitle = title ? (label ? (label + "の「" + title + "」") : title) : (label || "サッカー4コマ");
     if (titleEl) titleEl.textContent = displayTitle + " ⚽";
     if (dateEl) dateEl.textContent = (entry && entry.date) || "";
     imgEl.src = (entry && entry.image) ? entry.image + (entry.imageUpdatedAt ? "?v=" + encodeURIComponent(entry.imageUpdatedAt) : "") : "";
 
-    var shareText = "テクニカルスクール甘木の4コマ漫画「" + title + "」⚽";
+    var shareText = "テクニカルスクール甘木の4コマ漫画「" + displayTitle + "」⚽";
     var pageUrl = new URL("manga.html", location.href).href;
     if (lineShare) lineShare.href = "https://social-plugins.line.me/lineit/share?url=" + encodeURIComponent(pageUrl) + "&text=" + encodeURIComponent(shareText);
     if (xShare) xShare.href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText) + "&url=" + encodeURIComponent(pageUrl);
