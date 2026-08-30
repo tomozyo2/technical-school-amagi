@@ -13,6 +13,7 @@
 
   var MEMBER_PASSWORD = "1112";
   var STORAGE_KEY = "amagi-diary-unlocked";
+  var UNLOCK_DURATION_MS = 60 * 60 * 1000; // 1時間で期限切れ
 
   var GATES = [
     { gateId: "diary-gate", formId: "diary-gate-form", inputId: "diary-gate-input", errId: "diary-gate-err", wrapId: "diary-content-wrap" },
@@ -50,9 +51,18 @@
     });
   }
 
+  function isUnlockValid() {
+    var unlockedAt = Number(localStorage.getItem(STORAGE_KEY));
+    if (!unlockedAt) return false;
+    if (Date.now() - unlockedAt > UNLOCK_DURATION_MS) {
+      localStorage.removeItem(STORAGE_KEY);
+      return false;
+    }
+    return true;
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
-    var alreadyUnlocked = localStorage.getItem(STORAGE_KEY) === "1";
-    if (alreadyUnlocked) unlockAll();
+    if (isUnlockValid()) unlockAll();
 
     GATES.forEach(function (cfg) {
       var form = byId(cfg.formId);
@@ -64,7 +74,7 @@
         var value = input ? input.value : "";
         if (value === MEMBER_PASSWORD) {
           if (errEl) errEl.textContent = "";
-          localStorage.setItem(STORAGE_KEY, "1");
+          localStorage.setItem(STORAGE_KEY, String(Date.now()));
           unlockAll();
         } else {
           if (errEl) errEl.textContent = "合言葉が違います";
