@@ -854,6 +854,35 @@ footer .foot-logo {
 .admin-remove-btn:hover { background: #a92f21; }
 .admin-remove-btn.on-dark { border-color: var(--darker); }
 
+.admin-move-btns {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.admin-move-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+  border: 2px solid var(--white);
+  font-weight: 900;
+  font-size: .65rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.admin-move-btn:hover { background: #176b30; }
+.admin-move-btn:disabled { opacity: .3; cursor: default; }
+.admin-move-btns.on-dark .admin-move-btn { border-color: var(--darker); }
+
 .admin-cell-del {
   background: none;
   border: 1px solid #d99;

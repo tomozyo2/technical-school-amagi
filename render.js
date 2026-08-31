@@ -108,6 +108,45 @@
       container.appendChild(btn);
     }
 
+    // 一覧の項目を1つ上/下に入れ替えるボタン（並び替え用）
+    function addMoveButtons(container, arr, idx, onChange, btnOpts) {
+      var wrap = document.createElement("span");
+      wrap.className = "admin-move-btns" + (btnOpts && btnOpts.onDark ? " on-dark" : "");
+      var upBtn = document.createElement("button");
+      upBtn.type = "button";
+      upBtn.className = "admin-move-btn";
+      upBtn.textContent = "▲";
+      upBtn.title = "上に移動";
+      upBtn.disabled = idx === 0;
+      upBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (idx === 0) return;
+        var tmp = arr[idx - 1];
+        arr[idx - 1] = arr[idx];
+        arr[idx] = tmp;
+        onChange();
+      });
+      var downBtn = document.createElement("button");
+      downBtn.type = "button";
+      downBtn.className = "admin-move-btn";
+      downBtn.textContent = "▼";
+      downBtn.title = "下に移動";
+      downBtn.disabled = idx === arr.length - 1;
+      downBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (idx === arr.length - 1) return;
+        var tmp = arr[idx + 1];
+        arr[idx + 1] = arr[idx];
+        arr[idx] = tmp;
+        onChange();
+      });
+      wrap.appendChild(upBtn);
+      wrap.appendChild(downBtn);
+      container.appendChild(wrap);
+    }
+
     function addAddButton(parent, label, onAdd, btnOpts) {
       var btn = document.createElement("button");
       btn.type = "button";
@@ -534,6 +573,7 @@
             bindEditable(titleEl, item, "title");
             bindEditable(boldEl, item, "bold");
             bindEditable(descEl, item, "text", { multiline: true });
+            addMoveButtons(div, c.training.items, idx, onChange);
             addRemoveButton(div, function () { c.training.items.splice(idx, 1); onChange(); });
           }
           trainingContainer.appendChild(div);
