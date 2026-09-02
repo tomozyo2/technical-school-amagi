@@ -1079,7 +1079,7 @@ body.admin-mode-on { padding-bottom: 76px; }
   margin-top: 16px;
   color: var(--green-bright);
   font-weight: 800;
-  font-size: .82rem;
+  font-size: 1rem;
   text-decoration: underline;
 }
 
