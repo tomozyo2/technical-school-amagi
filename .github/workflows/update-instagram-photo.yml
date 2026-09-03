@@ -27,9 +27,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          if ! git diff --quiet -- instagram-photo.jpg; then
-            git add instagram-photo.jpg
-            git commit -m "Instagram写真を自動更新"
+          if ! git diff --quiet -- instagram-photo.jpg content.js; then
+            git add instagram-photo.jpg content.js
+            git commit -m "Instagram写真・リンクを自動更新"
             git push
           else
             echo "変更なし"
