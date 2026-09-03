@@ -1,0 +1,25 @@
+name: Instagramアクセスキーを自動更新
+
+on:
+  schedule:
+    - cron: "0 22 * * 1" # 毎週月曜 JST 7:00（60日で切れる鍵を切れる前に更新し続ける）
+  workflow_dispatch: {}
+
+jobs:
+  refresh-token:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 鍵を更新して保存
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_SECRETS_PAT }}
+        run: |
+          set -e
+          RESPONSE=$(curl -s "https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=${IG_ACCESS_TOKEN}")
+          NEW_TOKEN=$(echo "$RESPONSE" | jq -r '.access_token // empty')
+          if [ -z "$NEW_TOKEN" ]; then
+            echo "鍵の更新に失敗しました: $RESPONSE"
+            exit 1
+          fi
+          echo "$NEW_TOKEN" | gh secret set IG_ACCESS_TOKEN --repo "${{ github.repository }}"
+          echo "鍵を更新しました。"

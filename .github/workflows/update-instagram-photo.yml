@@ -1,0 +1,36 @@
+name: Instagram写真を自動更新
+
+on:
+  schedule:
+    - cron: "0 21 * * *" # 毎日 JST 6:00
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  update-photo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 最新のInstagram画像を取得
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+        run: node scripts/update-instagram-photo.mjs
+
+      - name: 変更があればコミット・push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet -- instagram-photo.jpg; then
+            git add instagram-photo.jpg
+            git commit -m "Instagram写真を自動更新"
+            git push
+          else
+            echo "変更なし"
+          fi

@@ -357,13 +357,6 @@
     barMsg.textContent = "保存中...";
     try {
       var pendingUploads = window.__adminPendingUploads;
-      if (pendingUploads && pendingUploads.instagramPhoto) {
-        barMsg.textContent = "写真をアップロード中...";
-        await uploadBinaryFile("instagram-photo.jpg", pendingUploads.instagramPhoto, token);
-        data.contact.instagramPhotoUpdatedAt = String(Date.now());
-        pendingUploads.instagramPhoto = null;
-        barMsg.textContent = "保存中...";
-      }
       if (pendingUploads && pendingUploads.mangaLatest_series) {
         barMsg.textContent = "4コマ漫画をアップロード中...";
         var mangaEpNumber = (data.manga && data.manga.series && data.manga.series.latest && data.manga.series.latest.number) || 1;

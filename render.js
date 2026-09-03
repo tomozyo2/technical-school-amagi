@@ -214,55 +214,6 @@
         }
       }
 
-      // ---- Instagramの写真（管理者が手動でアップロード） ----
-      var igPhotoImg = byId("instagram-photo-img");
-      var igPhotoWrap = byId("instagram-photo-wrap");
-      if (igPhotoImg && igPhotoWrap) {
-        var photoV = c.contact.instagramPhotoUpdatedAt || "";
-        if (photoV) {
-          igPhotoImg.onerror = function () { igPhotoWrap.hidden = true; };
-          igPhotoImg.onload = function () { igPhotoWrap.hidden = false; };
-          igPhotoImg.src = "instagram-photo.jpg?v=" + encodeURIComponent(photoV);
-        } else {
-          igPhotoWrap.hidden = true;
-        }
-
-        var igAdminFields = byId("instagram-admin-fields");
-        if (igAdminFields) {
-          clear(igAdminFields);
-          if (editable) {
-            var photoWrap = document.createElement("div");
-            photoWrap.className = "admin-hidden-field";
-            var photoLabel = document.createElement("label");
-            photoLabel.textContent = "Instagramの写真をアップロード";
-            photoWrap.appendChild(photoLabel);
-            var photoInput = document.createElement("input");
-            photoInput.type = "file";
-            photoInput.accept = "image/*";
-            photoInput.addEventListener("change", function () {
-              var file = photoInput.files && photoInput.files[0];
-              if (!file) return;
-              resizeImageFile(file, 1200, 0.82, function (blob) {
-                var reader = new FileReader();
-                reader.onload = function () {
-                  window.__adminPendingUploads = window.__adminPendingUploads || {};
-                  window.__adminPendingUploads.instagramPhoto = reader.result;
-                  igPhotoImg.onerror = null;
-                  igPhotoImg.src = reader.result;
-                  igPhotoWrap.hidden = false;
-                };
-                reader.readAsDataURL(blob);
-              });
-            });
-            photoWrap.appendChild(photoInput);
-            var photoNote = document.createElement("p");
-            photoNote.className = "admin-modal-note";
-            photoNote.textContent = "選んだ写真は「保存する」を押したときにアップロードされます。";
-            photoWrap.appendChild(photoNote);
-            igAdminFields.appendChild(photoWrap);
-          }
-        }
-      }
     }
 
     // ---- スクールとは ----
