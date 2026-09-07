@@ -16,8 +16,8 @@ window.MANGA_CONTENT = {
       "number": 4,
       "date": "2026年9月2日",
       "title": "",
-      "image": "manga/episode4-1788779662047.jpg",
-      "imageUpdatedAt": "1788779664122"
+      "image": "manga/episode4-1788780376559.jpg",
+      "imageUpdatedAt": "1788780376559"
     },
     "archive": [
       {
