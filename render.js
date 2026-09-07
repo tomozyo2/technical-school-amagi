@@ -991,12 +991,10 @@
     if (idx === -1) { list = entry ? [entry] : []; idx = 0; }
 
     var pair;
-    if (idx > -1 && idx + 1 < list.length) {
-      pair = [list[idx], list[idx + 1]]; // 選んだ話 + 次の話
-    } else if (idx > 0) {
-      pair = [list[idx - 1], list[idx]]; // 最新話なら、ひとつ前の話とペア
+    if (idx > 0) {
+      pair = [list[idx - 1], list[idx]]; // 選んだ話 + ひとつ前の話（合わせて8コマ）
     } else {
-      pair = list.length ? [list[idx]] : [];
+      pair = list.length ? [list[idx]] : []; // 第1話は前の話がないので1話だけ
     }
 
     function fillPage(n, e) {
