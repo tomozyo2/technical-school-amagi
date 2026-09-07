@@ -717,16 +717,19 @@
         }
       }
 
-      // ---- 話数の選択リスト（manga.html：右側） ----
-      var episodeListContainer = byId("manga-episode-list");
-      if (episodeListContainer && s) {
-        clear(episodeListContainer);
-        var episodes = [];
+      // ---- 話の並び順データ（index.html / manga.html 共通・モーダルのペア表示に使う） ----
+      var episodes = [];
+      if (s) {
         if (s.latest) episodes.push({ entry: s.latest, isLatest: true });
         (s.archive || []).forEach(function (entry) { episodes.push({ entry: entry, isLatest: false }); });
         episodes.sort(function (a, b) { return (a.entry.number || 0) - (b.entry.number || 0); });
         window.__mangaEpisodesOrdered = episodes.map(function (it) { return it.entry; });
+      }
 
+      // ---- 話数の選択リスト（manga.html：右側） ----
+      var episodeListContainer = byId("manga-episode-list");
+      if (episodeListContainer && s) {
+        clear(episodeListContainer);
         episodes.forEach(function (item) {
           var entry = item.entry;
           var row = document.createElement("div");
