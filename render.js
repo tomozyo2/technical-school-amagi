@@ -13,6 +13,7 @@
 
   var diaryUndoSnapshot = null; // 「バックナンバーへ移動」の直前状態（1回分だけ・保存前のみ有効）
   var mangaUndoSnapshot = null; // 4コマ漫画の「バックナンバーへ移動」の直前状態（1回分だけ・保存前のみ有効）
+  var mangaFixMode = false; // trueの間は、画像をアップロードしても話数を増やさず今の話を上書きする
 
   window.renderSite = function (data, opts) {
     opts = opts || {};
@@ -577,28 +578,37 @@
       if (mangaActions) {
         clear(mangaActions);
         if (editable && s && s.latest) {
-          var mangaMoveBtn = document.createElement("button");
-          mangaMoveBtn.type = "button";
-          mangaMoveBtn.className = "admin-move-btn";
-          mangaMoveBtn.textContent = "📥 今の話をバックナンバーへ移動して、新しい話をアップロードする";
-          mangaMoveBtn.addEventListener("click", function () {
-            mangaUndoSnapshot = JSON.parse(JSON.stringify(s));
-            var l = s.latest;
-            s.archive = s.archive || [];
-            if (l.image) {
-              s.archive.unshift({ number: l.number, date: l.date, title: l.title, image: l.image, imageUpdatedAt: l.imageUpdatedAt });
-            }
-            var today = new Date();
-            l.number = (l.number || s.archive.length) + 1;
-            l.date = today.getFullYear() + "年" + (today.getMonth() + 1) + "月" + today.getDate() + "日";
-            l.title = "";
-            l.image = "";
-            l.imageUpdatedAt = "";
-            window.__adminPendingUploads = window.__adminPendingUploads || {};
-            window.__adminPendingUploads.mangaLatest_series = null;
-            onChange();
-          });
-          mangaActions.appendChild(mangaMoveBtn);
+          if (mangaFixMode) {
+            var mangaFixNote = document.createElement("p");
+            mangaFixNote.className = "admin-modal-note";
+            mangaFixNote.textContent = "✏ 修正モードON：次にアップロードする画像は話数を増やさず、今の第" + (s.latest.number || "") + "話に上書きされます。";
+            mangaActions.appendChild(mangaFixNote);
+
+            var mangaFixOffBtn = document.createElement("button");
+            mangaFixOffBtn.type = "button";
+            mangaFixOffBtn.className = "admin-move-btn admin-undo-btn";
+            mangaFixOffBtn.textContent = "修正モードを解除する";
+            mangaFixOffBtn.addEventListener("click", function () {
+              mangaFixMode = false;
+              onChange();
+            });
+            mangaActions.appendChild(mangaFixOffBtn);
+          } else {
+            var mangaFixBtn = document.createElement("button");
+            mangaFixBtn.type = "button";
+            mangaFixBtn.className = "admin-move-btn";
+            mangaFixBtn.textContent = "✏ 修正モード：今の話の画像だけ直す（話数を増やさない）";
+            mangaFixBtn.addEventListener("click", function () {
+              mangaFixMode = true;
+              onChange();
+            });
+            mangaActions.appendChild(mangaFixBtn);
+
+            var mangaHint = document.createElement("p");
+            mangaHint.className = "admin-modal-note";
+            mangaHint.textContent = "下から新しい画像をアップロードすると、今の話は自動でバックナンバーに移動し、新しい話として追加されます。";
+            mangaActions.appendChild(mangaHint);
+          }
 
           if (mangaUndoSnapshot) {
             var mangaUndoBtn = document.createElement("button");
@@ -649,7 +659,7 @@
             var mangaWrap = document.createElement("div");
             mangaWrap.className = "admin-hidden-field";
             var mangaLabel = document.createElement("label");
-            mangaLabel.textContent = "4コマ画像をアップロード（新しい話にするときだけ選択）";
+            mangaLabel.textContent = "4コマ画像をアップロード";
             mangaWrap.appendChild(mangaLabel);
             var mangaInput = document.createElement("input");
             mangaInput.type = "file";
@@ -660,9 +670,22 @@
               resizeImageFile(file, 1400, 0.85, function (blob) {
                 var reader = new FileReader();
                 reader.onload = function () {
+                  if (mg.image && !mangaFixMode) {
+                    mangaUndoSnapshot = JSON.parse(JSON.stringify(s));
+                    s.archive = s.archive || [];
+                    s.archive.unshift({ number: mg.number, date: mg.date, title: mg.title, image: mg.image, imageUpdatedAt: mg.imageUpdatedAt });
+                    var today = new Date();
+                    mg.number = (mg.number || s.archive.length) + 1;
+                    mg.date = today.getFullYear() + "年" + (today.getMonth() + 1) + "月" + today.getDate() + "日";
+                    mg.title = "";
+                  }
+                  mg.image = "";
+                  mangaFixMode = false;
                   window.__adminPendingUploads = window.__adminPendingUploads || {};
                   window.__adminPendingUploads.mangaLatest_series = reader.result;
-                  if (mangaLatestImg) mangaLatestImg.src = reader.result;
+                  onChange();
+                  var refreshedImg = byId("manga-latest-img-series");
+                  if (refreshedImg) refreshedImg.src = reader.result;
                 };
                 reader.readAsDataURL(blob);
               });
