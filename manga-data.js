@@ -13,13 +13,20 @@
 window.MANGA_CONTENT = {
   "series": {
     "latest": {
-      "number": 4,
-      "date": "2026年9月2日",
+      "number": 5,
+      "date": "2026年9月7日",
       "title": "",
-      "image": "manga/episode4-1788780376559.jpg",
-      "imageUpdatedAt": "1788780376559"
+      "image": "manga/episode5-1788780506042.jpg",
+      "imageUpdatedAt": "1788780508557"
     },
     "archive": [
+      {
+        "number": 4,
+        "date": "2026年9月2日",
+        "title": "",
+        "image": "manga/episode4-1788780376559.jpg",
+        "imageUpdatedAt": "1788780376559"
+      },
       {
         "number": 3,
         "date": "2026年8月31日",
