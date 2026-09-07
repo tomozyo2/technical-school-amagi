@@ -725,6 +725,7 @@
         if (s.latest) episodes.push({ entry: s.latest, isLatest: true });
         (s.archive || []).forEach(function (entry) { episodes.push({ entry: entry, isLatest: false }); });
         episodes.sort(function (a, b) { return (a.entry.number || 0) - (b.entry.number || 0); });
+        window.__mangaEpisodesOrdered = episodes.map(function (it) { return it.entry; });
 
         episodes.forEach(function (item) {
           var entry = item.entry;
@@ -977,23 +978,48 @@
     }
   };
 
-  // ---- 4コマ漫画モーダル（index.html / manga.html 共通） ----
+  // ---- 4コマ漫画モーダル（index.html / manga.html 共通・2話まとめて表示） ----
   window.openMangaViewer = function (entry, label) {
     var overlay = document.getElementById("manga-modal-overlay");
-    var imgEl = document.getElementById("manga-modal-img");
-    if (!overlay || !imgEl) return;
-    var titleEl = document.getElementById("manga-modal-title");
-    var dateEl = document.getElementById("manga-modal-date");
+    if (!overlay || !document.getElementById("manga-modal-img-1")) return;
+
+    var list = window.__mangaEpisodesOrdered || (entry ? [entry] : []);
+    var idx = -1;
+    for (var i = 0; i < list.length; i++) {
+      if (list[i] === entry || (list[i] && entry && list[i].number === entry.number)) { idx = i; break; }
+    }
+    if (idx === -1) { list = entry ? [entry] : []; idx = 0; }
+
+    var pair;
+    if (idx > -1 && idx + 1 < list.length) {
+      pair = [list[idx], list[idx + 1]]; // 選んだ話 + 次の話
+    } else if (idx > 0) {
+      pair = [list[idx - 1], list[idx]]; // 最新話なら、ひとつ前の話とペア
+    } else {
+      pair = list.length ? [list[idx]] : [];
+    }
+
+    function fillPage(n, e) {
+      var pageEl = document.getElementById("manga-modal-page-" + n);
+      if (!pageEl) return;
+      if (!e) { pageEl.hidden = true; return; }
+      pageEl.hidden = false;
+      var epLabel = "第" + (e.number || "") + "話";
+      var t = e.title || "";
+      var titleEl = document.getElementById("manga-modal-title-" + n);
+      var dateEl = document.getElementById("manga-modal-date-" + n);
+      var imgEl = document.getElementById("manga-modal-img-" + n);
+      if (titleEl) titleEl.textContent = (t ? (epLabel + "の「" + t + "」") : epLabel) + " ⚽";
+      if (dateEl) dateEl.textContent = e.date || "";
+      if (imgEl) imgEl.src = e.image ? e.image + (e.imageUpdatedAt ? "?v=" + encodeURIComponent(e.imageUpdatedAt) : "") : "";
+    }
+    fillPage(1, pair[0]);
+    fillPage(2, pair[1]);
+
     var lineShare = document.getElementById("manga-share-line");
     var xShare = document.getElementById("manga-share-x");
-
-    var title = (entry && entry.title) || "";
-    var displayTitle = title ? (label ? (label + "の「" + title + "」") : title) : (label || "サッカー4コマ");
-    if (titleEl) titleEl.textContent = displayTitle + " ⚽";
-    if (dateEl) dateEl.textContent = (entry && entry.date) || "";
-    imgEl.src = (entry && entry.image) ? entry.image + (entry.imageUpdatedAt ? "?v=" + encodeURIComponent(entry.imageUpdatedAt) : "") : "";
-
-    var shareText = "テクニカルスクール甘木の4コマ漫画「" + displayTitle + "」⚽";
+    var labels = pair.map(function (e) { return "第" + (e.number || "") + "話"; }).join("・");
+    var shareText = "テクニカルスクール甘木の4コマ漫画" + (labels ? "「" + labels + "」" : "") + " ⚽";
     var pageUrl = new URL("manga.html", location.href).href;
     if (lineShare) lineShare.href = "https://social-plugins.line.me/lineit/share?url=" + encodeURIComponent(pageUrl) + "&text=" + encodeURIComponent(shareText);
     if (xShare) xShare.href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText) + "&url=" + encodeURIComponent(pageUrl);

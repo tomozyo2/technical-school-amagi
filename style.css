@@ -355,6 +355,12 @@ nav.main-nav a.admin-nav-link:hover {
   cursor: pointer;
 }
 .manga-modal-close:hover { background: var(--orange); }
+.manga-modal-page + .manga-modal-page {
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px dashed #2a4a35;
+}
+.manga-modal-page[hidden] { display: none; }
 
 .btn {
   display: inline-block;
