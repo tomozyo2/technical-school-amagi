@@ -1024,6 +1024,7 @@ footer .foot-logo {
   flex-wrap: wrap;
 }
 .admin-bar-label { color: var(--green-bright); font-weight: 900; font-size: .85rem; }
+.admin-bar-stats { color: var(--green-bright); font-size: .8rem; font-weight: 700; }
 .admin-bar-msg { color: var(--gray); font-size: .8rem; }
 .admin-bar-btn {
   border: none;

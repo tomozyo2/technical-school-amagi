@@ -23,6 +23,9 @@
   var GITHUB_PATH_MANGA = "manga-data.js";
   var TOKEN_KEY = "amagi-gh-pat";
 
+  var GOATCOUNTER_SITE = "amagi-technical";
+  var GOATCOUNTER_TOKEN_KEY = "amagi-gc-token";
+
   var HEADER = "/* =========================================================\n" +
     "   テクニカルスクール甘木 サイトのコンテンツ（文字情報）\n" +
     "   index.html / diary.html が共通で読み込みます。\n\n" +
@@ -281,7 +284,7 @@
   }
 
   /* ===== 編集モード本体 ===== */
-  var barEl, barMsg;
+  var barEl, barMsg, barStats;
 
   function buildBar() {
     barEl = document.createElement("div");
@@ -289,14 +292,62 @@
     barEl.style.display = "none";
     barEl.innerHTML =
       '<span class="admin-bar-label">🔓 編集モード</span>' +
+      '<span class="admin-bar-stats"></span>' +
       '<span class="admin-bar-msg"></span>' +
       '<button type="button" class="admin-bar-btn primary">💾 保存する</button>' +
       '<button type="button" class="admin-bar-btn">終了する</button>';
     document.body.appendChild(barEl);
     barMsg = barEl.querySelector(".admin-bar-msg");
+    barStats = barEl.querySelector(".admin-bar-stats");
     var btns = barEl.querySelectorAll(".admin-bar-btn");
     btns[0].addEventListener("click", saveToGitHub);
     btns[1].addEventListener("click", exitAdmin);
+  }
+
+  /* ===== 閲覧数（GoatCounter） ===== */
+  function getGoatCounterToken() {
+    var token = localStorage.getItem(GOATCOUNTER_TOKEN_KEY);
+    if (token) return token;
+    token = window.prompt("GoatCounterのAPIトークンを入力してください（閲覧数の表示に使います。この端末に保存され、次回以降は不要です）");
+    if (!token) return null;
+    token = token.trim();
+    localStorage.setItem(GOATCOUNTER_TOKEN_KEY, token);
+    return token;
+  }
+
+  function fmtDate(d) {
+    return d.toISOString().slice(0, 10);
+  }
+
+  async function fetchGoatCounterTotal(token, days) {
+    var end = new Date();
+    var start = new Date(end.getTime() - days * 24 * 60 * 60 * 1000);
+    var url = "https://" + GOATCOUNTER_SITE + ".goatcounter.com/api/v0/stats/total?start=" + fmtDate(start) + "&end=" + fmtDate(end);
+    var res = await fetch(url, { headers: { "Authorization": "Bearer " + token } });
+    if (res.status === 401 || res.status === 403) {
+      localStorage.removeItem(GOATCOUNTER_TOKEN_KEY);
+      throw new Error("トークンが無効です");
+    }
+    if (!res.ok) throw new Error("エラー" + res.status);
+    var json = await res.json();
+    return json.total;
+  }
+
+  async function loadViewStats() {
+    if (!barStats) return;
+    var token = getGoatCounterToken();
+    if (!token) {
+      barStats.textContent = "";
+      return;
+    }
+    barStats.textContent = "📊 閲覧数を取得中...";
+    try {
+      var week = await fetchGoatCounterTotal(token, 7);
+      var month = await fetchGoatCounterTotal(token, 30);
+      barStats.textContent = "📊 今週の閲覧数: " + week + "回／今月の閲覧数: " + month + "回";
+    } catch (e) {
+      barStats.textContent = "📊 閲覧数を取得できませんでした（" + e.message + "）";
+    }
   }
 
   function rerenderAdmin() {
@@ -308,6 +359,7 @@
     rerenderAdmin();
     barEl.style.display = "flex";
     barMsg.textContent = "編集して「保存する」を押してください。";
+    loadViewStats();
     if (scrollTargetId) {
       scrollToTarget(scrollTargetId);
       scrollTargetId = null;
