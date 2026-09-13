@@ -22,6 +22,8 @@
   var GITHUB_PATH_DIARY = "diary-data.js";
   var GITHUB_PATH_MANGA = "manga-data.js";
   var TOKEN_KEY = "amagi-gh-pat";
+  var AUTH_KEY = "amagi-admin-auth-until";
+  var AUTH_DURATION_MS = 30 * 24 * 60 * 60 * 1000; // パスワード入力を省略できる期間（30日）
 
   var GOATCOUNTER_SITE = "amagi-technical";
   var GOATCOUNTER_TOKEN_KEY = "amagi-gc-token";
@@ -90,13 +92,43 @@
     if (diaryLink) diaryLink.addEventListener("click", function (e) { e.preventDefault(); handleTrigger("diary"); });
   }
 
+  function isAdminAuthValid() {
+    var until = parseInt(localStorage.getItem(AUTH_KEY), 10);
+    return !!until && Date.now() < until;
+  }
+
+  function setAdminAuthValid() {
+    localStorage.setItem(AUTH_KEY, String(Date.now() + AUTH_DURATION_MS));
+  }
+
   function handleTrigger(targetId) {
     if (data) {
       if (targetId) scrollToTarget(targetId); // 既に編集モード中はスクロールだけ行う
       return;
     }
     scrollTargetId = targetId;
-    openLoginModal();
+    if (isAdminAuthValid()) {
+      startAuthedFlow();
+    } else {
+      openLoginModal();
+    }
+  }
+
+  function startAuthedFlow() {
+    modalEl.style.display = "flex";
+    pwStep.style.display = "none";
+    tokenStep.style.display = "none";
+    modalErr.textContent = "";
+    modalNote.textContent = "読み込み中...";
+    submitBtn.disabled = true;
+    var savedToken = localStorage.getItem(TOKEN_KEY);
+    if (savedToken) {
+      loadFromGitHub(savedToken);
+    } else {
+      showTokenStep();
+      modalNote.textContent = "";
+      submitBtn.disabled = false;
+    }
   }
 
   function scrollToTarget(id) {
@@ -184,6 +216,7 @@
         modalErr.textContent = "パスワードが違います";
         return;
       }
+      setAdminAuthValid();
       var savedToken = localStorage.getItem(TOKEN_KEY);
       if (savedToken) {
         loadFromGitHub(savedToken);
