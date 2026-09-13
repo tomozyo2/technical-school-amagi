@@ -342,7 +342,7 @@
 
   /* ===== LINE配信（内容を作って、自分のスマホのLINEで送る） ===== */
   var LINE_DRAFT_KEY = "amagi-line-draft";
-  var lineModalEl, lineDateEl, lineBodyInput, linePreviewEl, lineSendLink;
+  var lineModalEl, lineDateEl, lineDiaryRow, lineDiaryEl, lineBodyInput, linePreviewEl, lineSendLink;
 
   function computeNextTuesday() {
     var today = new Date();
@@ -352,10 +352,26 @@
     return (target.getMonth() + 1) + "月" + target.getDate() + "日（火）";
   }
 
+  function latestDiaryLine() {
+    var latest = data && data.diary && data.diary.latest;
+    if (!latest) return "";
+    var numMatch = (latest.title || "").match(/(\d+)/);
+    var num = numMatch ? numMatch[1] : "";
+    var topic = (latest.topicHeading || "").trim();
+    if (!num && !topic) return "";
+    var line = "📖 ";
+    if (num) line += "第" + num + "回独り言";
+    if (topic) line += (num ? "の" : "") + "「" + topic + "」";
+    line += "を更新しました";
+    return line;
+  }
+
   function buildLineMessage() {
     var dateLabel = lineDateEl ? lineDateEl.textContent : computeNextTuesday();
     var body = lineBodyInput ? lineBodyInput.value.trim() : "";
     var text = "📣 テクニカルスクールのご案内\n\n次回の練習日：" + dateLabel;
+    var diaryLine = latestDiaryLine();
+    if (diaryLine) text += "\n" + diaryLine;
     if (body) text += "\n\n" + body;
     return text;
   }
@@ -376,6 +392,7 @@
       '  <div class="admin-modal-title">📣 LINE配信の内容を作る</div>' +
       '  <p class="admin-modal-desc">次回の練習日は自動で入ります。下に今週のお知らせがあれば書き足してください。</p>' +
       '  <p class="admin-modal-desc"><strong>次回の練習日：<span id="line-date"></span></strong></p>' +
+      '  <p class="admin-modal-desc" id="line-diary-row" hidden><strong id="line-diary"></strong></p>' +
       '  <textarea id="line-body-input" rows="4" placeholder="（任意）今週のお知らせがあれば入力してください" style="width:100%;box-sizing:border-box;"></textarea>' +
       '  <p class="admin-modal-desc">プレビュー：</p>' +
       '  <pre id="line-preview" class="line-preview-box"></pre>' +
@@ -388,6 +405,8 @@
     document.body.appendChild(lineModalEl);
 
     lineDateEl = lineModalEl.querySelector("#line-date");
+    lineDiaryRow = lineModalEl.querySelector("#line-diary-row");
+    lineDiaryEl = lineModalEl.querySelector("#line-diary");
     lineBodyInput = lineModalEl.querySelector("#line-body-input");
     linePreviewEl = lineModalEl.querySelector("#line-preview");
     lineSendLink = lineModalEl.querySelector("#line-send-link");
@@ -399,6 +418,13 @@
 
   function openLineModal() {
     lineDateEl.textContent = computeNextTuesday();
+    var diaryLine = latestDiaryLine();
+    if (diaryLine) {
+      lineDiaryEl.textContent = diaryLine;
+      lineDiaryRow.hidden = false;
+    } else {
+      lineDiaryRow.hidden = true;
+    }
     lineBodyInput.value = localStorage.getItem(LINE_DRAFT_KEY) || "";
     updateLinePreview();
     lineModalEl.style.display = "flex";
