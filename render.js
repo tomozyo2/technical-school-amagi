@@ -574,6 +574,15 @@
     function renderMangaSeries() {
       var s = c.manga && c.manga.series;
 
+      var mangaCounterEl = byId("manga-view-counter-series");
+      if (mangaCounterEl) {
+        if (editable && window.__loadMangaOpenCounter) {
+          window.__loadMangaOpenCounter(mangaCounterEl);
+        } else {
+          mangaCounterEl.textContent = "";
+        }
+      }
+
       var mangaActions = byId("manga-admin-actions-series");
       if (mangaActions) {
         clear(mangaActions);
@@ -1027,6 +1036,10 @@
 
     overlay.hidden = false;
     document.body.style.overflow = "hidden";
+
+    if (window.goatcounter && window.goatcounter.count) {
+      window.goatcounter.count({ path: "manga-open", title: "4コマ漫画を開いた", event: true });
+    }
   };
 
   (function initMangaModalChrome() {

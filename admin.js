@@ -330,8 +330,26 @@
     }
     if (!res.ok) throw new Error("エラー" + res.status);
     var json = await res.json();
-    return json.total;
+    return json;
   }
+
+  async function loadMangaOpenCounter(el) {
+    var token = getGoatCounterToken();
+    if (!token) {
+      el.textContent = "";
+      return;
+    }
+    el.className = "manga-view-counter";
+    el.textContent = "🐾 漫画が開かれた回数を取得中...";
+    try {
+      var week = await fetchGoatCounterTotal(token, 7);
+      var month = await fetchGoatCounterTotal(token, 30);
+      el.textContent = "🐾 漫画が開かれた回数：今週 " + week.total_events + "回／今月 " + month.total_events + "回";
+    } catch (e) {
+      el.textContent = "🐾 漫画の閲覧数を取得できませんでした（" + e.message + "）";
+    }
+  }
+  window.__loadMangaOpenCounter = loadMangaOpenCounter;
 
   async function loadViewStats() {
     if (!barStats) return;
@@ -344,7 +362,7 @@
     try {
       var week = await fetchGoatCounterTotal(token, 7);
       var month = await fetchGoatCounterTotal(token, 30);
-      barStats.textContent = "📊 今週の閲覧数: " + week + "回／今月の閲覧数: " + month + "回";
+      barStats.textContent = "📊 今週の閲覧数: " + week.total + "回／今月の閲覧数: " + month.total + "回";
     } catch (e) {
       barStats.textContent = "📊 閲覧数を取得できませんでした（" + e.message + "）";
     }
