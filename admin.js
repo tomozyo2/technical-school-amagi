@@ -21,7 +21,6 @@
   var GITHUB_PATH = "content.js";
   var GITHUB_PATH_DIARY = "diary-data.js";
   var GITHUB_PATH_MANGA = "manga-data.js";
-  var SITE_URL = "https://" + GITHUB_OWNER + ".github.io/" + GITHUB_REPO + "/";
   var TOKEN_KEY = "amagi-gh-pat";
   var AUTH_KEY = "amagi-admin-auth-until";
   var AUTH_DURATION_MS = 30 * 24 * 60 * 60 * 1000; // パスワード入力を省略できる期間（30日）
@@ -370,8 +369,7 @@
   function buildLineMessage() {
     var dateLabel = lineDateEl ? lineDateEl.textContent : computeNextTuesday();
     var body = lineBodyInput ? lineBodyInput.value.trim() : "";
-    var text = SITE_URL + "\n\n";
-    text += "📣 テクニカルスクールのご案内\n\n次回の練習日：" + dateLabel;
+    var text = "📣 テクニカルスクールのご案内\n\n次回の練習日：" + dateLabel;
     var diaryLine = latestDiaryLine();
     if (diaryLine) text += "\n" + diaryLine;
     text += "\n\n更に毎週2回から3回\nテクニカル漫画「チロんぽ、メロんぽ」🐶更新しています。";
