@@ -976,20 +976,37 @@ footer .foot-logo {
   padding: 34px 30px;
   max-width: 340px;
   width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
   text-align: center;
   color: var(--white);
   box-shadow: 0 20px 50px rgba(0,0,0,.4);
 }
 .admin-modal-title { font-weight: 900; font-size: 1.05rem; margin-bottom: 10px; }
 .admin-modal-desc { color: var(--gray); font-size: .85rem; margin: 0 0 18px; }
-.admin-modal-box input[type="password"] {
+.admin-modal-box input[type="password"],
+.admin-modal-box textarea {
   width: 100%;
   padding: 12px 14px;
   border-radius: 8px;
   border: none;
   font-size: 1rem;
+  font-family: inherit;
   margin-bottom: 8px;
   box-sizing: border-box;
+}
+.admin-modal-box textarea { resize: vertical; }
+.line-preview-box {
+  white-space: pre-wrap;
+  font-family: inherit;
+  text-align: left;
+  background: #0e1f15;
+  border: 1px solid #1e3d2a;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: .82rem;
+  color: var(--white);
+  margin: 0 0 14px;
 }
 .admin-modal-err { color: #ff8a65; font-size: .82rem; min-height: 1.2em; margin-bottom: 10px; }
 .admin-modal-actions { display: flex; gap: 10px; }
@@ -1001,6 +1018,11 @@ footer .foot-logo {
   font-weight: 800;
   font-size: .88rem;
   cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .admin-modal-btn.primary { background: var(--orange); color: #fff; }
 .admin-modal-btn.primary:hover { background: #e04d17; }

@@ -88,6 +88,7 @@
     if (!navLink && !diaryLink) return;
     buildModal();
     buildBar();
+    buildLineModal();
     if (navLink) navLink.addEventListener("click", function (e) { e.preventDefault(); handleTrigger(null); });
     if (diaryLink) diaryLink.addEventListener("click", function (e) { e.preventDefault(); handleTrigger("diary"); });
   }
@@ -327,14 +328,84 @@
       '<span class="admin-bar-label">🔓 編集モード</span>' +
       '<span class="admin-bar-stats"></span>' +
       '<span class="admin-bar-msg"></span>' +
+      '<button type="button" class="admin-bar-btn" id="admin-line-btn">📣 LINE配信</button>' +
       '<button type="button" class="admin-bar-btn primary">💾 保存する</button>' +
       '<button type="button" class="admin-bar-btn">終了する</button>';
     document.body.appendChild(barEl);
     barMsg = barEl.querySelector(".admin-bar-msg");
     barStats = barEl.querySelector(".admin-bar-stats");
-    var btns = barEl.querySelectorAll(".admin-bar-btn");
+    barEl.querySelector("#admin-line-btn").addEventListener("click", openLineModal);
+    var btns = barEl.querySelectorAll(".admin-bar-btn:not(#admin-line-btn)");
     btns[0].addEventListener("click", saveToGitHub);
     btns[1].addEventListener("click", exitAdmin);
+  }
+
+  /* ===== LINE配信（内容を作って、自分のスマホのLINEで送る） ===== */
+  var LINE_DRAFT_KEY = "amagi-line-draft";
+  var lineModalEl, lineDateEl, lineBodyInput, linePreviewEl, lineSendLink;
+
+  function computeNextTuesday() {
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    var diff = (2 - today.getDay() + 7) % 7; // 2 = 火曜日。今日が火曜なら0（今日）
+    var target = new Date(today.getTime() + diff * 24 * 60 * 60 * 1000);
+    return (target.getMonth() + 1) + "月" + target.getDate() + "日（火）";
+  }
+
+  function buildLineMessage() {
+    var dateLabel = lineDateEl ? lineDateEl.textContent : computeNextTuesday();
+    var body = lineBodyInput ? lineBodyInput.value.trim() : "";
+    var text = "📣 テクニカルスクールのご案内\n\n次回の練習日：" + dateLabel;
+    if (body) text += "\n\n" + body;
+    return text;
+  }
+
+  function updateLinePreview() {
+    var text = buildLineMessage();
+    if (linePreviewEl) linePreviewEl.textContent = text;
+    if (lineSendLink) lineSendLink.href = "https://line.me/R/msg/text/?" + encodeURIComponent(text);
+    if (lineBodyInput) localStorage.setItem(LINE_DRAFT_KEY, lineBodyInput.value);
+  }
+
+  function buildLineModal() {
+    lineModalEl = document.createElement("div");
+    lineModalEl.className = "admin-modal-overlay";
+    lineModalEl.style.display = "none";
+    lineModalEl.innerHTML =
+      '<div class="admin-modal-box">' +
+      '  <div class="admin-modal-title">📣 LINE配信の内容を作る</div>' +
+      '  <p class="admin-modal-desc">次回の練習日は自動で入ります。下に今週のお知らせがあれば書き足してください。</p>' +
+      '  <p class="admin-modal-desc"><strong>次回の練習日：<span id="line-date"></span></strong></p>' +
+      '  <textarea id="line-body-input" rows="4" placeholder="（任意）今週のお知らせがあれば入力してください" style="width:100%;box-sizing:border-box;"></textarea>' +
+      '  <p class="admin-modal-desc">プレビュー：</p>' +
+      '  <pre id="line-preview" class="line-preview-box"></pre>' +
+      '  <div class="admin-modal-err"></div>' +
+      '  <div class="admin-modal-actions">' +
+      '    <button type="button" class="admin-modal-btn ghost" id="line-close-btn">閉じる</button>' +
+      '    <a href="#" target="_blank" rel="noopener" class="admin-modal-btn primary" id="line-send-link">LINEで送る</a>' +
+      '  </div>' +
+      '</div>';
+    document.body.appendChild(lineModalEl);
+
+    lineDateEl = lineModalEl.querySelector("#line-date");
+    lineBodyInput = lineModalEl.querySelector("#line-body-input");
+    linePreviewEl = lineModalEl.querySelector("#line-preview");
+    lineSendLink = lineModalEl.querySelector("#line-send-link");
+
+    lineBodyInput.addEventListener("input", updateLinePreview);
+    lineModalEl.querySelector("#line-close-btn").addEventListener("click", closeLineModal);
+    lineModalEl.addEventListener("click", function (e) { if (e.target === lineModalEl) closeLineModal(); });
+  }
+
+  function openLineModal() {
+    lineDateEl.textContent = computeNextTuesday();
+    lineBodyInput.value = localStorage.getItem(LINE_DRAFT_KEY) || "";
+    updateLinePreview();
+    lineModalEl.style.display = "flex";
+  }
+
+  function closeLineModal() {
+    lineModalEl.style.display = "none";
   }
 
   /* ===== 閲覧数（GoatCounter） ===== */
