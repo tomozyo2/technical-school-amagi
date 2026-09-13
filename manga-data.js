@@ -13,13 +13,20 @@
 window.MANGA_CONTENT = {
   "series": {
     "latest": {
-      "number": 7,
-      "date": "2026年9月12日",
-      "title": "渾身のシュートが宇宙まで届いた",
-      "image": "manga/episode7-1789190633652.jpg",
-      "imageUpdatedAt": "1789190636183"
+      "number": 8,
+      "date": "2026年9月13日",
+      "title": "",
+      "image": "manga/episode8-1789300695428.jpg",
+      "imageUpdatedAt": "1789300698043"
     },
     "archive": [
+      {
+        "number": 7,
+        "date": "2026年9月12日",
+        "title": "渾身のシュートが宇宙まで届いた",
+        "image": "manga/episode7-1789190633652.jpg",
+        "imageUpdatedAt": "1789190636183"
+      },
       {
         "number": 6,
         "date": "2026年9月11日",
