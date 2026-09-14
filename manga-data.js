@@ -77,6 +77,61 @@ window.MANGA_CONTENT = {
         "imageUpdatedAt": "1"
       }
     ],
-    "queue": []
+    "queue": [
+      {
+        "date": "2026年9月15日",
+        "title": "",
+        "image": "manga/episodex-1789425784274-0.jpg",
+        "imageUpdatedAt": "1789425786723"
+      },
+      {
+        "date": "2026年9月15日",
+        "title": "",
+        "image": "manga/episodex-1789425786723-1.jpg",
+        "imageUpdatedAt": "1789425789552"
+      },
+      {
+        "date": "2026年9月15日",
+        "title": "",
+        "image": "manga/episodex-1789425789552-2.jpg",
+        "imageUpdatedAt": "1789425792211"
+      },
+      {
+        "date": "2026年9月15日",
+        "title": "",
+        "image": "manga/episodex-1789425792211-3.jpg",
+        "imageUpdatedAt": "1789425794034"
+      },
+      {
+        "date": "2026年9月15日",
+        "title": "",
+        "image": "manga/episodex-1789425794034-4.jpg",
+        "imageUpdatedAt": "1789425796494"
+      },
+      {
+        "date": "2026年9月15日",
+        "title": "",
+        "image": "manga/episodex-1789425798211-0.jpg",
+        "imageUpdatedAt": "1789425800715"
+      },
+      {
+        "date": "2026年9月15日",
+        "title": "",
+        "image": "manga/episodex-1789425800715-1.jpg",
+        "imageUpdatedAt": "1789425803222"
+      },
+      {
+        "date": "2026年9月15日",
+        "title": "",
+        "image": "manga/episodex-1789425803222-2.jpg",
+        "imageUpdatedAt": "1789425806110"
+      },
+      {
+        "date": "2026年9月15日",
+        "title": "",
+        "image": "manga/episodex-1789425806110-3.jpg",
+        "imageUpdatedAt": "1789425809482"
+      }
+    ]
   }
 };
