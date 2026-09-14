@@ -576,6 +576,7 @@
           }
           barMsg.textContent = "保存中...";
         }
+        (seriesData.queue || []).forEach(function (it) { delete it._checked; });
       }
 
       var contentOnly = {};

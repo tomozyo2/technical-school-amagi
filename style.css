@@ -979,6 +979,31 @@ footer .foot-logo {
 }
 .manga-queue-num { flex: 1; font-size: .8rem; color: var(--gray); text-align: left; }
 .manga-queue-row .admin-move-btn { width: auto; padding: 8px 14px; font-size: .78rem; }
+.manga-queue-check { width: 18px; height: 18px; flex-shrink: 0; cursor: pointer; }
+.manga-queue-move { display: flex; gap: 4px; flex-shrink: 0; }
+.manga-queue-move-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,.25);
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  cursor: pointer;
+  font-size: .85rem;
+}
+.manga-queue-move-btn:hover:not(:disabled) { background: rgba(255,255,255,.18); }
+.manga-queue-move-btn:disabled { opacity: .3; cursor: default; }
+
+.manga-episode-replace {
+  flex-shrink: 0;
+  font-size: .72rem;
+  color: var(--green-bright);
+  border: 1px solid var(--green-bright);
+  border-radius: 6px;
+  padding: 5px 8px;
+  cursor: pointer;
+}
+.manga-episode-replace:hover { background: rgba(255,255,255,.08); }
 
 /* パスワード／ファイル選択モーダル */
 .admin-modal-overlay {

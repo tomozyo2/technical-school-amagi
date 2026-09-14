@@ -15,30 +15,46 @@
   var mangaUndoSnapshot = null; // 4コマ漫画の「バックナンバーへ移動」の直前状態（1回分だけ・保存前のみ有効）
   var mangaFixMode = false; // trueの間は、画像をアップロードしても話数を増やさず今の話を上書きする
 
-  // 次に使う話数（今の最新話・バックナンバー・下書きの中で一番大きい番号の次）
-  function nextMangaNumber(s) {
+  // 公開済み（最新話・バックナンバー）の中で一番大きい話数
+  function maxPublishedMangaNumber(s) {
     var max = (s.latest && s.latest.number) || 0;
     (s.archive || []).forEach(function (e) { if ((e.number || 0) > max) max = e.number; });
-    (s.queue || []).forEach(function (e) { if ((e.number || 0) > max) max = e.number; });
-    return max + 1;
+    return max;
   }
 
-  // 下書きキュー(queue)の中から、targetItemの話数までを一気に公開する
-  // （targetItemより話数が小さい下書きも一緒に公開され、飛び番なく公開される）
-  function publishQueueUpTo(s, targetItem) {
+  // 次に使う話数（今すぐ公開する場合。下書きが並んでいれば、その続きの番号になる）
+  function nextMangaNumber(s) {
+    return maxPublishedMangaNumber(s) + (s.queue || []).length + 1;
+  }
+
+  // 下書きキュー(queue)の、配列の先頭からidx番目までを一気に公開する
+  // （並び順＝公開したときの話数になるので、途中を選んでもそれより前が一緒に公開される）
+  function publishQueueThroughIndex(s, idx) {
     s.queue = s.queue || [];
-    s.queue.sort(function (a, b) { return (a.number || 0) - (b.number || 0); });
-    var idx = s.queue.indexOf(targetItem);
-    if (idx === -1) return;
+    if (idx < 0 || idx >= s.queue.length) return;
     var toPublish = s.queue.splice(0, idx + 1);
+    var base = maxPublishedMangaNumber(s);
     s.archive = s.archive || [];
     if (s.latest && (s.latest.image || s.latest._pendingImage)) {
       s.archive.unshift(s.latest);
     }
     for (var j = 0; j < toPublish.length - 1; j++) {
+      toPublish[j].number = base + j + 1;
       s.archive.unshift(toPublish[j]);
     }
-    s.latest = toPublish[toPublish.length - 1];
+    var last = toPublish[toPublish.length - 1];
+    last.number = base + toPublish.length;
+    s.latest = last;
+  }
+
+  // 今の最新話を削除する（バックナンバーがあれば、一番新しいものが繰り上がって最新話になる）
+  function removeMangaLatest(s) {
+    s.archive = s.archive || [];
+    if (s.archive.length > 0) {
+      s.latest = s.archive.shift();
+    } else {
+      s.latest = { number: null, date: "", title: "", image: "", imageUpdatedAt: "" };
+    }
   }
 
   window.renderSite = function (data, opts) {
@@ -741,11 +757,10 @@
         clear(mangaQueueEl);
         if (editable && s) {
           s.queue = s.queue || [];
-          s.queue.sort(function (a, b) { return (a.number || 0) - (b.number || 0); });
 
           var queueTitle = document.createElement("p");
           queueTitle.className = "admin-modal-note";
-          queueTitle.textContent = "📦 先の話を下書き保存（公開するまで訪問者には見えません）";
+          queueTitle.textContent = "📦 先の話を下書き保存（公開するまで訪問者には見えません。↑↓で順番を入れ替えられます）";
           mangaQueueEl.appendChild(queueTitle);
 
           var queueWrap = document.createElement("div");
@@ -764,7 +779,6 @@
               reader.onload = function () {
                 var today = new Date();
                 var entry = {
-                  number: nextMangaNumber(s),
                   date: today.getFullYear() + "年" + (today.getMonth() + 1) + "月" + today.getDate() + "日",
                   title: "",
                   image: "",
@@ -787,9 +801,19 @@
             queueEmpty.textContent = "下書きはまだありません。";
             mangaQueueEl.appendChild(queueEmpty);
           } else {
-            s.queue.forEach(function (item) {
+            var queueBase = maxPublishedMangaNumber(s);
+            s.queue.forEach(function (item, idx) {
               var row = document.createElement("div");
               row.className = "manga-queue-row";
+
+              var checkbox = document.createElement("input");
+              checkbox.type = "checkbox";
+              checkbox.className = "manga-queue-check";
+              checkbox.checked = !!item._checked;
+              checkbox.addEventListener("change", function () {
+                item._checked = checkbox.checked;
+              });
+              row.appendChild(checkbox);
 
               var thumb = document.createElement("img");
               thumb.className = "manga-queue-thumb";
@@ -798,27 +822,66 @@
 
               var info = document.createElement("span");
               info.className = "manga-queue-num";
-              info.textContent = "第" + item.number + "話（下書き・" + (item.date || "") + "）";
+              info.textContent = "第" + (queueBase + idx + 1) + "話（下書き・" + (item.date || "") + "）";
               row.appendChild(info);
 
-              var publishBtn = document.createElement("button");
-              publishBtn.type = "button";
-              publishBtn.className = "admin-move-btn";
-              publishBtn.textContent = "🌐 公開する";
-              publishBtn.addEventListener("click", function () {
-                publishQueueUpTo(s, item);
-                onChange();
+              var moveWrap = document.createElement("span");
+              moveWrap.className = "manga-queue-move";
+              var upBtn = document.createElement("button");
+              upBtn.type = "button";
+              upBtn.className = "manga-queue-move-btn";
+              upBtn.textContent = "↑";
+              upBtn.disabled = idx === 0;
+              upBtn.addEventListener("click", function () {
+                var i = s.queue.indexOf(item);
+                if (i > 0) {
+                  s.queue.splice(i, 1);
+                  s.queue.splice(i - 1, 0, item);
+                  onChange();
+                }
               });
-              row.appendChild(publishBtn);
+              moveWrap.appendChild(upBtn);
+              var downBtn = document.createElement("button");
+              downBtn.type = "button";
+              downBtn.className = "manga-queue-move-btn";
+              downBtn.textContent = "↓";
+              downBtn.disabled = idx === s.queue.length - 1;
+              downBtn.addEventListener("click", function () {
+                var i = s.queue.indexOf(item);
+                if (i !== -1 && i < s.queue.length - 1) {
+                  s.queue.splice(i, 1);
+                  s.queue.splice(i + 1, 0, item);
+                  onChange();
+                }
+              });
+              moveWrap.appendChild(downBtn);
+              row.appendChild(moveWrap);
 
               addRemoveButton(row, function () {
-                var idx = s.queue.indexOf(item);
-                if (idx !== -1) s.queue.splice(idx, 1);
+                var i = s.queue.indexOf(item);
+                if (i !== -1) s.queue.splice(i, 1);
                 onChange();
               });
 
               mangaQueueEl.appendChild(row);
             });
+
+            var publishSelectedBtn = document.createElement("button");
+            publishSelectedBtn.type = "button";
+            publishSelectedBtn.className = "admin-move-btn";
+            publishSelectedBtn.textContent = "🌐 チェックした話まで公開する";
+            publishSelectedBtn.addEventListener("click", function () {
+              var maxIdx = -1;
+              s.queue.forEach(function (item, idx) { if (item._checked) maxIdx = idx; });
+              if (maxIdx === -1) {
+                window.alert("公開したい話にチェックを入れてください。");
+                return;
+              }
+              s.queue.forEach(function (item) { delete item._checked; });
+              publishQueueThroughIndex(s, maxIdx);
+              onChange();
+            });
+            mangaQueueEl.appendChild(publishSelectedBtn);
           }
         }
       }
@@ -843,7 +906,7 @@
       // ---- 話の並び順データ（index.html / manga.html 共通・モーダルのペア表示に使う） ----
       var episodes = [];
       if (s) {
-        if (s.latest) episodes.push({ entry: s.latest, isLatest: true });
+        if (s.latest && (s.latest.image || s.latest._pendingImage)) episodes.push({ entry: s.latest, isLatest: true });
         (s.archive || []).forEach(function (entry) { episodes.push({ entry: entry, isLatest: false }); });
         episodes.sort(function (a, b) { return (a.entry.number || 0) - (b.entry.number || 0); });
         window.__mangaEpisodesOrdered = episodes.map(function (it) { return it.entry; });
@@ -873,15 +936,42 @@
           } else {
             var numLabel = document.createElement("span");
             numLabel.className = "manga-episode-num";
-            numLabel.textContent = "第" + (entry.number || "?") + "話" + (item.isLatest ? "（最新・上のカードで編集）" : "");
+            numLabel.textContent = "第" + (entry.number || "?") + "話" + (item.isLatest ? "（最新）" : "");
             row.appendChild(numLabel);
-            if (!item.isLatest) {
-              addRemoveButton(row, function () {
+
+            var replaceLabel = document.createElement("label");
+            replaceLabel.className = "manga-episode-replace";
+            replaceLabel.textContent = "🖼 差し替え";
+            var replaceInput = document.createElement("input");
+            replaceInput.type = "file";
+            replaceInput.accept = "image/*";
+            replaceInput.hidden = true;
+            replaceInput.addEventListener("change", function () {
+              var file = replaceInput.files && replaceInput.files[0];
+              if (!file) return;
+              resizeImageFile(file, 1400, 0.85, function (blob) {
+                var reader = new FileReader();
+                reader.onload = function () {
+                  entry.image = "";
+                  entry._pendingImage = reader.result;
+                  onChange();
+                };
+                reader.readAsDataURL(blob);
+              });
+              replaceInput.value = "";
+            });
+            replaceLabel.appendChild(replaceInput);
+            row.appendChild(replaceLabel);
+
+            addRemoveButton(row, function () {
+              if (item.isLatest) {
+                removeMangaLatest(s);
+              } else {
                 var idx = s.archive.indexOf(entry);
                 if (idx !== -1) s.archive.splice(idx, 1);
-                onChange();
-              });
-            }
+              }
+              onChange();
+            });
           }
           episodeListContainer.appendChild(row);
         });
