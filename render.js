@@ -86,6 +86,16 @@
       img.src = url;
     }
 
+    // 画像（Blob/File）をdata URLに変換する。失敗時は無反応にせず、はっきりメッセージを出す
+    function readImageAsDataURL(blob, onDone) {
+      var reader = new FileReader();
+      reader.onload = function () { onDone(reader.result); };
+      reader.onerror = function () {
+        window.alert("画像の読み込みに失敗しました。別の写真で試すか、もう一度お試しください。（ファイルが大きすぎる可能性があります）");
+      };
+      reader.readAsDataURL(blob);
+    }
+
     function setTextWithBreaks(el, value) {
       el.textContent = "";
       var lines = String(value || "").split("\n");
@@ -720,8 +730,7 @@
               var file = mangaInput.files && mangaInput.files[0];
               if (!file) return;
               resizeImageFile(file, 1400, 0.85, function (blob) {
-                var reader = new FileReader();
-                reader.onload = function () {
+                readImageAsDataURL(blob, function (dataUrl) {
                   if (mg.image && !mangaFixMode) {
                     mangaUndoSnapshot = JSON.parse(JSON.stringify(s));
                     s.archive = s.archive || [];
@@ -733,12 +742,11 @@
                   }
                   mg.image = "";
                   mangaFixMode = false;
-                  mg._pendingImage = reader.result;
+                  mg._pendingImage = dataUrl;
                   onChange();
                   var refreshedImg = byId("manga-latest-img-series");
-                  if (refreshedImg) refreshedImg.src = reader.result;
-                };
-                reader.readAsDataURL(blob);
+                  if (refreshedImg) refreshedImg.src = dataUrl;
+                });
               });
             });
             mangaWrap.appendChild(mangaInput);
@@ -775,8 +783,7 @@
             var file = queueInput.files && queueInput.files[0];
             if (!file) return;
             resizeImageFile(file, 1400, 0.85, function (blob) {
-              var reader = new FileReader();
-              reader.onload = function () {
+              readImageAsDataURL(blob, function (dataUrl) {
                 var today = new Date();
                 var entry = {
                   date: today.getFullYear() + "年" + (today.getMonth() + 1) + "月" + today.getDate() + "日",
@@ -784,11 +791,10 @@
                   image: "",
                   imageUpdatedAt: ""
                 };
-                entry._pendingImage = reader.result;
+                entry._pendingImage = dataUrl;
                 s.queue.push(entry);
                 onChange();
-              };
-              reader.readAsDataURL(blob);
+              });
             });
             queueInput.value = "";
           });
@@ -954,13 +960,11 @@
               var file = replaceInput.files && replaceInput.files[0];
               if (!file) return;
               resizeImageFile(file, 1400, 0.85, function (blob) {
-                var reader = new FileReader();
-                reader.onload = function () {
+                readImageAsDataURL(blob, function (dataUrl) {
                   entry.image = "";
-                  entry._pendingImage = reader.result;
+                  entry._pendingImage = dataUrl;
                   onChange();
-                };
-                reader.readAsDataURL(blob);
+                });
               });
               replaceInput.value = "";
             });

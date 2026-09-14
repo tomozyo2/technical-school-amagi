@@ -421,6 +421,7 @@ nav.main-nav a.admin-nav-link:hover {
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(10,28,19,.12);
 }
+.instagram-widget-wrap .snapwidget-widget { pointer-events: none; }
 .instagram-link-row { text-align: center; margin-top: 26px; }
 
 /* 斜めの区切り */
