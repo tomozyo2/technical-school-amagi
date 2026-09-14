@@ -860,6 +860,10 @@
               addRemoveButton(row, function () {
                 var i = s.queue.indexOf(item);
                 if (i !== -1) s.queue.splice(i, 1);
+                if (item.image) {
+                  window.__adminPendingDeletes = window.__adminPendingDeletes || [];
+                  window.__adminPendingDeletes.push(item.image);
+                }
                 onChange();
               });
 

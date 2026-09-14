@@ -548,6 +548,33 @@
     }
   }
 
+  async function deleteBinaryFile(path, token) {
+    var url = "https://api.github.com/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + path;
+    var getRes = await fetch(url + "?ref=" + GITHUB_BRANCH, {
+      headers: { "Authorization": "token " + token, "Accept": "application/vnd.github+json" }
+    });
+    if (getRes.status === 404) return; // 既に無い場合は何もしない
+    if (!getRes.ok) throw new Error("削除対象の確認に失敗しました（エラー" + getRes.status + "）");
+    var sha = (await getRes.json()).sha;
+    var delRes = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Authorization": "token " + token,
+        "Accept": "application/vnd.github+json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: "不要になった画像を削除（管理者モード） " + new Date().toLocaleString("ja-JP"),
+        sha: sha,
+        branch: GITHUB_BRANCH
+      })
+    });
+    if (!delRes.ok) {
+      var delErrJson = await delRes.json().catch(function () { return {}; });
+      throw new Error("画像の削除に失敗しました（エラー" + delRes.status + "）：" + (delErrJson.message || ""));
+    }
+  }
+
   async function saveToGitHub() {
     if (!data) return;
     var token = localStorage.getItem(TOKEN_KEY);
@@ -557,6 +584,16 @@
     }
     barMsg.textContent = "保存中...";
     try {
+      var pendingDeletes = window.__adminPendingDeletes || [];
+      if (pendingDeletes.length) {
+        barMsg.textContent = "不要になった画像を削除中...";
+        for (var di = 0; di < pendingDeletes.length; di++) {
+          await deleteBinaryFile(pendingDeletes[di], token);
+        }
+        window.__adminPendingDeletes = [];
+        barMsg.textContent = "保存中...";
+      }
+
       if (data.manga && data.manga.series) {
         var seriesData = data.manga.series;
         var pendingMangaItems = []
