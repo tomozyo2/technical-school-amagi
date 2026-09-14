@@ -13,13 +13,20 @@
 window.MANGA_CONTENT = {
   "series": {
     "latest": {
-      "number": 8,
-      "date": "2026年9月13日",
+      "number": 9,
+      "date": "2026年9月15日",
       "title": "",
-      "image": "manga/episode8-1789300695428.jpg",
-      "imageUpdatedAt": "1789300698043"
+      "image": "manga/episode9-1789424346402-0.jpg",
+      "imageUpdatedAt": "1789424349145"
     },
     "archive": [
+      {
+        "number": 8,
+        "date": "2026年9月13日",
+        "title": "",
+        "image": "manga/episode8-1789300695428.jpg",
+        "imageUpdatedAt": "1789300698043"
+      },
       {
         "number": 7,
         "date": "2026年9月12日",
@@ -69,6 +76,7 @@ window.MANGA_CONTENT = {
         "image": "diary-comic.jpg",
         "imageUpdatedAt": "1"
       }
-    ]
+    ],
+    "queue": []
   }
 };
