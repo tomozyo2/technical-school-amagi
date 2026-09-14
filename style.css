@@ -958,6 +958,28 @@ footer .foot-logo {
 }
 .admin-undo-btn:hover { background: #4c281c; }
 
+.manga-queue-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 760px;
+  margin: 0 auto 8px;
+  padding: 8px 10px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 10px;
+}
+.manga-queue-thumb {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+  background: rgba(255,255,255,.1);
+}
+.manga-queue-num { flex: 1; font-size: .8rem; color: var(--gray); text-align: left; }
+.manga-queue-row .admin-move-btn { width: auto; padding: 8px 14px; font-size: .78rem; }
+
 /* パスワード／ファイル選択モーダル */
 .admin-modal-overlay {
   position: fixed;

@@ -557,16 +557,25 @@
     }
     barMsg.textContent = "保存中...";
     try {
-      var pendingUploads = window.__adminPendingUploads;
-      if (pendingUploads && pendingUploads.mangaLatest_series) {
-        barMsg.textContent = "4コマ漫画をアップロード中...";
-        var mangaEpNumber = (data.manga && data.manga.series && data.manga.series.latest && data.manga.series.latest.number) || 1;
-        var mangaImagePath = "manga/episode" + mangaEpNumber + "-" + Date.now() + ".jpg";
-        await uploadBinaryFile(mangaImagePath, pendingUploads.mangaLatest_series, token);
-        data.manga.series.latest.image = mangaImagePath;
-        data.manga.series.latest.imageUpdatedAt = String(Date.now());
-        pendingUploads.mangaLatest_series = null;
-        barMsg.textContent = "保存中...";
+      if (data.manga && data.manga.series) {
+        var seriesData = data.manga.series;
+        var pendingMangaItems = []
+          .concat(seriesData.latest ? [seriesData.latest] : [])
+          .concat(seriesData.archive || [])
+          .concat(seriesData.queue || [])
+          .filter(function (it) { return it && it._pendingImage; });
+        if (pendingMangaItems.length) {
+          barMsg.textContent = "4コマ漫画をアップロード中...";
+          for (var pi = 0; pi < pendingMangaItems.length; pi++) {
+            var pItem = pendingMangaItems[pi];
+            var mangaImagePath = "manga/episode" + (pItem.number || "x") + "-" + Date.now() + "-" + pi + ".jpg";
+            await uploadBinaryFile(mangaImagePath, pItem._pendingImage, token);
+            pItem.image = mangaImagePath;
+            pItem.imageUpdatedAt = String(Date.now());
+            delete pItem._pendingImage;
+          }
+          barMsg.textContent = "保存中...";
+        }
       }
 
       var contentOnly = {};
