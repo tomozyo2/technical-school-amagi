@@ -771,6 +771,15 @@
           queueTitle.textContent = "📦 先の話を下書き保存（公開するまで訪問者には見えません。↑↓で順番を入れ替えられます）";
           mangaQueueEl.appendChild(queueTitle);
 
+          var mangaLineBtn = document.createElement("button");
+          mangaLineBtn.type = "button";
+          mangaLineBtn.className = "admin-move-btn";
+          mangaLineBtn.textContent = "📣 更新をLINEでお知らせ";
+          mangaLineBtn.addEventListener("click", function () {
+            if (window.__openMangaLineModal) window.__openMangaLineModal();
+          });
+          mangaQueueEl.appendChild(mangaLineBtn);
+
           var queueWrap = document.createElement("div");
           queueWrap.className = "admin-hidden-field";
           var queueLabel = document.createElement("label");

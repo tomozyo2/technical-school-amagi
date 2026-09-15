@@ -21,6 +21,7 @@
   var GITHUB_PATH = "content.js";
   var GITHUB_PATH_DIARY = "diary-data.js";
   var GITHUB_PATH_MANGA = "manga-data.js";
+  var SITE_URL = "https://" + GITHUB_OWNER + ".github.io/" + GITHUB_REPO + "/";
   var TOKEN_KEY = "amagi-gh-pat";
   var AUTH_KEY = "amagi-admin-auth-until";
   var AUTH_DURATION_MS = 30 * 24 * 60 * 60 * 1000; // パスワード入力を省略できる期間（30日）
@@ -89,6 +90,7 @@
     buildModal();
     buildBar();
     buildLineModal();
+    buildMangaLineModal();
     if (navLink) navLink.addEventListener("click", function (e) { e.preventDefault(); handleTrigger(null); });
     if (diaryLink) diaryLink.addEventListener("click", function (e) { e.preventDefault(); handleTrigger("diary"); });
   }
@@ -434,6 +436,43 @@
   function closeLineModal() {
     lineModalEl.style.display = "none";
   }
+
+  /* ===== 漫画更新のLINEお知らせ（管理者の漫画・下書き画面から） ===== */
+  var mangaLineModalEl, mangaLinePreviewEl, mangaLineSendLink;
+
+  function buildMangaLineModal() {
+    mangaLineModalEl = document.createElement("div");
+    mangaLineModalEl.className = "admin-modal-overlay";
+    mangaLineModalEl.style.display = "none";
+    mangaLineModalEl.innerHTML =
+      '<div class="admin-modal-box">' +
+      '  <div class="admin-modal-title">📣 漫画更新をLINEでお知らせ</div>' +
+      '  <p class="admin-modal-desc">内容を確認してから送信してください。</p>' +
+      '  <pre id="manga-line-preview" class="line-preview-box"></pre>' +
+      '  <div class="admin-modal-actions">' +
+      '    <button type="button" class="admin-modal-btn ghost" id="manga-line-close-btn">閉じる</button>' +
+      '    <a href="#" target="_blank" rel="noopener" class="admin-modal-btn primary" id="manga-line-send-link">LINEで送る</a>' +
+      '  </div>' +
+      '</div>';
+    document.body.appendChild(mangaLineModalEl);
+
+    mangaLinePreviewEl = mangaLineModalEl.querySelector("#manga-line-preview");
+    mangaLineSendLink = mangaLineModalEl.querySelector("#manga-line-send-link");
+    mangaLineModalEl.querySelector("#manga-line-close-btn").addEventListener("click", closeMangaLineModal);
+    mangaLineModalEl.addEventListener("click", function (e) { if (e.target === mangaLineModalEl) closeMangaLineModal(); });
+  }
+
+  function openMangaLineModal() {
+    var text = SITE_URL + "\n\nチロんぽ＆メロんぽ物語更新しました🐶";
+    mangaLinePreviewEl.textContent = text;
+    mangaLineSendLink.href = "https://line.me/R/msg/text/?" + encodeURIComponent(text);
+    mangaLineModalEl.style.display = "flex";
+  }
+
+  function closeMangaLineModal() {
+    mangaLineModalEl.style.display = "none";
+  }
+  window.__openMangaLineModal = openMangaLineModal;
 
   /* ===== 閲覧数（GoatCounter） ===== */
   function getGoatCounterToken() {
