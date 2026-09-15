@@ -961,8 +961,8 @@ footer .foot-logo {
 
 .manga-queue-row {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  gap: 8px;
   max-width: 760px;
   margin: 0 auto 8px;
   padding: 8px 10px;
@@ -970,6 +970,8 @@ footer .foot-logo {
   border: 1px solid rgba(255,255,255,.15);
   border-radius: 10px;
 }
+.manga-queue-main { display: flex; align-items: center; gap: 10px; }
+.manga-queue-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .manga-queue-thumb {
   width: 48px;
   height: 48px;

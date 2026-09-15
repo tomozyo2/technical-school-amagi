@@ -821,6 +821,10 @@
               var row = document.createElement("div");
               row.className = "manga-queue-row";
 
+              var mainWrap = document.createElement("div");
+              mainWrap.className = "manga-queue-main";
+              row.appendChild(mainWrap);
+
               var checkbox = document.createElement("input");
               checkbox.type = "checkbox";
               checkbox.className = "manga-queue-check";
@@ -828,17 +832,21 @@
               checkbox.addEventListener("change", function () {
                 item._checked = checkbox.checked;
               });
-              row.appendChild(checkbox);
+              mainWrap.appendChild(checkbox);
 
               var thumb = document.createElement("img");
               thumb.className = "manga-queue-thumb";
               thumb.src = item._pendingImage || item.image || "";
-              row.appendChild(thumb);
+              mainWrap.appendChild(thumb);
 
               var info = document.createElement("span");
               info.className = "manga-queue-num";
               info.textContent = "第" + (queueBase + idx + 1) + "話（下書き・" + (item.date || "") + "）";
-              row.appendChild(info);
+              mainWrap.appendChild(info);
+
+              var actionsWrap = document.createElement("div");
+              actionsWrap.className = "manga-queue-actions";
+              row.appendChild(actionsWrap);
 
               var moveWrap = document.createElement("span");
               moveWrap.className = "manga-queue-move";
@@ -870,7 +878,7 @@
                 }
               });
               moveWrap.appendChild(downBtn);
-              row.appendChild(moveWrap);
+              actionsWrap.appendChild(moveWrap);
 
               var queueReplaceLabel = document.createElement("label");
               queueReplaceLabel.className = "manga-episode-replace";
@@ -896,9 +904,9 @@
                 queueReplaceInput.value = "";
               });
               queueReplaceLabel.appendChild(queueReplaceInput);
-              row.appendChild(queueReplaceLabel);
+              actionsWrap.appendChild(queueReplaceLabel);
 
-              addRemoveButton(row, function () {
+              addRemoveButton(actionsWrap, function () {
                 var i = s.queue.indexOf(item);
                 if (i !== -1) s.queue.splice(i, 1);
                 if (item.image) {
