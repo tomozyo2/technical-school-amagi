@@ -872,6 +872,32 @@
               moveWrap.appendChild(downBtn);
               row.appendChild(moveWrap);
 
+              var queueReplaceLabel = document.createElement("label");
+              queueReplaceLabel.className = "manga-episode-replace";
+              queueReplaceLabel.textContent = "🖼 差し替え";
+              var queueReplaceInput = document.createElement("input");
+              queueReplaceInput.type = "file";
+              queueReplaceInput.accept = "image/*";
+              queueReplaceInput.hidden = true;
+              queueReplaceInput.addEventListener("change", function () {
+                var file = queueReplaceInput.files && queueReplaceInput.files[0];
+                if (!file) return;
+                resizeImageFile(file, 1400, 0.85, function (blob) {
+                  readImageAsDataURL(blob, function (dataUrl) {
+                    if (item.image) {
+                      window.__adminPendingDeletes = window.__adminPendingDeletes || [];
+                      window.__adminPendingDeletes.push(item.image);
+                    }
+                    item.image = "";
+                    item._pendingImage = dataUrl;
+                    onChange();
+                  });
+                });
+                queueReplaceInput.value = "";
+              });
+              queueReplaceLabel.appendChild(queueReplaceInput);
+              row.appendChild(queueReplaceLabel);
+
               addRemoveButton(row, function () {
                 var i = s.queue.indexOf(item);
                 if (i !== -1) s.queue.splice(i, 1);
