@@ -73,8 +73,8 @@ window.MANGA_CONTENT = {
         "number": 1,
         "date": "2026年8月28日",
         "title": "前足でまさかのゴール！？",
-        "image": "diary-comic.jpg",
-        "imageUpdatedAt": "1"
+        "image": "manga/episode1-1789665144628-0.jpg",
+        "imageUpdatedAt": "1789665147181"
       }
     ],
     "queue": [
