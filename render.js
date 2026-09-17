@@ -965,12 +965,28 @@
         window.__mangaEpisodesOrdered = episodes.map(function (it) { return it.entry; });
       }
 
-      // ---- 話数の選択リスト（manga.html：右側） ----
+      // ---- 話数の選択リスト（manga.html：右側。管理者モードでは下書きも含めた全話一覧） ----
       var episodeListContainer = byId("manga-episode-list");
       if (episodeListContainer && s) {
         clear(episodeListContainer);
-        episodes.forEach(function (item) {
+
+        var listRows = episodes.slice();
+        if (editable) {
+          s.queue = s.queue || [];
+          var listBase = maxPublishedMangaNumber(s);
+          s.queue.forEach(function (qItem, qIdx) {
+            listRows.push({ entry: qItem, isLatest: false, isDraft: true, draftNumber: listBase + qIdx + 1 });
+          });
+          listRows.sort(function (a, b) {
+            var an = a.isDraft ? a.draftNumber : (a.entry.number || 0);
+            var bn = b.isDraft ? b.draftNumber : (b.entry.number || 0);
+            return an - bn;
+          });
+        }
+
+        listRows.forEach(function (item) {
           var entry = item.entry;
+          var displayNum = item.isDraft ? item.draftNumber : (entry.number || "?");
           var row = document.createElement("div");
           row.className = "manga-episode-row" + (editable ? " admin-editing-item" : "") + (item.isLatest ? " is-latest" : "");
 
@@ -980,17 +996,30 @@
             btn.className = "manga-episode-btn" + (item.isLatest ? " is-current" : "");
             var numSpan = document.createElement("span");
             numSpan.className = "manga-episode-num";
-            numSpan.textContent = "第" + (entry.number || "?") + "話";
+            numSpan.textContent = "第" + displayNum + "話";
             btn.appendChild(numSpan);
             btn.addEventListener("click", function () {
-              if (window.openMangaViewer) window.openMangaViewer(entry, "第" + (entry.number || "") + "話");
+              if (window.openMangaViewer) window.openMangaViewer(entry, "第" + displayNum + "話");
             });
             row.appendChild(btn);
           } else {
+            var episodeMain = document.createElement("div");
+            episodeMain.className = "manga-episode-main";
+            row.appendChild(episodeMain);
+
+            var thumb = document.createElement("img");
+            thumb.className = "manga-episode-thumb";
+            thumb.src = entry._pendingImage || entry.image || "";
+            episodeMain.appendChild(thumb);
+
             var numLabel = document.createElement("span");
             numLabel.className = "manga-episode-num";
-            numLabel.textContent = "第" + (entry.number || "?") + "話" + (item.isLatest ? "（最新）" : "");
-            row.appendChild(numLabel);
+            numLabel.textContent = "第" + displayNum + "話" + (item.isLatest ? "（最新）" : item.isDraft ? "（下書き）" : "");
+            episodeMain.appendChild(numLabel);
+
+            var episodeActions = document.createElement("div");
+            episodeActions.className = "manga-episode-actions";
+            row.appendChild(episodeActions);
 
             var replaceLabel = document.createElement("label");
             replaceLabel.className = "manga-episode-replace";
@@ -1004,6 +1033,10 @@
               if (!file) return;
               resizeImageFile(file, 1400, 0.85, function (blob) {
                 readImageAsDataURL(blob, function (dataUrl) {
+                  if (entry.image) {
+                    window.__adminPendingDeletes = window.__adminPendingDeletes || [];
+                    window.__adminPendingDeletes.push(entry.image);
+                  }
                   entry.image = "";
                   entry._pendingImage = dataUrl;
                   onChange();
@@ -1012,10 +1045,17 @@
               replaceInput.value = "";
             });
             replaceLabel.appendChild(replaceInput);
-            row.appendChild(replaceLabel);
+            episodeActions.appendChild(replaceLabel);
 
-            addRemoveButton(row, function () {
-              if (item.isLatest) {
+            addRemoveButton(episodeActions, function () {
+              if (item.isDraft) {
+                var qi = s.queue.indexOf(entry);
+                if (qi !== -1) s.queue.splice(qi, 1);
+                if (entry.image) {
+                  window.__adminPendingDeletes = window.__adminPendingDeletes || [];
+                  window.__adminPendingDeletes.push(entry.image);
+                }
+              } else if (item.isLatest) {
                 removeMangaLatest(s);
               } else {
                 var idx = s.archive.indexOf(entry);

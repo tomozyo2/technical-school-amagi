@@ -973,9 +973,9 @@ footer .foot-logo {
 .manga-queue-main { display: flex; align-items: center; gap: 10px; }
 .manga-queue-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .manga-queue-thumb {
-  width: 48px;
-  height: 48px;
-  object-fit: cover;
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
   border-radius: 6px;
   flex-shrink: 0;
   background: rgba(255,255,255,.1);
@@ -1285,11 +1285,21 @@ body.admin-mode-on { padding-bottom: 76px; }
 }
 .manga-episode-row.admin-editing-item {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 8px;
   background: var(--card-bg);
   border-radius: 10px;
   padding: 8px 10px;
+}
+.manga-episode-main { display: flex; align-items: center; gap: 10px; }
+.manga-episode-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.manga-episode-thumb {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  border-radius: 6px;
+  flex-shrink: 0;
+  background: rgba(0,0,0,.06);
 }
 .manga-episode-btn {
   width: 100%;
