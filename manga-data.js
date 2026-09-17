@@ -131,6 +131,24 @@ window.MANGA_CONTENT = {
         "title": "",
         "image": "manga/episodex-1789425806110-3.jpg",
         "imageUpdatedAt": "1789425809482"
+      },
+      {
+        "date": "2026年9月17日",
+        "title": "",
+        "image": "manga/episodex-1789620759893-0.jpg",
+        "imageUpdatedAt": "1789620763236"
+      },
+      {
+        "date": "2026年9月17日",
+        "title": "",
+        "image": "manga/episodex-1789620763236-1.jpg",
+        "imageUpdatedAt": "1789620765608"
+      },
+      {
+        "date": "2026年9月17日",
+        "title": "",
+        "image": "manga/episodex-1789620765608-2.jpg",
+        "imageUpdatedAt": "1789620768260"
       }
     ]
   }
