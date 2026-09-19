@@ -52,8 +52,8 @@ window.MANGA_CONTENT = {
         "number": 4,
         "date": "2026年9月2日",
         "title": "まさかの雨でプールに変身",
-        "image": "manga/episode4-1788780376559.jpg",
-        "imageUpdatedAt": "1788780376559"
+        "image": "manga/episode4-1789835749463-0.jpg",
+        "imageUpdatedAt": "1789835751906"
       },
       {
         "number": 3,
