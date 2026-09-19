@@ -66,8 +66,8 @@ window.MANGA_CONTENT = {
         "number": 2,
         "date": "2026年8月28日",
         "title": "必殺シュート、まさかの大暴投",
-        "image": "manga/mero-1787908433908.jpg",
-        "imageUpdatedAt": "1787908433908"
+        "image": "manga/episode2-1789835714683-0.jpg",
+        "imageUpdatedAt": "1789835717783"
       },
       {
         "number": 1,
