@@ -590,6 +590,7 @@
   async function deleteBinaryFile(path, token) {
     var url = "https://api.github.com/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + path;
     var getRes = await fetch(url + "?ref=" + GITHUB_BRANCH, {
+      cache: "no-store",
       headers: { "Authorization": "token " + token, "Accept": "application/vnd.github+json" }
     });
     if (getRes.status === 404) return; // 既に無い場合は何もしない
@@ -608,6 +609,7 @@
         branch: GITHUB_BRANCH
       })
     });
+    if (delRes.status === 404) return; // 既に消えている
     if (!delRes.ok) {
       var delErrJson = await delRes.json().catch(function () { return {}; });
       throw new Error("画像の削除に失敗しました（エラー" + delRes.status + "）：" + (delErrJson.message || ""));
@@ -627,7 +629,11 @@
       if (pendingDeletes.length) {
         barMsg.textContent = "不要になった画像を削除中...";
         for (var di = 0; di < pendingDeletes.length; di++) {
-          await deleteBinaryFile(pendingDeletes[di], token);
+          try {
+            await deleteBinaryFile(pendingDeletes[di], token);
+          } catch (delErr) {
+            console.warn("画像の削除をスキップ:", pendingDeletes[di], delErr);
+          }
         }
         window.__adminPendingDeletes = [];
         barMsg.textContent = "保存中...";
