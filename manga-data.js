@@ -45,8 +45,8 @@ window.MANGA_CONTENT = {
         "number": 5,
         "date": "2026年9月7日",
         "title": "シュートしたらメロが吹っ飛んだ",
-        "image": "manga/episode5-1788780506042.jpg",
-        "imageUpdatedAt": "1788780508557"
+        "image": "manga/episode5-1789835840386-0.jpg",
+        "imageUpdatedAt": "1789835843104"
       },
       {
         "number": 4,
