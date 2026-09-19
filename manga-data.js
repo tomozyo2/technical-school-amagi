@@ -59,8 +59,8 @@ window.MANGA_CONTENT = {
         "number": 3,
         "date": "2026年8月31日",
         "title": "メロ、犬の本能に目覚める",
-        "image": "manga/episode3-1788105666748.jpg",
-        "imageUpdatedAt": "1788105666748"
+        "image": "manga/episode3-1789835729517-0.jpg",
+        "imageUpdatedAt": "1789835732031"
       },
       {
         "number": 2,
