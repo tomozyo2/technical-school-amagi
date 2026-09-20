@@ -89,8 +89,6 @@
     if (!navLink && !diaryLink) return;
     buildModal();
     buildBar();
-    buildLineModal();
-    buildMangaLineModal();
     if (navLink) navLink.addEventListener("click", function (e) { e.preventDefault(); handleTrigger(null); });
     if (diaryLink) diaryLink.addEventListener("click", function (e) { e.preventDefault(); handleTrigger("diary"); });
   }
@@ -342,39 +340,59 @@
     btns[1].addEventListener("click", exitAdmin);
   }
 
-  /* ===== LINE配信（内容を作って、自分のスマホのLINEで送る） ===== */
+  /* ===== LINE配信（内容を作って、自分のスマホのLINEでグループに送る） ===== */
   var LINE_DRAFT_KEY = "amagi-line-draft";
-  var lineModalEl, lineDateEl, lineDiaryRow, lineDiaryEl, lineBodyInput, linePreviewEl, lineSendLink;
+  var lineModalEl, lineBodyInput, linePreviewEl, lineSendLink;
 
-  function computeNextTuesday() {
+  // 次の練習日（今日が練習日なら今日）。お休みの日なら isOff: true
+  function nextPracticeInfo() {
+    var weekday = (data && data.schedule && data.schedule.weekday != null) ? data.schedule.weekday : 2;
+    var offDates = (data && data.schedule && data.schedule.offDates) || [];
+    var names = ["日", "月", "火", "水", "木", "金", "土"];
     var today = new Date();
     today.setHours(0, 0, 0, 0);
-    var diff = (2 - today.getDay() + 7) % 7; // 2 = 火曜日。今日が火曜なら0（今日）
+    var diff = (weekday - today.getDay() + 7) % 7;
     var target = new Date(today.getTime() + diff * 24 * 60 * 60 * 1000);
-    return (target.getMonth() + 1) + "月" + target.getDate() + "日（火）";
+    var key = (target.getMonth() + 1) + "/" + target.getDate();
+    return {
+      label: (target.getMonth() + 1) + "月" + target.getDate() + "日（" + names[weekday] + "）",
+      isOff: offDates.indexOf(key) !== -1
+    };
   }
 
-  function latestDiaryLine() {
-    var latest = data && data.diary && data.diary.latest;
-    if (!latest) return "";
-    var numMatch = (latest.title || "").match(/(\d+)/);
-    var num = numMatch ? numMatch[1] : "";
-    var topic = (latest.topicHeading || "").trim();
-    if (!num && !topic) return "";
-    var line = "📖 ";
-    if (num) line += "第" + num + "回独り言";
-    if (topic) line += (num ? "の" : "") + "「" + topic + "」";
-    line += "を更新しました";
-    return line;
+  // ホームページに載っている「練習メニュー」（日付と内容）
+  function trainingMenuInfo() {
+    var items = (data && data.training && data.training.items) || [];
+    for (var i = 0; i < items.length; i++) {
+      var it = items[i];
+      var isMenu = it.kind ? it.kind === "menu" : (it.title || "").indexOf("メニュー") !== -1;
+      if (!isMenu) continue;
+      var date = it.date != null ? it.date : (it.icon || "").replace(/^⚽\s*/, "");
+      var lines = String(it.text || "").split("\n").map(function (l) { return l.trim(); }).filter(Boolean);
+      return { date: date, lines: lines };
+    }
+    return null;
   }
 
   function buildLineMessage() {
-    var dateLabel = lineDateEl ? lineDateEl.textContent : computeNextTuesday();
     var body = lineBodyInput ? lineBodyInput.value.trim() : "";
-    var text = "📣 テクニカルスクールのご案内\n\n次回の練習日：" + dateLabel;
-    var diaryLine = latestDiaryLine();
-    if (diaryLine) text += "\n" + diaryLine;
-    text += "\n\n更に毎週2回から3回\nテクニカル漫画「チロんぽ、メロんぽ」🐶更新しています。";
+    var info = (data && data.info) || {};
+    var next = nextPracticeInfo();
+    var text = "📣 テクニカルスクールのご案内\n\n";
+    text += "🏠 ホームページ\n" + SITE_URL + "\n\n";
+    text += "📖 チロんぽ＆メロんぽ漫画（週2回更新）\n" + SITE_URL + "manga.html\n\n";
+    if (next.isOff) {
+      text += "🚫 " + next.label + "は練習はお休みです。";
+    } else {
+      text += "⚽ 次回のトレーニング：" + next.label + "\n";
+      text += "📍 場所：" + (info.place || "丸山公園多目的広場") + "\n";
+      text += "🕐 時間：" + (info.time || "17:45〜19:30");
+      var menu = trainingMenuInfo();
+      if (menu && menu.lines.length) {
+        text += "\n\n📝 トレーニング内容" + (menu.date ? "（" + menu.date + "）" : "") + "\n";
+        text += menu.lines.map(function (l, i) { return (i + 1) + ". " + l; }).join("\n");
+      }
+    }
     if (body) text += "\n\n" + body;
     return text;
   }
@@ -391,25 +409,21 @@
     lineModalEl.className = "admin-modal-overlay";
     lineModalEl.style.display = "none";
     lineModalEl.innerHTML =
-      '<div class="admin-modal-box">' +
+      '<div class="admin-modal-box" style="max-width:440px;">' +
       '  <div class="admin-modal-title">📣 LINE配信の内容を作る</div>' +
-      '  <p class="admin-modal-desc">次回の練習日は自動で入ります。下に今週のお知らせがあれば書き足してください。</p>' +
-      '  <p class="admin-modal-desc"><strong>次回の練習日：<span id="line-date"></span></strong></p>' +
-      '  <p class="admin-modal-desc" id="line-diary-row" hidden><strong id="line-diary"></strong></p>' +
-      '  <textarea id="line-body-input" rows="4" placeholder="（任意）今週のお知らせがあれば入力してください" style="width:100%;box-sizing:border-box;"></textarea>' +
-      '  <p class="admin-modal-desc">プレビュー：</p>' +
+      '  <p class="admin-modal-desc">ホームページ・漫画のアドレス、次回の練習日（お休みならお休み）、場所・時間、トレーニング内容は自動で入ります。下に自由に書き足せます。</p>' +
+      '  <textarea id="line-body-input" rows="4" placeholder="（任意）自由に書けるスペース" style="width:100%;box-sizing:border-box;"></textarea>' +
+      '  <p class="admin-modal-desc">送信する内容（プレビュー）：</p>' +
       '  <pre id="line-preview" class="line-preview-box"></pre>' +
       '  <div class="admin-modal-err"></div>' +
       '  <div class="admin-modal-actions">' +
       '    <button type="button" class="admin-modal-btn ghost" id="line-close-btn">閉じる</button>' +
       '    <a href="#" target="_blank" rel="noopener" class="admin-modal-btn primary" id="line-send-link">LINEで送る</a>' +
       '  </div>' +
+      '  <p class="admin-modal-desc" style="margin:12px 0 0;">「LINEで送る」を押すとLINEが開くので、グループを選んで送信してください。</p>' +
       '</div>';
     document.body.appendChild(lineModalEl);
 
-    lineDateEl = lineModalEl.querySelector("#line-date");
-    lineDiaryRow = lineModalEl.querySelector("#line-diary-row");
-    lineDiaryEl = lineModalEl.querySelector("#line-diary");
     lineBodyInput = lineModalEl.querySelector("#line-body-input");
     linePreviewEl = lineModalEl.querySelector("#line-preview");
     lineSendLink = lineModalEl.querySelector("#line-send-link");
@@ -420,14 +434,6 @@
   }
 
   function openLineModal() {
-    lineDateEl.textContent = computeNextTuesday();
-    var diaryLine = latestDiaryLine();
-    if (diaryLine) {
-      lineDiaryEl.textContent = diaryLine;
-      lineDiaryRow.hidden = false;
-    } else {
-      lineDiaryRow.hidden = true;
-    }
     lineBodyInput.value = localStorage.getItem(LINE_DRAFT_KEY) || "";
     updateLinePreview();
     lineModalEl.style.display = "flex";
@@ -544,6 +550,10 @@
 
   function enterAdminMode() {
     document.body.classList.add("admin-mode-on");
+    if (!lineModalEl) {
+      buildLineModal();
+      buildMangaLineModal();
+    }
     rerenderAdmin();
     barEl.style.display = "flex";
     barMsg.textContent = "編集して「保存する」を押してください。";
