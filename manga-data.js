@@ -38,8 +38,8 @@ window.MANGA_CONTENT = {
         "number": 6,
         "date": "2026年9月11日",
         "title": "ちょうちょに気を取られて…",
-        "image": "manga/episode6-1789054941134.jpg",
-        "imageUpdatedAt": "1789054943767"
+        "image": "manga/episode6-1789910630000.jpg",
+        "imageUpdatedAt": "1789910630000"
       },
       {
         "number": 5,
