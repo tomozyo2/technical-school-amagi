@@ -556,38 +556,135 @@
       var trainingContainer = byId("training-items");
       if (trainingContainer && Array.isArray(c.training.items)) {
         clear(trainingContainer);
-        c.training.items.forEach(function (item, idx) {
+
+        // 種類（練習メニュー／テーマ／リフティング）。kindが無い古いデータは内容から判定する
+        var trainingKindOf = function (item) {
+          if (item.kind === "menu" || item.kind === "theme" || item.kind === "lifting") return item.kind;
+          if ((item.icon || "").indexOf("リフティング") !== -1) return "lifting";
+          if ((item.title || "").indexOf("メニュー") !== -1) return "menu";
+          return "theme";
+        };
+        var trainingGroups = { menu: [], theme: [], lifting: [] };
+        c.training.items.forEach(function (item) {
+          item.kind = trainingKindOf(item);
+          trainingGroups[item.kind].push(item);
+        });
+        // 並び順は「練習メニュー → テーマ → リフティング」。保存されるitemsもこの順に揃える
+        var commitTraining = function () {
+          c.training.items = trainingGroups.menu.concat(trainingGroups.theme, trainingGroups.lifting);
+          onChange();
+        };
+
+        var buildTrainingCard = function (item, group, idx) {
           var div = document.createElement("div");
           div.className = "card" + (editable ? " admin-editing-item" : "");
-          div.innerHTML = '<span class="icon"></span><h3></h3><p><strong></strong></p><p class="desc"></p>';
+          if (item.kind === "lifting") {
+            div.innerHTML = '<h3></h3><p class="desc"></p>';
+          } else {
+            div.innerHTML = '<span class="icon"></span><h3></h3><p><strong></strong></p><p class="desc"></p>';
+          }
           var iconEl = div.querySelector(".icon");
           var titleEl = div.querySelector("h3");
           var boldEl = div.querySelector("strong");
           var descEl = div.querySelector(".desc");
-          iconEl.textContent = item.icon || "";
+          if (iconEl) iconEl.textContent = item.icon || "";
           titleEl.textContent = item.title || "";
-          boldEl.textContent = item.bold || "";
+          if (boldEl) boldEl.textContent = item.bold || "";
           if (editable) {
             descEl.textContent = item.text || "";
           } else {
             setTextWithBreaks(descEl, item.text);
           }
           if (editable) {
-            bindEditable(iconEl, item, "icon");
+            if (iconEl) bindEditable(iconEl, item, "icon");
             bindEditable(titleEl, item, "title");
-            bindEditable(boldEl, item, "bold");
+            if (boldEl) bindEditable(boldEl, item, "bold");
             bindEditable(descEl, item, "text", { multiline: true });
-            addMoveButtons(div, c.training.items, idx, onChange);
-            addRemoveButton(div, function () { c.training.items.splice(idx, 1); onChange(); });
+            addMoveButtons(div, group, idx, commitTraining);
+            addRemoveButton(div, function () { group.splice(idx, 1); commitTraining(); });
           }
-          trainingContainer.appendChild(div);
+          return div;
+        };
+
+        // ① 練習メニュー（予定のトレーニング・1つの別枠）
+        trainingGroups.menu.forEach(function (item, idx) {
+          var box = document.createElement("div");
+          box.className = "training-menu-box" + (editable ? " admin-editing-item" : "");
+          box.innerHTML =
+            '<div class="training-menu-head">' +
+            '<h3><span class="training-menu-ball">⚽</span> <span class="training-menu-title"></span></h3>' +
+            '<span class="training-menu-date"></span></div>' +
+            '<div class="training-menu-body"></div>';
+          var menuTitleEl = box.querySelector(".training-menu-title");
+          var menuDateEl = box.querySelector(".training-menu-date");
+          var menuBodyEl = box.querySelector(".training-menu-body");
+          var menuDate = item.date != null ? item.date : (item.icon || "").replace(/^⚽\s*/, "");
+          menuTitleEl.textContent = item.title || "練習メニュー";
+          menuDateEl.textContent = menuDate;
+          if (editable) {
+            menuBodyEl.textContent = item.text || "";
+            var dateProxy = {};
+            Object.defineProperty(dateProxy, "date", {
+              get: function () { return item.date; },
+              set: function (v) { item.date = v; item.icon = "⚽" + v; }
+            });
+            bindEditable(menuTitleEl, item, "title");
+            bindEditable(menuDateEl, dateProxy, "date");
+            var editableBody = bindEditable(menuBodyEl, item, "text", { multiline: true });
+            var menuHint = document.createElement("p");
+            menuHint.className = "training-menu-hint";
+            menuHint.textContent = "↓ 練習メニューを1行に1つずつ入力してください";
+            editableBody.parentNode.insertBefore(menuHint, editableBody);
+            addMoveButtons(box, trainingGroups.menu, idx, commitTraining);
+            addRemoveButton(box, function () { trainingGroups.menu.splice(idx, 1); commitTraining(); });
+            trainingContainer.appendChild(box);
+          } else {
+            var menuList = document.createElement("ol");
+            menuList.className = "training-menu-list";
+            String(item.text || "").split("\n").forEach(function (line) {
+              line = line.trim();
+              if (!line) return;
+              var li = document.createElement("li");
+              li.textContent = line;
+              menuList.appendChild(li);
+            });
+            menuBodyEl.appendChild(menuList);
+            trainingContainer.appendChild(box);
+          }
         });
-        if (editable) {
-          addAddButton(trainingContainer, "＋ テーマを追加", function () {
-            c.training.items.push({ icon: "⚽", title: "今月のテーマ", bold: "", text: "" });
-            onChange();
-          }, { fullGrid: true });
+        if (editable && trainingGroups.menu.length === 0) {
+          addAddButton(trainingContainer, "＋ 練習メニューを追加", function () {
+            trainingGroups.menu.push({ kind: "menu", icon: "⚽", date: "", title: "練習メニュー", bold: "", text: "" });
+            commitTraining();
+          });
         }
+
+        // ② テーマ・③ リフティング（それぞれ別の見出しでまとめる）
+        var addTrainingGroup = function (kind, heading, addLabel, newItem) {
+          var group = trainingGroups[kind];
+          if (!group.length && !editable) return;
+          var wrap = document.createElement("div");
+          wrap.className = "training-group";
+          var h = document.createElement("h3");
+          h.className = "training-sub";
+          h.innerHTML = "<span></span>";
+          h.firstChild.textContent = heading;
+          wrap.appendChild(h);
+          var grid = document.createElement("div");
+          grid.className = "grid-3";
+          group.forEach(function (item, idx) { grid.appendChild(buildTrainingCard(item, group, idx)); });
+          if (editable) {
+            addAddButton(grid, addLabel, function () { group.push(newItem()); commitTraining(); }, { fullGrid: true });
+          }
+          wrap.appendChild(grid);
+          trainingContainer.appendChild(wrap);
+        };
+        addTrainingGroup("theme", "🎯 月のテーマ", "＋ テーマを追加", function () {
+          return { kind: "theme", icon: "⚽", title: "今月のテーマ", bold: "", text: "" };
+        });
+        addTrainingGroup("lifting", "⚽ リフティング記録", "＋ リフティング記録を追加", function () {
+          return { kind: "lifting", icon: "⚽リフティング", title: "", bold: "", text: "" };
+        });
       }
     }
 

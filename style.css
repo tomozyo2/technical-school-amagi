@@ -529,6 +529,74 @@ section.dark .section-head p { color: var(--gray); }
   font-weight: 900;
 }
 
+/* ---------- トレーニング内容予定（練習メニューの別枠・テーマ・リフティング） ---------- */
+.training-menu-box {
+  max-width: 760px;
+  margin: 0 auto 60px;
+  background: #fff;
+  border-radius: 20px;
+  border: 3px solid var(--orange);
+  box-shadow: 0 14px 40px rgba(255,90,31,.18);
+}
+.training-menu-head {
+  background: var(--orange);
+  color: #fff;
+  padding: 18px 28px;
+  border-radius: 17px 17px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.training-menu-head h3 { margin: 0; font-size: 1.3rem; font-weight: 900; }
+.training-menu-date {
+  font-weight: 800;
+  font-size: 1.05rem;
+  background: rgba(255,255,255,.22);
+  padding: 4px 14px;
+  border-radius: 999px;
+  min-width: 3em;
+}
+.training-menu-body { padding: 26px 32px 30px; }
+.training-menu-list { list-style: none; margin: 0; padding: 0; counter-reset: menu; }
+.training-menu-list li {
+  counter-increment: menu;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-bottom: 1px dashed #d9dfda;
+}
+.training-menu-list li:last-child { border-bottom: none; }
+.training-menu-list li::before {
+  content: counter(menu);
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .95rem;
+}
+.training-menu-hint { margin: 0; padding: 12px 32px 0; font-size: .78rem; color: var(--orange); }
+.training-menu-box .training-menu-body.admin-editable { min-height: 6em; }
+.training-sub { text-align: center; margin: 0 0 24px; font-size: 1.25rem; font-weight: 900; }
+.training-sub span { border-bottom: 4px solid var(--green-bright); padding: 0 6px 4px; }
+.training-group { margin-bottom: 60px; }
+.training-group:last-child { margin-bottom: 0; }
+@media (max-width: 480px) {
+  .training-menu-head { padding: 14px 18px; }
+  .training-menu-body { padding: 18px 18px 22px; }
+  .training-menu-hint { padding: 12px 18px 0; }
+}
+
 /* ---------- よくある質問 ---------- */
 .faq-list {
   display: flex;
