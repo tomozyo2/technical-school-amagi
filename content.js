@@ -154,6 +154,6 @@ window.SITE_CONTENT = {
   },
   "lineTemplate": {
     "placeLabel": "📍 場所：甘木公園多目的",
-    "timeLabel": "🕐 時間：17:4"
+    "timeLabel": "🕐 時間：17:45か"
   }
 };
