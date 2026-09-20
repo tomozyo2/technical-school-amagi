@@ -352,6 +352,8 @@
     { key: "nextLabel", label: "次回の練習日の前の文", def: "⚽ 次回のトレーニング：" },
     { key: "placeLabel", label: "場所の前の文", def: "📍 場所：" },
     { key: "timeLabel", label: "時間の前の文", def: "🕐 時間：" },
+    { key: "placeValue", label: "場所そのもの（空欄ならホームページの場所）", def: "", ph: "place" },
+    { key: "timeValue", label: "時間そのもの（空欄ならホームページの時間）", def: "", ph: "time" },
     { key: "menuLabel", label: "トレーニング内容の見出し", def: "📝 トレーニング内容" },
     { key: "offText", label: "お休みの日の文（{日付}に日付が入ります）", def: "🚫 {日付}は練習はお休みです。" },
     { key: "mangaNotice", label: "漫画更新のお知らせ文（漫画の下書き画面の「LINEでお知らせ」用）", def: "チロんぽ＆メロんぽ物語更新しました🐶" }
@@ -407,8 +409,8 @@
       text += lineTpl("offText").split("{日付}").join(next.label);
     } else {
       text += lineTpl("nextLabel") + next.label + "\n";
-      text += lineTpl("placeLabel") + (info.place || "丸山公園多目的広場") + "\n";
-      text += lineTpl("timeLabel") + (info.time || "17:45〜19:30");
+      text += lineTpl("placeLabel") + (lineTpl("placeValue") || info.place || "丸山公園多目的広場") + "\n";
+      text += lineTpl("timeLabel") + (lineTpl("timeValue") || info.time || "17:45〜19:30");
       var menu = trainingMenuInfo();
       if (menu && menu.lines.length) {
         text += "\n\n" + lineTpl("menuLabel") + (menu.date ? "（" + menu.date + "）" : "") + "\n";
@@ -424,6 +426,12 @@
     if (linePreviewEl) linePreviewEl.textContent = text;
     if (lineSendLink) lineSendLink.href = "https://line.me/R/msg/text/?" + encodeURIComponent(text);
     if (lineBodyInput) localStorage.setItem(LINE_DRAFT_KEY, lineBodyInput.value);
+    var offNote = lineModalEl && lineModalEl.querySelector("#line-off-note");
+    if (offNote) {
+      var n = nextPracticeInfo();
+      offNote.textContent = n.isOff ? "※ " + n.label + "は「お休み」に設定されているため、場所・時間・トレーニング内容は表示されません。" : "";
+      offNote.style.display = n.isOff ? "" : "none";
+    }
   }
 
   function buildLineModal() {
@@ -445,6 +453,7 @@
       '    <button type="button" class="admin-modal-btn ghost" id="line-tpl-reset" style="margin-top:10px;">初期の文章に戻す</button>' +
       '  </details>' +
       '  <p class="admin-modal-desc">送信する内容（プレビュー）：</p>' +
+      '  <p class="line-tpl-note" id="line-off-note" style="display:none;color:#c0392b;"></p>' +
       '  <pre id="line-preview" class="line-preview-box"></pre>' +
       '  <div class="admin-modal-err"></div>' +
       '  <div class="admin-modal-actions">' +
@@ -526,7 +535,10 @@
 
   function fillLineTemplateInputs() {
     lineModalEl.querySelectorAll("[data-tpl-key]").forEach(function (input) {
-      input.value = lineTpl(input.getAttribute("data-tpl-key"));
+      var key = input.getAttribute("data-tpl-key");
+      input.value = lineTpl(key);
+      if (key === "placeValue") input.placeholder = (data && data.info && data.info.place) || "丸山公園多目的広場";
+      if (key === "timeValue") input.placeholder = (data && data.info && data.info.time) || "17:45〜19:30";
     });
   }
 
