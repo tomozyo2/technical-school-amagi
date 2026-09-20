@@ -151,5 +151,8 @@ window.SITE_CONTENT = {
   "footer": {
     "note": "毎週火曜日 17:45〜19:30／丸山公園多目的広場",
     "copyright": "© 2026 テクニカルスクール甘木"
+  },
+  "lineTemplate": {
+    "placeLabel": "📍 場所：甘木公園多目的"
   }
 };
