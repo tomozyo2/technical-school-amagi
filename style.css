@@ -1103,6 +1103,7 @@ footer .foot-logo {
 .admin-modal-title { font-weight: 900; font-size: 1.05rem; margin-bottom: 10px; }
 .admin-modal-desc { color: var(--gray); font-size: .85rem; margin: 0 0 18px; }
 .admin-modal-box input[type="password"],
+.admin-modal-box input[type="text"],
 .admin-modal-box textarea {
   width: 100%;
   padding: 12px 14px;
@@ -1114,6 +1115,11 @@ footer .foot-logo {
   box-sizing: border-box;
 }
 .admin-modal-box textarea { resize: vertical; }
+.line-tpl-edit { text-align: left; margin: 4px 0 16px; }
+.line-tpl-edit summary { cursor: pointer; color: var(--green-bright); font-weight: 800; font-size: .88rem; padding: 6px 0; }
+.line-tpl-note { color: var(--gray); font-size: .76rem; margin: 6px 0 10px; }
+.line-tpl-label { display: block; color: var(--gray); font-size: .76rem; margin-top: 8px; }
+.line-tpl-label input { margin: 4px 0 0; padding: 9px 12px; font-size: .9rem; }
 .line-preview-box {
   white-space: pre-wrap;
   font-family: inherit;

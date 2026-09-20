@@ -344,6 +344,28 @@
   var LINE_DRAFT_KEY = "amagi-line-draft";
   var lineModalEl, lineBodyInput, linePreviewEl, lineSendLink;
 
+  // LINEの「決まった文章」。画面から書き換えられ、data.lineTemplate に保存される（未設定なら下の初期文）
+  var LINE_TEMPLATE_FIELDS = [
+    { key: "title", label: "いちばん上の見出し", def: "📣 テクニカルスクールのご案内" },
+    { key: "siteLabel", label: "ホームページの案内文", def: "🏠 ホームページ" },
+    { key: "mangaLabel", label: "漫画の案内文", def: "📖 チロんぽ＆メロんぽ漫画（週2回更新）" },
+    { key: "nextLabel", label: "次回の練習日の前の文", def: "⚽ 次回のトレーニング：" },
+    { key: "placeLabel", label: "場所の前の文", def: "📍 場所：" },
+    { key: "timeLabel", label: "時間の前の文", def: "🕐 時間：" },
+    { key: "menuLabel", label: "トレーニング内容の見出し", def: "📝 トレーニング内容" },
+    { key: "offText", label: "お休みの日の文（{日付}に日付が入ります）", def: "🚫 {日付}は練習はお休みです。" },
+    { key: "mangaNotice", label: "漫画更新のお知らせ文（漫画の下書き画面の「LINEでお知らせ」用）", def: "チロんぽ＆メロんぽ物語更新しました🐶" }
+  ];
+
+  function lineTpl(key) {
+    var t = (data && data.lineTemplate) || {};
+    if (Object.prototype.hasOwnProperty.call(t, key)) return t[key];
+    for (var i = 0; i < LINE_TEMPLATE_FIELDS.length; i++) {
+      if (LINE_TEMPLATE_FIELDS[i].key === key) return LINE_TEMPLATE_FIELDS[i].def;
+    }
+    return "";
+  }
+
   // 次の練習日（今日が練習日なら今日）。お休みの日なら isOff: true
   function nextPracticeInfo() {
     var weekday = (data && data.schedule && data.schedule.weekday != null) ? data.schedule.weekday : 2;
@@ -378,18 +400,18 @@
     var body = lineBodyInput ? lineBodyInput.value.trim() : "";
     var info = (data && data.info) || {};
     var next = nextPracticeInfo();
-    var text = "📣 テクニカルスクールのご案内\n\n";
-    text += "🏠 ホームページ\n" + SITE_URL + "\n\n";
-    text += "📖 チロんぽ＆メロんぽ漫画（週2回更新）\n" + SITE_URL + "manga.html\n\n";
+    var text = lineTpl("title") + "\n\n";
+    text += lineTpl("siteLabel") + "\n" + SITE_URL + "\n\n";
+    text += lineTpl("mangaLabel") + "\n" + SITE_URL + "manga.html\n\n";
     if (next.isOff) {
-      text += "🚫 " + next.label + "は練習はお休みです。";
+      text += lineTpl("offText").split("{日付}").join(next.label);
     } else {
-      text += "⚽ 次回のトレーニング：" + next.label + "\n";
-      text += "📍 場所：" + (info.place || "丸山公園多目的広場") + "\n";
-      text += "🕐 時間：" + (info.time || "17:45〜19:30");
+      text += lineTpl("nextLabel") + next.label + "\n";
+      text += lineTpl("placeLabel") + (info.place || "丸山公園多目的広場") + "\n";
+      text += lineTpl("timeLabel") + (info.time || "17:45〜19:30");
       var menu = trainingMenuInfo();
       if (menu && menu.lines.length) {
-        text += "\n\n📝 トレーニング内容" + (menu.date ? "（" + menu.date + "）" : "") + "\n";
+        text += "\n\n" + lineTpl("menuLabel") + (menu.date ? "（" + menu.date + "）" : "") + "\n";
         text += menu.lines.map(function (l, i) { return (i + 1) + ". " + l; }).join("\n");
       }
     }
@@ -413,6 +435,14 @@
       '  <div class="admin-modal-title">📣 LINE配信の内容を作る</div>' +
       '  <p class="admin-modal-desc">ホームページ・漫画のアドレス、次回の練習日（お休みならお休み）、場所・時間、トレーニング内容は自動で入ります。下に自由に書き足せます。</p>' +
       '  <textarea id="line-body-input" rows="4" placeholder="（任意）自由に書けるスペース" style="width:100%;box-sizing:border-box;"></textarea>' +
+      '  <details class="line-tpl-edit">' +
+      '    <summary>✏ 決まった文章を編集する</summary>' +
+      '    <p class="line-tpl-note">書き換えるとプレビューにすぐ反映されます。他の端末にも反映するには、画面下の「保存する」を押してください。</p>' +
+      LINE_TEMPLATE_FIELDS.map(function (f) {
+        return '<label class="line-tpl-label">' + f.label + '<input type="text" data-tpl-key="' + f.key + '"></label>';
+      }).join("") +
+      '    <button type="button" class="admin-modal-btn ghost" id="line-tpl-reset" style="margin-top:10px;">初期の文章に戻す</button>' +
+      '  </details>' +
       '  <p class="admin-modal-desc">送信する内容（プレビュー）：</p>' +
       '  <pre id="line-preview" class="line-preview-box"></pre>' +
       '  <div class="admin-modal-err"></div>' +
@@ -429,11 +459,34 @@
     lineSendLink = lineModalEl.querySelector("#line-send-link");
 
     lineBodyInput.addEventListener("input", updateLinePreview);
+    lineModalEl.querySelectorAll("[data-tpl-key]").forEach(function (input) {
+      input.addEventListener("input", function () {
+        if (!data) return;
+        data.lineTemplate = data.lineTemplate || {};
+        data.lineTemplate[input.getAttribute("data-tpl-key")] = input.value;
+        updateLinePreview();
+        barMsg.textContent = "LINEの文章を変更しました。「保存する」を押すと保存されます。";
+      });
+    });
+    lineModalEl.querySelector("#line-tpl-reset").addEventListener("click", function () {
+      if (!data) return;
+      delete data.lineTemplate;
+      fillLineTemplateInputs();
+      updateLinePreview();
+      barMsg.textContent = "LINEの文章を初期に戻しました。「保存する」を押すと保存されます。";
+    });
     lineModalEl.querySelector("#line-close-btn").addEventListener("click", closeLineModal);
     lineModalEl.addEventListener("click", function (e) { if (e.target === lineModalEl) closeLineModal(); });
   }
 
+  function fillLineTemplateInputs() {
+    lineModalEl.querySelectorAll("[data-tpl-key]").forEach(function (input) {
+      input.value = lineTpl(input.getAttribute("data-tpl-key"));
+    });
+  }
+
   function openLineModal() {
+    fillLineTemplateInputs();
     lineBodyInput.value = localStorage.getItem(LINE_DRAFT_KEY) || "";
     updateLinePreview();
     lineModalEl.style.display = "flex";
@@ -469,7 +522,7 @@
   }
 
   function openMangaLineModal() {
-    var text = SITE_URL + "\n\nチロんぽ＆メロんぽ物語更新しました🐶";
+    var text = SITE_URL + "\n\n" + lineTpl("mangaNotice");
     mangaLinePreviewEl.textContent = text;
     mangaLineSendLink.href = "https://line.me/R/msg/text/?" + encodeURIComponent(text);
     mangaLineModalEl.style.display = "flex";
