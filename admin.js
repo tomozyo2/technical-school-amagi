@@ -437,7 +437,8 @@
       '  <textarea id="line-body-input" rows="4" placeholder="（任意）自由に書けるスペース" style="width:100%;box-sizing:border-box;"></textarea>' +
       '  <details class="line-tpl-edit">' +
       '    <summary>✏ 決まった文章を編集する</summary>' +
-      '    <p class="line-tpl-note">書き換えるとプレビューにすぐ反映されます。他の端末にも反映するには、画面下の「保存する」を押してください。</p>' +
+      '    <p class="line-tpl-note">書き換えるとプレビューにすぐ反映され、自動で保存されます（次回以降・他の端末でも同じ文章になります）。</p>' +
+      '    <p class="line-tpl-note" id="line-tpl-status"></p>' +
       LINE_TEMPLATE_FIELDS.map(function (f) {
         return '<label class="line-tpl-label">' + f.label + '<input type="text" data-tpl-key="' + f.key + '"></label>';
       }).join("") +
@@ -465,7 +466,7 @@
         data.lineTemplate = data.lineTemplate || {};
         data.lineTemplate[input.getAttribute("data-tpl-key")] = input.value;
         updateLinePreview();
-        barMsg.textContent = "LINEの文章を変更しました。「保存する」を押すと保存されます。";
+        scheduleLineTemplateSave();
       });
     });
     lineModalEl.querySelector("#line-tpl-reset").addEventListener("click", function () {
@@ -473,10 +474,54 @@
       delete data.lineTemplate;
       fillLineTemplateInputs();
       updateLinePreview();
-      barMsg.textContent = "LINEの文章を初期に戻しました。「保存する」を押すと保存されます。";
+      scheduleLineTemplateSave();
     });
     lineModalEl.querySelector("#line-close-btn").addEventListener("click", closeLineModal);
     lineModalEl.addEventListener("click", function (e) { if (e.target === lineModalEl) closeLineModal(); });
+  }
+
+  // LINEの文章だけを、content.js に自動保存する（他の編集途中の内容は保存しない）
+  var lineTplTimer = null;
+  function setLineTplStatus(msg) {
+    var el = lineModalEl && lineModalEl.querySelector("#line-tpl-status");
+    if (el) el.textContent = msg;
+  }
+  function scheduleLineTemplateSave() {
+    setLineTplStatus("保存待ち...");
+    clearTimeout(lineTplTimer);
+    lineTplTimer = setTimeout(saveLineTemplate, 1200);
+  }
+  async function saveLineTemplate() {
+    var token = localStorage.getItem(TOKEN_KEY);
+    if (!token) { setLineTplStatus("⚠ トークンが見つからず保存できませんでした"); return; }
+    setLineTplStatus("保存中...");
+    try {
+      var url = apiUrl(GITHUB_PATH).split("?")[0];
+      var headers = { "Authorization": "token " + token, "Accept": "application/vnd.github+json" };
+      var getRes = await fetch(url + "?ref=" + GITHUB_BRANCH, { cache: "no-store", headers: headers });
+      if (!getRes.ok) throw new Error("読み込みに失敗（エラー" + getRes.status + "）");
+      var getJson = await getRes.json();
+      var match = b64ToUtf8(getJson.content).match(/window\.SITE_CONTENT\s*=\s*([\s\S]*?);\s*$/);
+      if (!match) throw new Error("content.js を読み取れませんでした");
+      var remote = JSON.parse(match[1]);
+      if (data.lineTemplate) remote.lineTemplate = data.lineTemplate; else delete remote.lineTemplate;
+      var output = HEADER + "window.SITE_CONTENT = " + JSON.stringify(remote, null, 2) + ";\n";
+      var putRes = await fetch(url, {
+        method: "PUT",
+        headers: { "Authorization": "token " + token, "Accept": "application/vnd.github+json", "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: "LINE配信の文章を更新（管理者モード） " + new Date().toLocaleString("ja-JP"),
+          content: utf8ToB64(output),
+          sha: getJson.sha,
+          branch: GITHUB_BRANCH
+        })
+      });
+      if (!putRes.ok) throw new Error("保存に失敗（エラー" + putRes.status + "）");
+      currentSha = (await putRes.json()).content.sha;
+      setLineTplStatus("✅ 保存しました（" + new Date().toLocaleTimeString("ja-JP") + "）");
+    } catch (err) {
+      setLineTplStatus("⚠ " + ((err && err.message) ? err.message : err));
+    }
   }
 
   function fillLineTemplateInputs() {
