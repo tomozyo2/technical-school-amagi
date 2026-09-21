@@ -2,18 +2,19 @@
    管理者モード（その場編集・GitHubに直接保存）
    index.html / diary.html の両方から読み込まれます。
 
-   ・パスワードを変更したい場合は、下の ADMIN_PASSWORD を書き換えてください。
-   ・リポジトリ名などを変更した場合は、下の GITHUB_* を書き換えてください。
+   ・入るには「合言葉」が必要です（初回のみ入力し、以降はこの端末に保存されます）。
+   　合言葉とGitHubの鍵は「中継所」(Cloudflare Worker)が預かっています。
+   　合言葉を変えたい場合は、Cloudflareの秘密の設定 ADMIN_PASSPHRASE を変えてください。
+   ・リポジトリ名などを変更した場合は、下の GITHUB_* と、中継所の worker.js を書き換えてください。
    ・「保存する」を押すと、ここで設定したGitHubリポジトリの content.js に
-   　直接コミットされます（GitHub Desktopでのcommit/pushは不要になります）。
-   　保存には、書き込み権限のある GitHub の Personal Access Token が必要です
-   　（初回のみ入力を求められ、以降はこの端末に保存されます）。
+   　中継所を通して直接コミットされます（GitHub Desktopでのcommit/pushは不要になります）。
    ========================================================= */
 
 (function () {
   "use strict";
 
-  var ADMIN_PASSWORD = "tomo1112";
+  // 中継所のURL（末尾に / を付けない）
+  var RELAY_URL = "https://amagi-admin-relay.amagifc.workers.dev";
 
   var GITHUB_OWNER = "tomozyo2";
   var GITHUB_REPO = "technical-school-amagi";
@@ -22,12 +23,15 @@
   var GITHUB_PATH_DIARY = "diary-data.js";
   var GITHUB_PATH_MANGA = "manga-data.js";
   var SITE_URL = "https://" + GITHUB_OWNER + ".github.io/" + GITHUB_REPO + "/";
-  var TOKEN_KEY = "amagi-gh-pat";
+  var TOKEN_KEY = "amagi-passphrase"; // 端末に保存する「合言葉」
   var AUTH_KEY = "amagi-admin-auth-until";
-  var AUTH_DURATION_MS = 30 * 24 * 60 * 60 * 1000; // パスワード入力を省略できる期間（30日）
+  var AUTH_DURATION_MS = 30 * 24 * 60 * 60 * 1000; // 合言葉の入力を省略できる期間（30日）
 
-  var GOATCOUNTER_SITE = "amagi-technical";
-  var GOATCOUNTER_TOKEN_KEY = "amagi-gc-token";
+  // 以前の方式で端末に保存していた鍵（GitHub・GoatCounter）。もう使わないので消す
+  try {
+    localStorage.removeItem("amagi-gh-pat");
+    localStorage.removeItem("amagi-gc-token");
+  } catch (e) { /* 保存領域が使えない場合は何もしない */ }
 
   var HEADER = "/* =========================================================\n" +
     "   テクニカルスクール甘木 サイトのコンテンツ（文字情報）\n" +
@@ -64,7 +68,12 @@
   var scrollTargetId = null;
 
   function apiUrl(path) {
-    return "https://api.github.com/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + (path || GITHUB_PATH) + "?ref=" + GITHUB_BRANCH;
+    return contentsUrl(path || GITHUB_PATH) + "?ref=" + GITHUB_BRANCH;
+  }
+
+  // GitHubへの窓口（中継所経由）
+  function contentsUrl(path) {
+    return RELAY_URL + "/gh/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + path;
   }
 
   function b64ToUtf8(b64) {
@@ -118,17 +127,14 @@
   function startAuthedFlow() {
     modalEl.style.display = "flex";
     pwStep.style.display = "none";
-    tokenStep.style.display = "none";
     modalErr.textContent = "";
     modalNote.textContent = "読み込み中...";
     submitBtn.disabled = true;
     var savedToken = localStorage.getItem(TOKEN_KEY);
     if (savedToken) {
-      loadFromGitHub(savedToken);
+      loadFromGitHub(savedToken, false);
     } else {
-      showTokenStep();
-      modalNote.textContent = "";
-      submitBtn.disabled = false;
+      openLoginModal();
     }
   }
 
@@ -137,9 +143,8 @@
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  /* ===== パスワード入力＋GitHubトークン入力モーダル ===== */
-  var modalEl, pwStep, pwInput, tokenStep, tokenInput, modalErr, submitBtn, modalNote, modalTitle;
-  var currentStep = "password";
+  /* ===== 合言葉入力モーダル ===== */
+  var modalEl, pwStep, pwInput, modalErr, submitBtn, modalNote, modalTitle;
 
   function buildModal() {
     modalEl = document.createElement("div");
@@ -149,12 +154,8 @@
       '<div class="admin-modal-box">' +
       '  <div class="admin-modal-title">⚽ 管理者モード</div>' +
       '  <div id="pw-step">' +
-      '    <p class="admin-modal-desc">パスワードを入力してください。</p>' +
-      '    <input type="password" id="pw-input" autocomplete="off" placeholder="パスワード">' +
-      '  </div>' +
-      '  <div id="token-step" style="display:none;">' +
-      '    <p class="admin-modal-desc">初回のみ、GitHubのアクセストークンを入力してください。<br>この端末に保存され、次回以降は不要です。</p>' +
-      '    <input type="password" id="token-input" autocomplete="off" placeholder="ghp_... または github_pat_...">' +
+      '    <p class="admin-modal-desc">合言葉を入力してください。<br>この端末に保存され、次回以降は不要です。</p>' +
+      '    <input type="password" id="pw-input" autocomplete="off" placeholder="合言葉">' +
       '  </div>' +
       '  <div class="admin-modal-err"></div>' +
       '  <div class="admin-modal-actions">' +
@@ -168,8 +169,6 @@
     modalTitle = modalEl.querySelector(".admin-modal-title");
     pwStep = modalEl.querySelector("#pw-step");
     pwInput = modalEl.querySelector("#pw-input");
-    tokenStep = modalEl.querySelector("#token-step");
-    tokenInput = modalEl.querySelector("#token-input");
     modalErr = modalEl.querySelector(".admin-modal-err");
     modalNote = modalEl.querySelector(".admin-modal-note");
     var btns = modalEl.querySelectorAll(".admin-modal-btn");
@@ -179,13 +178,10 @@
     cancelBtn.addEventListener("click", closeLoginModal);
     submitBtn.addEventListener("click", submitStep);
     pwInput.addEventListener("keydown", function (e) { if (e.key === "Enter") submitStep(); });
-    tokenInput.addEventListener("keydown", function (e) { if (e.key === "Enter") submitStep(); });
   }
 
   function openLoginModal() {
-    currentStep = "password";
     pwStep.style.display = "block";
-    tokenStep.style.display = "none";
     pwInput.value = "";
     modalErr.textContent = "";
     modalNote.textContent = "";
@@ -196,62 +192,37 @@
     });
   }
 
-  function showTokenStep() {
-    currentStep = "token";
-    pwStep.style.display = "none";
-    tokenStep.style.display = "block";
-    tokenInput.value = "";
-    modalErr.textContent = "";
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () { tokenInput.focus(); });
-    });
-  }
-
   function closeLoginModal() {
     modalEl.style.display = "none";
   }
 
   function submitStep() {
-    if (currentStep === "password") {
-      if (pwInput.value !== ADMIN_PASSWORD) {
-        modalErr.textContent = "パスワードが違います";
-        return;
-      }
-      setAdminAuthValid();
-      var savedToken = localStorage.getItem(TOKEN_KEY);
-      if (savedToken) {
-        loadFromGitHub(savedToken);
-      } else {
-        showTokenStep();
-      }
-    } else if (currentStep === "token") {
-      var token = tokenInput.value.trim();
-      if (!token) {
-        modalErr.textContent = "トークンを入力してください";
-        return;
-      }
-      localStorage.setItem(TOKEN_KEY, token);
-      loadFromGitHub(token);
+    var passphrase = pwInput.value.trim();
+    if (!passphrase) {
+      modalErr.textContent = "合言葉を入力してください";
+      return;
     }
+    loadFromGitHub(passphrase, true);
   }
 
-  async function loadFromGitHub(token) {
+  // token = 合言葉。中継所が合言葉を確かめ、GitHubの鍵を付けて代わりにGitHubへ問い合わせる。
+  // isNewLogin: 入力したばかりの合言葉なら true（正しいと分かってから端末に保存する）
+  async function loadFromGitHub(token, isNewLogin) {
     modalErr.textContent = "";
     modalNote.textContent = "読み込み中...";
     submitBtn.disabled = true;
     try {
       var res = await fetch(apiUrl(), {
         headers: {
-          "Authorization": "token " + token,
+          "X-Passphrase": token,
           "Accept": "application/vnd.github+json"
         }
       });
-      if (res.status === 401 || res.status === 403) {
+      if (res.status === 401) {
         localStorage.removeItem(TOKEN_KEY);
-        showTokenStep();
-        modalNote.textContent = "";
-        modalErr.textContent = "トークンが無効です。もう一度入力してください。";
-        submitBtn.disabled = false;
+        localStorage.removeItem(AUTH_KEY);
+        openLoginModal();
+        modalErr.textContent = "合言葉が違います。もう一度入力してください。";
         return;
       }
       if (!res.ok) throw new Error("読み込みに失敗しました（エラー" + res.status + "）");
@@ -264,7 +235,7 @@
 
       var diaryRes = await fetch(apiUrl(GITHUB_PATH_DIARY), {
         headers: {
-          "Authorization": "token " + token,
+          "X-Passphrase": token,
           "Accept": "application/vnd.github+json"
         }
       });
@@ -287,7 +258,7 @@
 
       var mangaRes = await fetch(apiUrl(GITHUB_PATH_MANGA), {
         headers: {
-          "Authorization": "token " + token,
+          "X-Passphrase": token,
           "Accept": "application/vnd.github+json"
         }
       });
@@ -307,6 +278,10 @@
         throw new Error("manga-data.js の読み込みに失敗しました（エラー" + mangaRes.status + "）");
       }
 
+      if (isNewLogin) {
+        localStorage.setItem(TOKEN_KEY, token);
+        setAdminAuthValid();
+      }
       submitBtn.disabled = false;
       closeLoginModal();
       enterAdminMode();
@@ -502,11 +477,11 @@
   }
   async function saveLineTemplate() {
     var token = localStorage.getItem(TOKEN_KEY);
-    if (!token) { setLineTplStatus("⚠ トークンが見つからず保存できませんでした"); return; }
+    if (!token) { setLineTplStatus("⚠ 合言葉が見つからず保存できませんでした"); return; }
     setLineTplStatus("保存中...");
     try {
       var url = apiUrl(GITHUB_PATH).split("?")[0];
-      var headers = { "Authorization": "token " + token, "Accept": "application/vnd.github+json" };
+      var headers = { "X-Passphrase": token, "Accept": "application/vnd.github+json" };
       var getRes = await fetch(url + "?ref=" + GITHUB_BRANCH, { cache: "no-store", headers: headers });
       if (!getRes.ok) throw new Error("読み込みに失敗（エラー" + getRes.status + "）");
       var getJson = await getRes.json();
@@ -517,7 +492,7 @@
       var output = HEADER + "window.SITE_CONTENT = " + JSON.stringify(remote, null, 2) + ";\n";
       var putRes = await fetch(url, {
         method: "PUT",
-        headers: { "Authorization": "token " + token, "Accept": "application/vnd.github+json", "Content-Type": "application/json" },
+        headers: { "X-Passphrase": token, "Accept": "application/vnd.github+json", "Content-Type": "application/json" },
         body: JSON.stringify({
           message: "LINE配信の文章を更新（管理者モード） " + new Date().toLocaleString("ja-JP"),
           content: utf8ToB64(output),
@@ -591,14 +566,9 @@
   window.__openMangaLineModal = openMangaLineModal;
 
   /* ===== 閲覧数（GoatCounter） ===== */
+  // 閲覧数も中継所経由で取得する（GoatCounterの鍵は中継所が預かっている）ので、使うのは合言葉だけ
   function getGoatCounterToken() {
-    var token = localStorage.getItem(GOATCOUNTER_TOKEN_KEY);
-    if (token) return token;
-    token = window.prompt("GoatCounterのAPIトークンを入力してください（閲覧数の表示に使います。この端末に保存され、次回以降は不要です）");
-    if (!token) return null;
-    token = token.trim();
-    localStorage.setItem(GOATCOUNTER_TOKEN_KEY, token);
-    return token;
+    return localStorage.getItem(TOKEN_KEY);
   }
 
   function fmtDate(d) {
@@ -608,12 +578,10 @@
   async function fetchGoatCounterTotal(token, days) {
     var end = new Date();
     var start = new Date(end.getTime() - days * 24 * 60 * 60 * 1000);
-    var url = "https://" + GOATCOUNTER_SITE + ".goatcounter.com/api/v0/stats/total?start=" + fmtDate(start) + "&end=" + fmtDate(end);
-    var res = await fetch(url, { headers: { "Authorization": "Bearer " + token } });
-    if (res.status === 401 || res.status === 403) {
-      localStorage.removeItem(GOATCOUNTER_TOKEN_KEY);
-      throw new Error("トークンが無効です");
-    }
+    var url = RELAY_URL + "/gc/api/v0/stats/total?start=" + fmtDate(start) + "&end=" + fmtDate(end);
+    var res = await fetch(url, { headers: { "X-Passphrase": token } });
+    if (res.status === 401) throw new Error("合言葉が無効です");
+    if (res.status === 503) throw new Error("中継所に閲覧数の鍵が入っていません");
     if (!res.ok) throw new Error("エラー" + res.status);
     var json = await res.json();
     return json;
@@ -676,10 +644,10 @@
 
   async function uploadBinaryFile(path, dataUrl, token) {
     var base64 = dataUrl.split(",")[1];
-    var url = "https://api.github.com/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + path;
+    var url = contentsUrl(path);
     var sha = null;
     var getRes = await fetch(url + "?ref=" + GITHUB_BRANCH, {
-      headers: { "Authorization": "token " + token, "Accept": "application/vnd.github+json" }
+      headers: { "X-Passphrase": token, "Accept": "application/vnd.github+json" }
     });
     if (getRes.ok) {
       sha = (await getRes.json()).sha;
@@ -695,7 +663,7 @@
     var putRes = await fetch(url, {
       method: "PUT",
       headers: {
-        "Authorization": "token " + token,
+        "X-Passphrase": token,
         "Accept": "application/vnd.github+json",
         "Content-Type": "application/json"
       },
@@ -708,10 +676,10 @@
   }
 
   async function deleteBinaryFile(path, token) {
-    var url = "https://api.github.com/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + path;
+    var url = contentsUrl(path);
     var getRes = await fetch(url + "?ref=" + GITHUB_BRANCH, {
       cache: "no-store",
-      headers: { "Authorization": "token " + token, "Accept": "application/vnd.github+json" }
+      headers: { "X-Passphrase": token, "Accept": "application/vnd.github+json" }
     });
     if (getRes.status === 404) return; // 既に無い場合は何もしない
     if (!getRes.ok) throw new Error("削除対象の確認に失敗しました（エラー" + getRes.status + "）");
@@ -719,7 +687,7 @@
     var delRes = await fetch(url, {
       method: "DELETE",
       headers: {
-        "Authorization": "token " + token,
+        "X-Passphrase": token,
         "Accept": "application/vnd.github+json",
         "Content-Type": "application/json"
       },
@@ -740,7 +708,7 @@
     if (!data) return;
     var token = localStorage.getItem(TOKEN_KEY);
     if (!token) {
-      barMsg.textContent = "トークンが見つかりません。一度「終了する」してから、もう一度お入りください。";
+      barMsg.textContent = "合言葉が見つかりません。一度「終了する」してから、もう一度お入りください。";
       return;
     }
     barMsg.textContent = "保存中...";
@@ -788,7 +756,7 @@
       var res = await fetch(apiUrl(GITHUB_PATH).split("?")[0], {
         method: "PUT",
         headers: {
-          "Authorization": "token " + token,
+          "X-Passphrase": token,
           "Accept": "application/vnd.github+json",
           "Content-Type": "application/json"
         },
@@ -818,7 +786,7 @@
         var diaryRes = await fetch(apiUrl(GITHUB_PATH_DIARY).split("?")[0], {
           method: "PUT",
           headers: {
-            "Authorization": "token " + token,
+            "X-Passphrase": token,
             "Accept": "application/vnd.github+json",
             "Content-Type": "application/json"
           },
@@ -844,7 +812,7 @@
         var mangaSaveRes = await fetch(apiUrl(GITHUB_PATH_MANGA).split("?")[0], {
           method: "PUT",
           headers: {
-            "Authorization": "token " + token,
+            "X-Passphrase": token,
             "Accept": "application/vnd.github+json",
             "Content-Type": "application/json"
           },
