@@ -1369,24 +1369,50 @@
     }
   };
 
-  // ---- 4コマ漫画モーダル（index.html / manga.html 共通・2話まとめて表示） ----
-  window.openMangaViewer = function (entry, label) {
+  // ---- 4コマ漫画ビューア（index.html / manga.html 共通） ----
+  // ・manga-panels.js（window.MANGA_PANELS = { "画像のパス": [[x, y, w, h], ...] }）に、その話の「コマの位置」があれば、
+  //   1コマずつ全画面で表示し、タップで次のコマへ進む。x, y, w, h は画像全体に対する割合（0〜1）。
+  // ・「コマの位置」が無い話は、これまでどおり1枚の画像で表示する（openMangaWhole）。
+
+  // LINE / X のシェアリンク（labelText は「第12話」など）
+  function mangaShareUrls(labelText) {
+    var shareText = "テクニカルスクール甘木の4コマ漫画" + (labelText ? "「" + labelText + "」" : "") + " ⚽";
+    var pageUrl = new URL("manga.html", location.href).href;
+    return {
+      line: "https://social-plugins.line.me/lineit/share?url=" + encodeURIComponent(pageUrl) + "&text=" + encodeURIComponent(shareText),
+      x: "https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText) + "&url=" + encodeURIComponent(pageUrl)
+    };
+  }
+
+  // その話のコマの位置を返す（無い・おかしい場合は null → 1枚表示にする）
+  function mangaPanelsOf(entry) {
+    var all = window.MANGA_PANELS;
+    var list = all && entry && entry.image && all[entry.image];
+    if (!list || !list.length) return null;
+    var boxes = [];
+    for (var i = 0; i < list.length; i++) {
+      var b = list[i];
+      if (!b || b.length < 4) return null;
+      var x = +b[0], y = +b[1], w = +b[2], h = +b[3];
+      if (!isFinite(x + y + w + h) || !(w > 0) || !(h > 0)) return null;
+      boxes.push({ x: Math.max(0, x), y: Math.max(0, y), w: Math.min(w, 1), h: Math.min(h, 1) });
+    }
+    return boxes;
+  }
+
+  // 次の話（公開済みの話の中で、番号がひとつ大きい話）
+  function mangaNextEpisodeOf(entry) {
+    var list = window.__mangaEpisodesOrdered || [];
+    for (var i = 0; i < list.length; i++) {
+      if (list[i] === entry || (list[i] && entry && list[i].number === entry.number)) return list[i + 1] || null;
+    }
+    return null;
+  }
+
+  // ---- 1枚の画像でそのまま見せる（コマの位置が無い話・「全体を見る」） ----
+  function openMangaWhole(entry, label) {
     var overlay = document.getElementById("manga-modal-overlay");
     if (!overlay || !document.getElementById("manga-modal-img-1")) return;
-
-    var list = window.__mangaEpisodesOrdered || (entry ? [entry] : []);
-    var idx = -1;
-    for (var i = 0; i < list.length; i++) {
-      if (list[i] === entry || (list[i] && entry && list[i].number === entry.number)) { idx = i; break; }
-    }
-    if (idx === -1) { list = entry ? [entry] : []; idx = 0; }
-
-    var pair;
-    if (idx > 0) {
-      pair = [list[idx - 1], list[idx]]; // 選んだ話 + ひとつ前の話（合わせて8コマ）
-    } else {
-      pair = list.length ? [list[idx]] : []; // 第1話は前の話がないので1話だけ
-    }
 
     function fillPage(n, e) {
       var pageEl = document.getElementById("manga-modal-page-" + n);
@@ -1402,19 +1428,195 @@
       if (dateEl) dateEl.textContent = e.date || "";
       if (imgEl) imgEl.src = e.image ? e.image + (e.imageUpdatedAt ? "?v=" + encodeURIComponent(e.imageUpdatedAt) : "") : "";
     }
-    fillPage(1, pair[0]);
-    fillPage(2, pair[1]);
+    fillPage(1, entry || null);
+    fillPage(2, null); // 1枚だけ表示する
 
+    var links = mangaShareUrls(entry ? "第" + (entry.number || "") + "話" : "");
     var lineShare = document.getElementById("manga-share-line");
     var xShare = document.getElementById("manga-share-x");
-    var labels = pair.map(function (e) { return "第" + (e.number || "") + "話"; }).join("・");
-    var shareText = "テクニカルスクール甘木の4コマ漫画" + (labels ? "「" + labels + "」" : "") + " ⚽";
-    var pageUrl = new URL("manga.html", location.href).href;
-    if (lineShare) lineShare.href = "https://social-plugins.line.me/lineit/share?url=" + encodeURIComponent(pageUrl) + "&text=" + encodeURIComponent(shareText);
-    if (xShare) xShare.href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText) + "&url=" + encodeURIComponent(pageUrl);
+    if (lineShare) lineShare.href = links.line;
+    if (xShare) xShare.href = links.x;
 
     overlay.hidden = false;
     document.body.style.overflow = "hidden";
+  }
+
+  // ---- 1コマずつ全画面で見せる ----
+  var pv = null; // 部品と状態
+
+  function pvQuery(sel) { return pv.root.querySelector(sel); }
+
+  function buildPanelViewer() {
+    if (pv) return pv;
+    var root = document.createElement("div");
+    root.className = "pv-overlay";
+    root.hidden = true;
+    root.innerHTML =
+      '<div class="pv-top">' +
+      '  <span class="pv-title"></span>' +
+      '  <button type="button" class="pv-btn pv-whole">全体を見る</button>' +
+      '  <button type="button" class="pv-close" aria-label="閉じる">✕</button>' +
+      '</div>' +
+      '<div class="pv-stage">' +
+      '  <p class="pv-loading">読み込み中...</p>' +
+      '  <div class="pv-frame" hidden><img alt="サッカー4コマ漫画"></div>' +
+      '  <div class="pv-end" hidden>' +
+      '    <p class="pv-end-title"></p>' +
+      '    <button type="button" class="pv-end-btn pv-next-ep">次の話へ ▶</button>' +
+      '    <button type="button" class="pv-end-btn pv-again">もう一度読む</button>' +
+      '    <div class="manga-share-row">' +
+      '      <a href="#" class="share-btn share-line" target="_blank" rel="noopener">LINEで送る</a>' +
+      '      <a href="#" class="share-btn share-x" target="_blank" rel="noopener">Xでシェア</a>' +
+      '    </div>' +
+      '    <a href="manga.html" class="manga-archive-link pv-archive">📚 過去の漫画を見る</a>' +
+      '  </div>' +
+      '</div>' +
+      '<div class="pv-bottom">' +
+      '  <button type="button" class="pv-btn pv-prev">‹ 前へ</button>' +
+      '  <span class="pv-count"></span>' +
+      '  <button type="button" class="pv-btn pv-next">次へ ›</button>' +
+      '</div>';
+    document.body.appendChild(root);
+    pv = { root: root, token: 0, swipedAt: 0, s: null };
+
+    pv.img = pvQuery(".pv-frame img");
+    pvQuery(".pv-close").addEventListener("click", closePanelViewer);
+    pvQuery(".pv-whole").addEventListener("click", function () {
+      var s = pv.s;
+      hidePanelViewer();
+      if (s) openMangaWhole(s.entry, s.label);
+    });
+    pvQuery(".pv-prev").addEventListener("click", function () { pvShow(pv.s.idx - 1); });
+    pvQuery(".pv-next").addEventListener("click", function () { pvShow(pv.s.idx + 1); });
+    pvQuery(".pv-again").addEventListener("click", function () { pvShow(0); });
+    pvQuery(".pv-next-ep").addEventListener("click", function () {
+      var next = mangaNextEpisodeOf(pv.s.entry);
+      if (next && window.openMangaViewer) window.openMangaViewer(next, "第" + (next.number || "") + "話");
+    });
+
+    // 画面のタップ：左の3割で前のコマ、それ以外で次のコマ
+    var stage = pvQuery(".pv-stage");
+    stage.addEventListener("click", function (e) {
+      if (!pv.s || pv.s.natW === 0) return;
+      if (e.target.closest && e.target.closest(".pv-end")) return; // 最後の画面はボタンだけ
+      if (Date.now() - pv.swipedAt < 400) return; // スワイプ直後のクリックは無視
+      var rect = stage.getBoundingClientRect();
+      if (e.clientX - rect.left < rect.width * 0.3) pvShow(pv.s.idx - 1); else pvShow(pv.s.idx + 1);
+    });
+    // スワイプ：左へ払うと次、右へ払うと前
+    var sx = 0, sy = 0;
+    stage.addEventListener("touchstart", function (e) {
+      if (e.touches && e.touches[0]) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }
+    }, { passive: true });
+    stage.addEventListener("touchend", function (e) {
+      var t = e.changedTouches && e.changedTouches[0];
+      if (!t || !pv.s || pv.s.natW === 0) return;
+      var dx = t.clientX - sx, dy = t.clientY - sy;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        pv.swipedAt = Date.now();
+        pvShow(pv.s.idx + (dx < 0 ? 1 : -1));
+      }
+    }, { passive: true });
+
+    document.addEventListener("keydown", function (e) {
+      if (pv.root.hidden || !pv.s) return;
+      if (e.key === "Escape") { closePanelViewer(); return; }
+      if (pv.s.natW === 0) return;
+      if (e.key === "ArrowRight" || e.key === "Enter" || e.key === " ") { e.preventDefault(); pvShow(pv.s.idx + 1); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); pvShow(pv.s.idx - 1); }
+    });
+    return pv;
+  }
+
+  function hidePanelViewer() {
+    if (!pv) return;
+    pv.token++; // 読み込み途中の画像を無効にする
+    pv.root.hidden = true;
+  }
+
+  function closePanelViewer() {
+    hidePanelViewer();
+    document.body.style.overflow = "";
+  }
+
+  // i番目のコマを表示する（最後の次は「おわり」の画面）
+  function pvShow(i) {
+    var s = pv.s;
+    var n = s.boxes.length;
+    i = Math.max(0, Math.min(n, i));
+    s.idx = i;
+    var atEnd = (i === n);
+    var frame = pvQuery(".pv-frame");
+    var end = pvQuery(".pv-end");
+    frame.hidden = atEnd;
+    end.hidden = !atEnd;
+    pvQuery(".pv-prev").disabled = (i === 0);
+    pvQuery(".pv-next").disabled = atEnd;
+    pvQuery(".pv-count").textContent = atEnd ? "おわり" : (i + 1) + " / " + n;
+
+    if (atEnd) {
+      var next = mangaNextEpisodeOf(s.entry);
+      var nextBtn = pvQuery(".pv-next-ep");
+      nextBtn.hidden = !next;
+      if (next) nextBtn.textContent = "第" + (next.number || "") + "話へ ▶";
+      pvQuery(".pv-end-title").textContent = s.label + " おわり ⚽";
+      var links = mangaShareUrls(s.label);
+      pvQuery(".share-line").href = links.line;
+      pvQuery(".share-x").href = links.x;
+      pvQuery(".pv-archive").hidden = /manga\.html$/.test(location.pathname);
+      return;
+    }
+
+    var b = s.boxes[i];
+    frame.style.setProperty("--ar", String((b.w * s.natW) / (b.h * s.natH)));
+    pv.img.style.width = (100 / b.w) + "%";
+    pv.img.style.left = (-b.x / b.w * 100) + "%";
+    pv.img.style.top = (-b.y / b.h * 100) + "%";
+    frame.classList.remove("pv-in");
+    void frame.offsetWidth; // アニメーションをやり直すための再描画
+    frame.classList.add("pv-in");
+  }
+
+  function openPanelViewer(entry, label, boxes) {
+    buildPanelViewer();
+    pv.s = { entry: entry, label: label, boxes: boxes, idx: 0, natW: 0, natH: 0 };
+    var t = entry.title ? "「" + entry.title + "」" : "";
+    pvQuery(".pv-title").textContent = label + t + " ⚽";
+    pvQuery(".pv-frame").hidden = true;
+    pvQuery(".pv-end").hidden = true;
+    var loading = pvQuery(".pv-loading");
+    loading.hidden = false;
+    pvQuery(".pv-prev").disabled = true;
+    pvQuery(".pv-next").disabled = true;
+    pvQuery(".pv-count").textContent = "";
+    pv.root.hidden = false;
+    document.body.style.overflow = "hidden";
+
+    var token = ++pv.token;
+    var src = entry.image + (entry.imageUpdatedAt ? "?v=" + encodeURIComponent(entry.imageUpdatedAt) : "");
+    function ready() {
+      if (token !== pv.token) return;
+      pv.s.natW = pv.img.naturalWidth;
+      pv.s.natH = pv.img.naturalHeight;
+      if (!pv.s.natW || !pv.s.natH) { failed(); return; }
+      loading.hidden = true;
+      pvShow(0);
+    }
+    function failed() { // 画像が読めないときは、1枚表示に切り替える
+      if (token !== pv.token) return;
+      hidePanelViewer();
+      openMangaWhole(entry, label);
+    }
+    pv.img.onload = ready;
+    pv.img.onerror = failed;
+    if (pv.img.getAttribute("src") === src && pv.img.complete && pv.img.naturalWidth) ready();
+    else pv.img.src = src;
+  }
+
+  window.openMangaViewer = function (entry, label) {
+    var boxes = mangaPanelsOf(entry);
+    if (boxes) openPanelViewer(entry, label, boxes);
+    else openMangaWhole(entry, label);
 
     if (window.goatcounter && window.goatcounter.count) {
       window.goatcounter.count({ path: "manga-open", title: "4コマ漫画を開いた", event: true });
