@@ -1615,8 +1615,12 @@
 
   window.openMangaViewer = function (entry, label) {
     var boxes = mangaPanelsOf(entry);
-    if (boxes) openPanelViewer(entry, label, boxes);
-    else openMangaWhole(entry, label);
+    if (boxes) {
+      openPanelViewer(entry, label, boxes);
+    } else {
+      hidePanelViewer(); // 「次の話へ」で来たときに、1コマ表示が手前に残らないよう先に閉じる
+      openMangaWhole(entry, label);
+    }
 
     if (window.goatcounter && window.goatcounter.count) {
       window.goatcounter.count({ path: "manga-open", title: "4コマ漫画を開いた", event: true });
