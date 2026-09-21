@@ -293,22 +293,43 @@
   }
 
   /* ===== 編集モード本体 ===== */
-  var barEl, barMsg, barStats;
+  var barEl, barMsg, statsEl;
+
+  // 閲覧数カード（編集モードのとき、ページの一番上・ヘッダーのすぐ下に出す）
+  function buildStatsCard() {
+    statsEl = document.createElement("div");
+    statsEl.id = "admin-stats";
+    statsEl.style.display = "none";
+    statsEl.innerHTML =
+      '<div class="admin-stats-title">📊 サイトの閲覧数</div>' +
+      '<div class="admin-stats-grid">' +
+      '  <div class="admin-stats-item"><div class="admin-stats-num" data-k="day">-</div><div class="admin-stats-label">今日</div></div>' +
+      '  <div class="admin-stats-item"><div class="admin-stats-num" data-k="week">-</div><div class="admin-stats-label">週（直近7日）</div></div>' +
+      '  <div class="admin-stats-item"><div class="admin-stats-num" data-k="month">-</div><div class="admin-stats-label">月（直近30日）</div></div>' +
+      '  <div class="admin-stats-item"><div class="admin-stats-num" data-k="all">-</div><div class="admin-stats-label">合計</div></div>' +
+      '</div>' +
+      '<div class="admin-stats-note"></div>';
+    var header = document.querySelector("header.site-header");
+    if (header && header.parentNode) {
+      header.parentNode.insertBefore(statsEl, header.nextSibling);
+    } else {
+      document.body.insertBefore(statsEl, document.body.firstChild);
+    }
+  }
 
   function buildBar() {
+    buildStatsCard();
     barEl = document.createElement("div");
     barEl.id = "admin-bar";
     barEl.style.display = "none";
     barEl.innerHTML =
       '<span class="admin-bar-label">🔓 編集モード</span>' +
-      '<span class="admin-bar-stats"></span>' +
       '<span class="admin-bar-msg"></span>' +
       '<button type="button" class="admin-bar-btn" id="admin-line-btn">📣 LINE配信</button>' +
       '<button type="button" class="admin-bar-btn primary">💾 保存する</button>' +
       '<button type="button" class="admin-bar-btn">終了する</button>';
     document.body.appendChild(barEl);
     barMsg = barEl.querySelector(".admin-bar-msg");
-    barStats = barEl.querySelector(".admin-bar-stats");
     barEl.querySelector("#admin-line-btn").addEventListener("click", openLineModal);
     var btns = barEl.querySelectorAll(".admin-bar-btn:not(#admin-line-btn)");
     btns[0].addEventListener("click", saveToGitHub);
@@ -578,7 +599,12 @@
   async function fetchGoatCounterTotal(token, days) {
     var end = new Date();
     var start = new Date(end.getTime() - days * 24 * 60 * 60 * 1000);
-    var url = RELAY_URL + "/gc/api/v0/stats/total?start=" + fmtDate(start) + "&end=" + fmtDate(end);
+    return fetchGoatCounterRange(token, fmtDate(start), fmtDate(end));
+  }
+
+  // start / end は "YYYY-MM-DD"
+  async function fetchGoatCounterRange(token, start, end) {
+    var url = RELAY_URL + "/gc/api/v0/stats/total?start=" + start + "&end=" + end;
     var res = await fetch(url, { headers: { "X-Passphrase": token } });
     if (res.status === 401) throw new Error("合言葉が無効です");
     if (res.status === 503) throw new Error("中継所に閲覧数の鍵が入っていません");
@@ -605,20 +631,39 @@
   }
   window.__loadMangaOpenCounter = loadMangaOpenCounter;
 
+  // 端末の日付（日本時間）で "YYYY-MM-DD" にする
+  function localDateStr(d) {
+    var m = d.getMonth() + 1, day = d.getDate();
+    return d.getFullYear() + "-" + (m < 10 ? "0" : "") + m + "-" + (day < 10 ? "0" : "") + day;
+  }
+
   async function loadViewStats() {
-    if (!barStats) return;
+    if (!statsEl) return;
+    var note = statsEl.querySelector(".admin-stats-note");
+    var nums = {};
+    statsEl.querySelectorAll(".admin-stats-num").forEach(function (el) { nums[el.getAttribute("data-k")] = el; });
     var token = getGoatCounterToken();
     if (!token) {
-      barStats.textContent = "";
+      note.textContent = "";
       return;
     }
-    barStats.textContent = "📊 閲覧数を取得中...";
+    note.textContent = "取得中...";
+    var now = new Date();
+    var ago = function (n) { return localDateStr(new Date(now.getFullYear(), now.getMonth(), now.getDate() - n)); };
+    var today = ago(0);
     try {
-      var week = await fetchGoatCounterTotal(token, 7);
-      var month = await fetchGoatCounterTotal(token, 30);
-      barStats.textContent = "📊 今週の閲覧数: " + week.total + "回／今月の閲覧数: " + month.total + "回";
+      var r = await Promise.all([
+        fetchGoatCounterRange(token, today, today),
+        fetchGoatCounterRange(token, ago(6), today),
+        fetchGoatCounterRange(token, ago(29), today),
+        fetchGoatCounterRange(token, "2020-01-01", today)
+      ]);
+      ["day", "week", "month", "all"].forEach(function (k, i) {
+        nums[k].textContent = Number(r[i].total).toLocaleString("ja-JP");
+      });
+      note.textContent = "ページが開かれた回数です（更新: " + now.toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" }) + "）";
     } catch (e) {
-      barStats.textContent = "📊 閲覧数を取得できませんでした（" + e.message + "）";
+      note.textContent = "閲覧数を取得できませんでした（" + e.message + "）";
     }
   }
 
@@ -634,6 +679,7 @@
     }
     rerenderAdmin();
     barEl.style.display = "flex";
+    statsEl.style.display = "block";
     barMsg.textContent = "編集して「保存する」を押してください。";
     loadViewStats();
     if (scrollTargetId) {

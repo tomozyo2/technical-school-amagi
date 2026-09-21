@@ -1170,7 +1170,34 @@ footer .foot-logo {
   flex-wrap: wrap;
 }
 .admin-bar-label { color: var(--green-bright); font-weight: 900; font-size: .85rem; }
-.admin-bar-stats { color: var(--green-bright); font-size: .8rem; font-weight: 700; }
+
+/* 閲覧数カード（編集モード・ヘッダーのすぐ下） */
+#admin-stats {
+  background: var(--darker);
+  border-bottom: 3px solid var(--green);
+  padding: 14px 20px 12px;
+}
+.admin-stats-title { color: var(--green-bright); font-weight: 900; font-size: .85rem; margin-bottom: 10px; }
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  max-width: 720px;
+}
+.admin-stats-item {
+  min-width: 0;
+  background: var(--dark);
+  border: 1px solid #2a4636;
+  border-radius: 10px;
+  padding: 10px 6px;
+  text-align: center;
+}
+.admin-stats-num { color: #fff; font-weight: 900; font-size: clamp(1.1rem, 5vw, 1.8rem); line-height: 1.2; }
+.admin-stats-label { color: var(--gray); font-size: .7rem; font-weight: 700; margin-top: 4px; }
+.admin-stats-note { color: var(--gray); font-size: .72rem; margin-top: 8px; min-height: 1em; }
+@media (max-width: 400px) {
+  .admin-stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
 .manga-view-counter { display: block; color: var(--green-bright); font-size: .78rem; font-weight: 700; margin: 6px 0; }
 .admin-bar-msg { color: var(--gray); font-size: .8rem; }
 .admin-bar-btn {
