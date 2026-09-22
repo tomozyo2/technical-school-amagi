@@ -72,9 +72,9 @@ window.MANGA_CONTENT = {
       {
         "number": 2,
         "date": "2026年8月28日",
-        "title": "必殺シュート、まさかの大暴投",
-        "image": "manga/episode2-1789835714683-0.jpg",
-        "imageUpdatedAt": "1789835717783"
+        "title": "チロのシュート威力",
+        "image": "manga/episode2-1790084490000-0.png",
+        "imageUpdatedAt": "1790084490000"
       },
       {
         "number": 1,
