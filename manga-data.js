@@ -58,9 +58,9 @@ window.MANGA_CONTENT = {
       {
         "number": 4,
         "date": "2026年9月2日",
-        "title": "まさかの雨でプールに変身",
-        "image": "manga/episode4-1789835749463-0.jpg",
-        "imageUpdatedAt": "1789835751906"
+        "title": "犬の習性2",
+        "image": "manga/episode4-1790092481000-0.png",
+        "imageUpdatedAt": "1790092481000"
       },
       {
         "number": 3,
