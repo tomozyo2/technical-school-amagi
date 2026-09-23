@@ -44,9 +44,9 @@ window.MANGA_CONTENT = {
       {
         "number": 6,
         "date": "2026年9月11日",
-        "title": "ちょうちょに気を取られて…",
-        "image": "manga/episode6-1789910630000.jpg",
-        "imageUpdatedAt": "1789910630000"
+        "title": "犬の習性3",
+        "image": "manga/episode6-1790171565000-0.png",
+        "imageUpdatedAt": "1790171565000"
       },
       {
         "number": 5,
