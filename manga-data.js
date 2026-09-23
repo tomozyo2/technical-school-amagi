@@ -14,9 +14,9 @@ window.MANGA_CONTENT = {
   "series": {
     "latest": {
       "date": "2026年9月15日",
-      "title": "",
-      "image": "manga/episode10-1789986826579-0.jpg",
-      "imageUpdatedAt": "1789986830376",
+      "title": "天然ライバル",
+      "image": "manga/episode10-1790177012000-0.png",
+      "imageUpdatedAt": "1790177012000",
       "number": 10
     },
     "archive": [
