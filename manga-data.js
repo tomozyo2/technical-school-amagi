@@ -23,9 +23,9 @@ window.MANGA_CONTENT = {
       {
         "number": 9,
         "date": "2026年9月15日",
-        "title": "",
-        "image": "manga/episode9-1789424346402-0.jpg",
-        "imageUpdatedAt": "1789424349145"
+        "title": "ライバル登場",
+        "image": "manga/episode9-1790175259000-0.png",
+        "imageUpdatedAt": "1790175259000"
       },
       {
         "number": 8,
