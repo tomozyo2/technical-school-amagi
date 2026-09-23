@@ -30,9 +30,9 @@ window.MANGA_CONTENT = {
       {
         "number": 8,
         "date": "2026年9月13日",
-        "title": "",
-        "image": "manga/episode8-1789300695428.jpg",
-        "imageUpdatedAt": "1789300698043"
+        "title": "すい星？？",
+        "image": "manga/episode8-1790172183000-0.png",
+        "imageUpdatedAt": "1790172183000"
       },
       {
         "number": 7,
