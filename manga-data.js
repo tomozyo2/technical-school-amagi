@@ -94,8 +94,8 @@ window.MANGA_CONTENT = {
       {
         "date": "2026年9月15日",
         "title": "",
-        "image": "manga/episodex-1789425789552-2.jpg",
-        "imageUpdatedAt": "1789425792211"
+        "image": "manga/episodex-1790147475097-0.jpg",
+        "imageUpdatedAt": "1790147478370"
       },
       {
         "date": "2026年9月15日",
@@ -124,14 +124,14 @@ window.MANGA_CONTENT = {
       {
         "date": "2026年9月15日",
         "title": "",
-        "image": "manga/episodex-1789425803222-2.jpg",
-        "imageUpdatedAt": "1789425806110"
+        "image": "manga/episodex-1790147478370-1.jpg",
+        "imageUpdatedAt": "1790147481006"
       },
       {
         "date": "2026年9月15日",
         "title": "",
-        "image": "manga/episodex-1789425806110-3.jpg",
-        "imageUpdatedAt": "1789425809482"
+        "image": "manga/episodex-1790147481006-2.jpg",
+        "imageUpdatedAt": "1790147483479"
       },
       {
         "date": "2026年9月17日",
