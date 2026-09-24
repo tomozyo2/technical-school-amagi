@@ -93,9 +93,9 @@ window.MANGA_CONTENT = {
       },
       {
         "date": "2026年9月15日",
-        "title": "",
-        "image": "manga/episodex-1790147475097-0.jpg",
-        "imageUpdatedAt": "1790147478370"
+        "title": "キックオフシュート",
+        "image": "manga/episodex-1790218469000-0.png",
+        "imageUpdatedAt": "1790218469000"
       },
       {
         "date": "2026年9月15日",
