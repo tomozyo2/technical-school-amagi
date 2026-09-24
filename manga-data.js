@@ -153,15 +153,15 @@ window.MANGA_CONTENT = {
       },
       {
         "date": "2026年9月20日",
-        "title": "",
-        "image": "manga/episodex-1789914098000-0.png",
-        "imageUpdatedAt": "1789914098003"
+        "title": "仲間との出会い",
+        "image": "manga/episodex-1790228500000-0.png",
+        "imageUpdatedAt": "1790228500000"
       },
       {
         "date": "2026年9月20日",
-        "title": "",
-        "image": "manga/episodex-1789914098001-1.png",
-        "imageUpdatedAt": "1789914098004"
+        "title": "絶対チームには入らない",
+        "image": "manga/episodex-1790229500000-0.png",
+        "imageUpdatedAt": "1790229500000"
       },
       {
         "date": "2026年9月20日",
