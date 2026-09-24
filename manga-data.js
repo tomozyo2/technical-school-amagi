@@ -99,9 +99,9 @@ window.MANGA_CONTENT = {
       },
       {
         "date": "2026年9月15日",
-        "title": "",
-        "image": "manga/episodex-1789425792211-3.jpg",
-        "imageUpdatedAt": "1789425794034"
+        "title": "ビッグスロー",
+        "image": "manga/episodex-1790219170000-0.png",
+        "imageUpdatedAt": "1790219170000"
       },
       {
         "date": "2026年9月15日",
