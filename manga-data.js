@@ -111,9 +111,9 @@ window.MANGA_CONTENT = {
       },
       {
         "date": "2026年9月15日",
-        "title": "",
-        "image": "manga/episodex-1789425798211-0.jpg",
-        "imageUpdatedAt": "1789425800715"
+        "title": "ネコネココネコシュート!?",
+        "image": "manga/episodex-1790220680000-0.png",
+        "imageUpdatedAt": "1790220680000"
       },
       {
         "date": "2026年9月15日",
