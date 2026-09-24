@@ -135,9 +135,9 @@ window.MANGA_CONTENT = {
       },
       {
         "date": "2026年9月17日",
-        "title": "",
-        "image": "manga/episodex-1789620759893-0.jpg",
-        "imageUpdatedAt": "1789620763236"
+        "title": "イヌチーム反撃",
+        "image": "manga/episodex-1790224500000-0.png",
+        "imageUpdatedAt": "1790224500000"
       },
       {
         "date": "2026年9月17日",
