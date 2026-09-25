@@ -1647,3 +1647,30 @@ body.admin-mode-on { padding-bottom: 76px; }
 /* 練習日カード：2行目（雨は中止・祝日は休み）を改行して、少し小さく表示 */
 #info-day, #info-area { white-space: pre-line; line-height: 1.6; }
 #info-area { font-size: .88em; }
+
+/* 問い合わせフォーム */
+.cf-box { text-align: left; padding-top: 52px; }
+.cf-title { text-align: center; font-size: 1rem; }
+.cf-label { display: block; color: #d5e8dc; font-size: .82rem; font-weight: 700; margin-bottom: 14px; }
+.cf-req { background: var(--orange); color: #fff; font-size: .65rem; border-radius: 999px; padding: 1px 7px; margin-left: 4px; }
+.cf-form input[type="text"], .cf-form textarea {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 11px 12px;
+  font: inherit;
+  font-size: 16px;
+  color: #10241a;
+  background: #f4f8f5;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+.cf-form input[type="text"]:focus, .cf-form textarea:focus { outline: none; border-color: var(--green-bright); }
+.cf-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.cf-msg { font-size: .82rem; margin: 0 0 12px; }
+.cf-err { color: #ff9b9b; }
+.cf-ok { color: #a8e6bf; }
+.cf-submit { width: 100%; cursor: pointer; border: none; }
+.cf-submit:disabled { opacity: .6; cursor: default; }
+.cf-done { color: #fff; font-weight: 700; line-height: 1.9; text-align: center; margin: 20px 0; }

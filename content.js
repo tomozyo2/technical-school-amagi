@@ -144,6 +144,7 @@ window.SITE_CONTENT = {
     "lineUrl": "https://line.me/ti/p/~hirowataritomoaki",
     "lineNote": "QRコードを読み取るか、下のボタンから友だち追加",
     "mailto": "amagifc@gmail.com",
+    "formUrl": "",
     "mailNote": "お問い合わせ・体験申込みはこちらから",
     "instagramUrl": "https://www.instagram.com/reel/DdVfO--JdHi/",
     "instagramLabel": "📷 9/16Instagramを見る"

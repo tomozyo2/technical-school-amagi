@@ -1346,6 +1346,14 @@
       text("mail-note", c.contact, "mailNote");
       var mailLink = byId("mail-link");
       if (mailLink) mailLink.href = "mailto:" + (c.contact.mailto || "");
+      // 問い合わせフォームの送り先（formUrl）が設定されているときは、押すとサイトの中で書き込めるようにする
+      if (!editable && mailLink && c.contact.formUrl) {
+        mailLink.textContent = "✉️ ここから書いて送る";
+        mailLink.addEventListener("click", function (e) {
+          e.preventDefault();
+          openContactForm(c.contact.formUrl, c.contact.mailto || "");
+        });
+      }
 
       if (editable) {
         var lineNoteEl = byId("line-note");
@@ -1371,6 +1379,67 @@
       text("footer-copyright", c.footer, "copyright");
     }
   };
+
+  // ---- 問い合わせフォーム（サイト内で書き込み → 受け取り側のLINEに通知） ----
+  var contactFormEl = null;
+  function openContactForm(formUrl, fallbackMail) {
+    if (!contactFormEl) {
+      contactFormEl = document.createElement("div");
+      contactFormEl.className = "manga-modal-overlay";
+      contactFormEl.hidden = true;
+      contactFormEl.addEventListener("click", function (e) { if (e.target === contactFormEl) closeContactForm(); });
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !contactFormEl.hidden) closeContactForm(); });
+      document.body.appendChild(contactFormEl);
+    }
+    contactFormEl.innerHTML =
+      '<div class="manga-modal-box cf-box">' +
+      '  <button type="button" class="manga-modal-close cf-close" aria-label="閉じる">✕</button>' +
+      '  <p class="manga-modal-title cf-title">✉️ お問い合わせ・体験申込み</p>' +
+      '  <form class="cf-form" novalidate>' +
+      '    <label class="cf-label">お名前 <span class="cf-req">必須</span><input type="text" name="name" maxlength="60" autocomplete="name"></label>' +
+      '    <label class="cf-label">ご連絡先 <span class="cf-req">必須</span><input type="text" name="contact" maxlength="100" placeholder="電話番号・メール・LINE名のどれか"></label>' +
+      '    <label class="cf-label">内容 <span class="cf-req">必須</span><textarea name="message" rows="5" maxlength="1000" placeholder="体験練習の希望日、お子さんの学年、ご質問など"></textarea></label>' +
+      '    <input type="text" name="website" class="cf-hp" tabindex="-1" autocomplete="off" aria-hidden="true">' +
+      '    <p class="cf-msg" hidden></p>' +
+      '    <button type="submit" class="btn cf-submit">送信する</button>' +
+      '  </form>' +
+      '</div>';
+    var box = contactFormEl.querySelector(".cf-box");
+    contactFormEl.querySelector(".cf-close").addEventListener("click", closeContactForm);
+    var form = contactFormEl.querySelector(".cf-form");
+    var msg = contactFormEl.querySelector(".cf-msg");
+    var submit = contactFormEl.querySelector(".cf-submit");
+    function say(t, isError) { msg.hidden = false; msg.textContent = t; msg.className = "cf-msg" + (isError ? " cf-err" : " cf-ok"); }
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var name = form.elements.name.value.trim();
+      var contact = form.elements.contact.value.trim();
+      var message = form.elements.message.value.trim();
+      if (form.elements.website.value) { closeContactForm(); return; } // 迷惑投稿よけ
+      if (!name || !contact || !message) { say("お名前・ご連絡先・内容を入力してください。", true); return; }
+      submit.disabled = true;
+      say("送信中です…", false);
+      var body = new URLSearchParams({ name: name, contact: contact, message: message }).toString();
+      fetch(formUrl, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body })
+        .then(function () {
+          form.innerHTML = '<p class="cf-done">✅ 送信しました！<br>内容を確認して、できるだけ早くご連絡します。<br>ありがとうございます。</p>';
+          if (window.goatcounter && window.goatcounter.count) {
+            window.goatcounter.count({ path: "contact-form-sent", title: "問い合わせフォーム送信", event: true });
+          }
+        })
+        .catch(function () {
+          submit.disabled = false;
+          say("送信できませんでした。お手数ですが、LINEかメール(" + fallbackMail + ")でお送りください。", true);
+        });
+    });
+    contactFormEl.hidden = false;
+    document.body.style.overflow = "hidden";
+    if (box) box.scrollTop = 0;
+  }
+  function closeContactForm() {
+    if (contactFormEl) contactFormEl.hidden = true;
+    document.body.style.overflow = "";
+  }
 
   // ---- 4コマ漫画ビューア（index.html / manga.html 共通） ----
   // ・manga-panels.js（window.MANGA_PANELS = { "画像のパス": [[x, y, w, h], ...] }）に、その話の「コマの位置」があれば、
