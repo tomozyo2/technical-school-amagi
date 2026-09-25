@@ -382,6 +382,57 @@ nav.main-nav a.admin-nav-link:hover {
 }
 .manga-modal-page[hidden] { display: none; }
 
+/* チロ・メロのアイコン：お知らせ＋話数タイトル一覧 */
+.ml-box { text-align: left; padding-top: 52px; }
+.ml-notice {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  background: #1a3a26;
+  border: 2px solid var(--orange);
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: var(--white);
+  font-weight: 800;
+  font-size: .9rem;
+  text-align: left;
+  cursor: pointer;
+}
+.ml-notice:hover { background: #21472f; }
+.ml-notice-text { flex: 1 1 auto; }
+.ml-head { margin: 18px 0 8px; text-align: left; }
+.ml-list { display: flex; flex-direction: column; gap: 6px; }
+.ml-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  background: #132a1c;
+  border: 1px solid #1e3d2a;
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--white);
+  font-size: .85rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+.ml-row:hover { border-color: var(--green-bright); }
+.ml-row-text { flex: 1 1 auto; }
+.ml-new {
+  background: var(--orange);
+  color: #fff;
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .04em;
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+.ml-date { color: #b9d6c4; font-size: .72rem; font-weight: 600; }
+
 /* 4コマ漫画：1コマずつ全画面で表示（タップで次のコマへ） */
 .pv-overlay {
   position: fixed;

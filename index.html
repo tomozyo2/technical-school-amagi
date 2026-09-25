@@ -314,6 +314,7 @@
     var seriesBtn = document.getElementById("mascot-series-btn");
     if (seriesBtn) {
       seriesBtn.addEventListener("click", function () {
+        if (window.openMangaList) { window.openMangaList(); return; }
         var s = window.SITE_CONTENT && window.SITE_CONTENT.manga && window.SITE_CONTENT.manga.series;
         var latest = s && s.latest;
         if (window.openMangaViewer) window.openMangaViewer(latest, "第" + (latest && latest.number || "") + "話");

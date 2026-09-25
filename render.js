@@ -33,6 +33,9 @@
     s.queue = s.queue || [];
     if (idx < 0 || idx >= s.queue.length) return;
     var toPublish = s.queue.splice(0, idx + 1);
+    var now = new Date();
+    var publishDate = now.getFullYear() + "年" + (now.getMonth() + 1) + "月" + now.getDate() + "日";
+    toPublish.forEach(function (it) { it.date = publishDate; }); // 公開した日を「更新日付」にする（トップの一覧の New 表示に使う）
     var base = maxPublishedMangaNumber(s);
     s.archive = s.archive || [];
     if (s.latest && (s.latest.image || s.latest._pendingImage)) {
@@ -1626,6 +1629,118 @@
       window.goatcounter.count({ path: "manga-open", title: "4コマ漫画を開いた", event: true });
     }
   };
+
+  // ---- チロ・メロのアイコンを押したときの「お知らせ＋話数タイトル一覧」 ----
+  var mangaListEl = null;
+
+  // 更新日付（"2026年9月25日"）を { m, d, time } にする。読めなければ null
+  function parseMangaDate(str) {
+    var m = /(\d{4})年(\d{1,2})月(\d{1,2})日/.exec(str || "");
+    if (!m) return null;
+    return { m: +m[2], d: +m[3], time: new Date(+m[1], +m[2] - 1, +m[3]).getTime() };
+  }
+
+  // New を付ける話：最新話と、更新日付が7日以内の話
+  function isMangaNew(entry, isLatest) {
+    if (isLatest) return true;
+    var p = parseMangaDate(entry && entry.date);
+    if (!p) return false;
+    var days = (Date.now() - p.time) / 86400000;
+    return days >= -1 && days <= 7;
+  }
+
+  window.openMangaList = function () {
+    var s = window.SITE_CONTENT && window.SITE_CONTENT.manga && window.SITE_CONTENT.manga.series;
+    var list = window.__mangaEpisodesOrdered || [];
+    if (!s || !list.length) {
+      if (window.openMangaViewer && s && s.latest) window.openMangaViewer(s.latest, "第" + (s.latest.number || "") + "話");
+      return;
+    }
+    if (!mangaListEl) {
+      mangaListEl = document.createElement("div");
+      mangaListEl.className = "manga-modal-overlay";
+      mangaListEl.hidden = true;
+      mangaListEl.addEventListener("click", function (e) { if (e.target === mangaListEl) closeMangaList(); });
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !mangaListEl.hidden) closeMangaList(); });
+      document.body.appendChild(mangaListEl);
+    }
+    var box = document.createElement("div");
+    box.className = "manga-modal-box ml-box";
+    var closeBtn = document.createElement("button");
+    closeBtn.type = "button";
+    closeBtn.className = "manga-modal-close";
+    closeBtn.setAttribute("aria-label", "閉じる");
+    closeBtn.textContent = "✕";
+    closeBtn.addEventListener("click", closeMangaList);
+    box.appendChild(closeBtn);
+
+    function openEp(entry) {
+      closeMangaList();
+      if (window.openMangaViewer) window.openMangaViewer(entry, "第" + (entry.number || "") + "話");
+    }
+    function epText(entry) {
+      return "第" + (entry.number || "") + "話" + (entry.title ? "「" + entry.title + "」" : "");
+    }
+    function addBadge(parent, entry) {
+      var b = document.createElement("span");
+      b.className = "ml-new";
+      b.textContent = "New";
+      parent.appendChild(b);
+      var p = parseMangaDate(entry.date);
+      if (p) {
+        var dt = document.createElement("span");
+        dt.className = "ml-date";
+        dt.textContent = p.m + "/" + p.d + "更新";
+        parent.appendChild(dt);
+      }
+    }
+
+    // 上のお知らせ（最新話）
+    var latest = list[list.length - 1];
+    var notice = document.createElement("button");
+    notice.type = "button";
+    notice.className = "ml-notice";
+    var nText = document.createElement("span");
+    nText.className = "ml-notice-text";
+    nText.textContent = "📢 " + epText(latest);
+    notice.appendChild(nText);
+    addBadge(notice, latest);
+    notice.addEventListener("click", function () { openEp(latest); });
+    box.appendChild(notice);
+
+    var head = document.createElement("p");
+    head.className = "manga-modal-title ml-head";
+    head.textContent = "⚽ 4コマ漫画 話数一覧";
+    box.appendChild(head);
+
+    // 1話から最新話まで
+    var ul = document.createElement("div");
+    ul.className = "ml-list";
+    list.forEach(function (entry, i) {
+      var isLatest = (i === list.length - 1);
+      var row = document.createElement("button");
+      row.type = "button";
+      row.className = "ml-row";
+      var t = document.createElement("span");
+      t.className = "ml-row-text";
+      t.textContent = epText(entry);
+      row.appendChild(t);
+      if (isMangaNew(entry, isLatest)) addBadge(row, entry);
+      row.addEventListener("click", function () { openEp(entry); });
+      ul.appendChild(row);
+    });
+    box.appendChild(ul);
+
+    while (mangaListEl.firstChild) mangaListEl.removeChild(mangaListEl.firstChild);
+    mangaListEl.appendChild(box);
+    mangaListEl.hidden = false;
+    document.body.style.overflow = "hidden";
+  };
+
+  function closeMangaList() {
+    if (mangaListEl) mangaListEl.hidden = true;
+    document.body.style.overflow = "";
+  }
 
   (function initMangaModalChrome() {
     var overlay = document.getElementById("manga-modal-overlay");
