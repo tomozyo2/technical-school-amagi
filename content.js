@@ -12,8 +12,8 @@ window.SITE_CONTENT = {
   "hero": {
     "eyebrow": "TECHNICAL SCHOOL AMAGI",
     "headline1": "基礎を学ぼう",
-    "headlineAccent": "自分で考えてプレイする",
-    "headline2": "サッカーを、もっと知ることで楽しもう",
+    "headlineAccent": "自分で考えてプレイできる選手になろう",
+    "headline2": "サッカーをもっと楽しく学ぼう",
     "lead": "テクニカルスクール甘木は、1年生から6年生までを対象にしたサッカースクールです。\n毎週火曜日、丸山公園多目的広場で楽しくトレーニングしています",
     "badge": "入会金0円・体験練習は無料でOK！",
     "ctaText": "体験練習に申し込む"

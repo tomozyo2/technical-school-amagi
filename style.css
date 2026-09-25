@@ -187,6 +187,11 @@ nav.main-nav a.admin-nav-link:hover {
   margin: 0 0 20px;
 }
 .hero h1 .accent { color: var(--green-bright); }
+/* 見出しは3行（基礎を学ぼう／自分で考えて…／サッカーを…）。それぞれ1行に収まるよう大きさを調整 */
+.hero h1 span { display: block; white-space: nowrap; }
+.hero h1 #hero-headline1 { font-size: min(8.4vw, 3.4rem); }
+.hero h1 .accent { font-size: min(4.8vw, 2.6rem); margin: 4px 0; }
+.hero h1 #hero-headline2 { font-size: min(5.6vw, 2.2rem); }
 
 .hero p.lead {
   font-size: 1.05rem;
