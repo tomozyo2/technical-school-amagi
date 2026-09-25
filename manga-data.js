@@ -174,6 +174,12 @@ window.MANGA_CONTENT = {
         "title": "イヌばやしの実力",
         "image": "manga/episodex-1790140387000-0.png",
         "imageUpdatedAt": "1790140387000"
+      },
+      {
+        "date": "2026年9月25日",
+        "title": "オーラの正体",
+        "image": "manga/episodex-1790300000000-0.png",
+        "imageUpdatedAt": "1790300000000"
       }
     ]
   }
