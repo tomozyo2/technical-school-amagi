@@ -193,6 +193,12 @@ window.MANGA_CONTENT = {
         "title": "メロのシュート炸裂",
         "image": "manga/episodex-1790320000000-0.png",
         "imageUpdatedAt": "1790320000000"
+      },
+      {
+        "date": "2026年9月25日",
+        "title": "ゴールはまかせろ！",
+        "image": "manga/episodex-1790330000000-0.png",
+        "imageUpdatedAt": "1790330000000"
       }
     ]
   }
