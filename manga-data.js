@@ -199,6 +199,12 @@ window.MANGA_CONTENT = {
         "title": "ゴールはまかせろ！",
         "image": "manga/episodex-1790330000000-0.png",
         "imageUpdatedAt": "1790330000000"
+      },
+      {
+        "date": "2026年9月25日",
+        "title": "ネコだましの逆襲",
+        "image": "manga/episodex-1790340000000-0.png",
+        "imageUpdatedAt": "1790340000000"
       }
     ]
   }
