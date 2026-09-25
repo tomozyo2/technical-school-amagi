@@ -1643,3 +1643,6 @@ body.admin-mode-on { padding-bottom: 76px; }
   font-weight: 700;
   font-size: .84rem;
 }
+
+/* 練習日カード：2行目（雨は中止・祝日は休み）を改行して、少し小さく表示 */
+#info-day { white-space: pre-line; line-height: 1.6; }
