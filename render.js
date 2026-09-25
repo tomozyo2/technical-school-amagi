@@ -1492,6 +1492,14 @@
     pvQuery(".pv-prev").addEventListener("click", function () { pvShow(pv.s.idx - 1); });
     pvQuery(".pv-next").addEventListener("click", function () { pvShow(pv.s.idx + 1); });
     pvQuery(".pv-again").addEventListener("click", function () { pvShow(0); });
+    // 「過去の漫画を見る」：トップページでは、話数一覧（アイコンを押したときの画面）に戻る
+    pvQuery(".pv-archive").addEventListener("click", function (e) {
+      if (window.openMangaList && !/manga\.html$/.test(location.pathname)) {
+        e.preventDefault();
+        closePanelViewer();
+        window.openMangaList();
+      }
+    });
     pvQuery(".pv-next-ep").addEventListener("click", function () {
       var next = mangaNextEpisodeOf(pv.s.entry);
       if (next && window.openMangaViewer) window.openMangaViewer(next, "第" + (next.number || "") + "話");
@@ -1772,6 +1780,16 @@
       document.body.style.overflow = "";
     }
     if (closeBtn) closeBtn.addEventListener("click", closeModal);
+    var archiveLink = overlay.querySelector(".manga-archive-link");
+    if (archiveLink) {
+      archiveLink.addEventListener("click", function (e) {
+        if (window.openMangaList && !/manga\.html$/.test(location.pathname)) {
+          e.preventDefault();
+          closeModal();
+          window.openMangaList();
+        }
+      });
+    }
     overlay.addEventListener("click", function (e) { if (e.target === overlay) closeModal(); });
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !overlay.hidden) closeModal(); });
   })();
