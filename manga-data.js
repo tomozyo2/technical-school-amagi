@@ -13,13 +13,20 @@
 window.MANGA_CONTENT = {
   "series": {
     "latest": {
-      "date": "2026年9月15日",
-      "title": "天然ライバル",
-      "image": "manga/episode10-1790177012000-0.png",
-      "imageUpdatedAt": "1790177012000",
-      "number": 10
+      "date": "2026年9月25日",
+      "title": "カップ戦開始",
+      "image": "manga/episodex-1790177522000-0.png",
+      "imageUpdatedAt": "1790177522000",
+      "number": 11
     },
     "archive": [
+      {
+        "date": "2026年9月15日",
+        "title": "天然ライバル",
+        "image": "manga/episode10-1790177012000-0.png",
+        "imageUpdatedAt": "1790177012000",
+        "number": 10
+      },
       {
         "number": 9,
         "date": "2026年9月15日",
@@ -85,12 +92,6 @@ window.MANGA_CONTENT = {
       }
     ],
     "queue": [
-      {
-        "date": "2026年9月15日",
-        "title": "カップ戦開始",
-        "image": "manga/episodex-1790177522000-0.png",
-        "imageUpdatedAt": "1790177522000"
-      },
       {
         "date": "2026年9月15日",
         "title": "キックオフシュート",
