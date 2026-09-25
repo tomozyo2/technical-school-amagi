@@ -432,6 +432,20 @@ nav.main-nav a.admin-nav-link:hover {
   padding: 2px 8px;
 }
 .ml-date { color: #b9d6c4; font-size: .72rem; font-weight: 600; }
+.ml-ig { margin-top: 18px; padding-top: 16px; border-top: 1px dashed #2a4a35; text-align: center; }
+.ml-ig-text { color: #d5e8dc; font-size: .8rem; line-height: 1.7; margin: 0 0 12px; }
+.ml-ig-btn {
+  display: inline-block;
+  background: linear-gradient(45deg, #f9a03f, #e1306c 55%, #833ab4);
+  color: #fff;
+  font-weight: 900;
+  font-size: .9rem;
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 12px 22px;
+  box-shadow: 0 6px 16px rgba(225,48,108,.3);
+}
+.ml-ig-btn:hover { filter: brightness(1.1); }
 
 /* 4コマ漫画：1コマずつ全画面で表示（タップで次のコマへ） */
 .pv-overlay {

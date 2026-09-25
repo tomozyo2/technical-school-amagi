@@ -1731,6 +1731,27 @@
     });
     box.appendChild(ul);
 
+    // 一覧の下：インスタへの誘導
+    var ig = document.createElement("div");
+    ig.className = "ml-ig";
+    var igText = document.createElement("p");
+    igText.className = "ml-ig-text";
+    igText.textContent = "続きが読みたい人・気に入ってくれた人は、Instagramのフォローをお願いします！新しい話はインスタでもいち早くお知らせします 📸";
+    ig.appendChild(igText);
+    var igLink = document.createElement("a");
+    igLink.className = "ml-ig-btn";
+    igLink.href = "https://www.instagram.com/chiromero_fc/";
+    igLink.target = "_blank";
+    igLink.rel = "noopener";
+    igLink.textContent = "📷 Instagramをフォローする";
+    igLink.addEventListener("click", function () {
+      if (window.goatcounter && window.goatcounter.count) {
+        window.goatcounter.count({ path: "manga-list-instagram", title: "漫画一覧からインスタへ", event: true });
+      }
+    });
+    ig.appendChild(igLink);
+    box.appendChild(ig);
+
     while (mangaListEl.firstChild) mangaListEl.removeChild(mangaListEl.firstChild);
     mangaListEl.appendChild(box);
     mangaListEl.hidden = false;
