@@ -181,6 +181,12 @@ window.MANGA_CONTENT = {
         "title": "オーラの正体",
         "image": "manga/episodex-1790300000000-0.png",
         "imageUpdatedAt": "1790300000000"
+      },
+      {
+        "date": "2026年9月25日",
+        "title": "練習試合キックオフ",
+        "image": "manga/episodex-1790310000000-0.png",
+        "imageUpdatedAt": "1790310000000"
       }
     ]
   }
