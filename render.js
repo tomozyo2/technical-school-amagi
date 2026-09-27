@@ -11,7 +11,6 @@
 
 (function () {
 
-  var diaryUndoSnapshot = null; // 「バックナンバーへ移動」の直前状態（1回分だけ・保存前のみ有効）
   var mangaUndoSnapshot = null; // 4コマ漫画の「バックナンバーへ移動」の直前状態（1回分だけ・保存前のみ有効）
   var mangaFixMode = false; // trueの間は、画像をアップロードしても話数を増やさず今の話を上書きする
 
@@ -1165,47 +1164,9 @@
     renderMangaSeries();
 
     // ---- 独り言（最新回・トップページ用） ----
+    // ※バックナンバーへの移動は「保存」ボタンを押した時にタイトルの回数を見て自動で行う（admin.js側）ので、ここに手動ボタンはない。
     var diaryActions = byId("diary-admin-actions");
-    if (diaryActions) {
-      clear(diaryActions);
-      if (editable && c.diary && c.diary.latest) {
-        var moveBtn = document.createElement("button");
-        moveBtn.type = "button";
-        moveBtn.className = "admin-move-btn";
-        moveBtn.textContent = "📥 今の「独り言」をバックナンバーへ移動して、新しい回を書きはじめる";
-        moveBtn.addEventListener("click", function () {
-          diaryUndoSnapshot = JSON.parse(JSON.stringify(c.diary));
-          var l = c.diary.latest;
-          var body = (l.topicHeading || "") + "\n" + (l.topicText || "") + "\n\n" + (l.analysisHeading || "") + "\n" + (l.analysisText || "");
-          (l.players || []).forEach(function (p) { body += "\n" + (p.name || "") + "：" + (p.comment || ""); });
-          c.diary.archive = c.diary.archive || [];
-          c.diary.archive.unshift({ date: l.date, title: l.title, excerpt: body });
-          var today = new Date();
-          l.date = today.getFullYear() + "年" + (today.getMonth() + 1) + "月" + today.getDate() + "日";
-          l.title = "";
-          l.topicHeading = "高校サッカー・W杯の話題";
-          l.topicText = "";
-          l.analysisHeading = "チームの試合分析";
-          l.analysisText = "";
-          l.players = [];
-          onChange();
-        });
-        diaryActions.appendChild(moveBtn);
-
-        if (diaryUndoSnapshot) {
-          var undoBtn = document.createElement("button");
-          undoBtn.type = "button";
-          undoBtn.className = "admin-move-btn admin-undo-btn";
-          undoBtn.textContent = "↩ 直前の「バックナンバーへ移動」を元に戻す（保存前のみ有効）";
-          undoBtn.addEventListener("click", function () {
-            c.diary = diaryUndoSnapshot;
-            diaryUndoSnapshot = null;
-            onChange();
-          });
-          diaryActions.appendChild(undoBtn);
-        }
-      }
-    }
+    if (diaryActions) clear(diaryActions);
     if (c.diary && c.diary.latest) {
       var d = c.diary.latest;
       text("diary-title", d, "title");

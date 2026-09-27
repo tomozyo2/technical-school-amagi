@@ -66,6 +66,17 @@
   var currentDiarySha = null;
   var currentMangaSha = null;
   var scrollTargetId = null;
+  var diaryLoadedLatest = null; // 読み込み直後の「独り言」最新回（回数が変わったか比べるための控え）
+
+  // タイトルから「〜回」の回数（数字）を取り出す。全角数字にも対応。見つからなければnull
+  // （「U12」のような回数以外の数字を拾わないよう、「回」の直前の数字だけを見る）
+  function extractDiaryNumber(title) {
+    var half = String(title || "").replace(/[０-９]/g, function (c) {
+      return String.fromCharCode(c.charCodeAt(0) - 0xFEE0);
+    });
+    var m = half.match(/(\d+)\s*回/);
+    return m ? parseInt(m[1], 10) : null;
+  }
 
   function apiUrl(path) {
     return contentsUrl(path || GITHUB_PATH) + "?ref=" + GITHUB_BRANCH;
@@ -245,6 +256,7 @@
           latest: { title: "", date: "", topicHeading: "高校サッカー・W杯の話題", topicText: "", analysisHeading: "チームの試合分析", analysisText: "", players: [] },
           archive: []
         };
+        diaryLoadedLatest = JSON.parse(JSON.stringify(data.diary.latest));
       } else if (diaryRes.ok) {
         var diaryJson = await diaryRes.json();
         currentDiarySha = diaryJson.sha;
@@ -252,6 +264,7 @@
         var diaryMatch = diaryText.match(/window\.DIARY_CONTENT\s*=\s*([\s\S]*?);\s*$/);
         if (!diaryMatch) throw new Error("diary-data.js の中身を読み取れませんでした。");
         data.diary = JSON.parse(diaryMatch[1]);
+        diaryLoadedLatest = data.diary.latest ? JSON.parse(JSON.stringify(data.diary.latest)) : null;
       } else {
         throw new Error("diary-data.js の読み込みに失敗しました（エラー" + diaryRes.status + "）");
       }
@@ -833,6 +846,20 @@
       currentSha = resJson.content.sha;
 
       if (data.diary) {
+        // タイトルの回数が読み込み時から変わっていたら、前の回を自動でバックナンバーへ移動する
+        if (data.diary.latest && diaryLoadedLatest) {
+          var oldDiaryNum = extractDiaryNumber(diaryLoadedLatest.title);
+          var newDiaryNum = extractDiaryNumber(data.diary.latest.title);
+          if (oldDiaryNum !== null && newDiaryNum !== null && oldDiaryNum !== newDiaryNum) {
+            var ol = diaryLoadedLatest;
+            var diaryBody2 = (ol.topicHeading || "") + "\n" + (ol.topicText || "") + "\n\n" + (ol.analysisHeading || "") + "\n" + (ol.analysisText || "");
+            (ol.players || []).forEach(function (p) { diaryBody2 += "\n" + (p.name || "") + "：" + (p.comment || ""); });
+            data.diary.archive = data.diary.archive || [];
+            data.diary.archive.unshift({ date: ol.date, title: ol.title, excerpt: diaryBody2 });
+          }
+        }
+        diaryLoadedLatest = data.diary.latest ? JSON.parse(JSON.stringify(data.diary.latest)) : null;
+
         barMsg.textContent = "独り言を保存中...";
         var diaryOutput = HEADER_DIARY + "window.DIARY_CONTENT = " + JSON.stringify(data.diary, null, 2) + ";\n";
         var diaryBody = {
