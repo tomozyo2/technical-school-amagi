@@ -13,13 +13,20 @@
 window.MANGA_CONTENT = {
   "series": {
     "latest": {
-      "date": "2026年9月25日",
-      "title": "カップ戦開始",
-      "image": "manga/episodex-1790177522000-0.png",
-      "imageUpdatedAt": "1790177522000",
-      "number": 11
+      "date": "2026年9月28日",
+      "title": "キックオフシュート",
+      "image": "manga/episodex-1790218469000-0.png",
+      "imageUpdatedAt": "1790218469000",
+      "number": 12
     },
     "archive": [
+      {
+        "date": "2026年9月25日",
+        "title": "カップ戦開始",
+        "image": "manga/episodex-1790177522000-0.png",
+        "imageUpdatedAt": "1790177522000",
+        "number": 11
+      },
       {
         "date": "2026年9月15日",
         "title": "天然ライバル",
@@ -92,12 +99,6 @@ window.MANGA_CONTENT = {
       }
     ],
     "queue": [
-      {
-        "date": "2026年9月15日",
-        "title": "キックオフシュート",
-        "image": "manga/episodex-1790218469000-0.png",
-        "imageUpdatedAt": "1790218469000"
-      },
       {
         "date": "2026年9月15日",
         "title": "ビッグスロー",
