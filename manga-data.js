@@ -80,15 +80,15 @@ window.MANGA_CONTENT = {
         "number": 3,
         "date": "2026年8月31日",
         "title": "犬の習性",
-        "image": "manga/episode3-1790613668000-0.png",
-        "imageUpdatedAt": "1790613668000"
+        "image": "manga/episode3-1790630001000-0.png",
+        "imageUpdatedAt": "1790630001000"
       },
       {
         "number": 2,
         "date": "2026年8月28日",
         "title": "チロのシュート威力",
-        "image": "manga/episode2-1790613667000-0.png",
-        "imageUpdatedAt": "1790613667000"
+        "image": "manga/episode2-1790630000000-0.png",
+        "imageUpdatedAt": "1790630000000"
       },
       {
         "number": 1,
