@@ -94,8 +94,8 @@ window.MANGA_CONTENT = {
         "number": 1,
         "date": "2026年8月28日",
         "title": "まさかのハンド判定！？",
-        "image": "manga/episode1-1790612742000-0.png",
-        "imageUpdatedAt": "1790612742000"
+        "image": "manga/episode1-1790620000000-0.png",
+        "imageUpdatedAt": "1790620000000"
       }
     ],
     "queue": [
