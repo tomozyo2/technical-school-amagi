@@ -66,8 +66,8 @@ window.MANGA_CONTENT = {
         "number": 5,
         "date": "2026年9月7日",
         "title": "素敵な勘違い",
-        "image": "manga/episode5-1790096756000-0.png",
-        "imageUpdatedAt": "1790096756000"
+        "image": "manga/episode5-1790690458001-0.png",
+        "imageUpdatedAt": "1790690458001"
       },
       {
         "number": 4,
