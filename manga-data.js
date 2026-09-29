@@ -73,8 +73,8 @@ window.MANGA_CONTENT = {
         "number": 4,
         "date": "2026年9月2日",
         "title": "犬の習性2",
-        "image": "manga/episode4-1790092481000-0.png",
-        "imageUpdatedAt": "1790092481000"
+        "image": "manga/episode4-1790690458000-0.png",
+        "imageUpdatedAt": "1790690458000"
       },
       {
         "number": 3,
