@@ -52,8 +52,8 @@ window.MANGA_CONTENT = {
         "number": 7,
         "date": "2026年9月12日",
         "title": "実は凄い能力",
-        "image": "manga/episode7-1790171938000-0.png",
-        "imageUpdatedAt": "1790171938000"
+        "image": "manga/episode7-1790710000000-0.png",
+        "imageUpdatedAt": "1790710000000"
       },
       {
         "number": 6,
