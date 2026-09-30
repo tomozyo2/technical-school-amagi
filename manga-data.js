@@ -59,8 +59,8 @@ window.MANGA_CONTENT = {
         "number": 6,
         "date": "2026年9月11日",
         "title": "犬の習性3",
-        "image": "manga/episode6-1790171565000-0.png",
-        "imageUpdatedAt": "1790171565000"
+        "image": "manga/episode6-1790700000000-0.png",
+        "imageUpdatedAt": "1790700000000"
       },
       {
         "number": 5,
