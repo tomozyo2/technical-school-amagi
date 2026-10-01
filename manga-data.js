@@ -15,8 +15,8 @@ window.MANGA_CONTENT = {
     "latest": {
       "date": "2026年9月28日",
       "title": "キックオフシュート",
-      "image": "manga/episodex-1790218469000-0.png",
-      "imageUpdatedAt": "1790218469000",
+      "image": "manga/episode12-1790828102000-0.png",
+      "imageUpdatedAt": "1790828102000",
       "number": 12
     },
     "archive": [
