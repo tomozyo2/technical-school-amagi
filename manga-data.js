@@ -23,8 +23,8 @@ window.MANGA_CONTENT = {
       {
         "date": "2026年9月25日",
         "title": "カップ戦開始",
-        "image": "manga/episode11-1790825513011-0.png",
-        "imageUpdatedAt": "1790825513011",
+        "image": "manga/episode11-1790827472000-0.png",
+        "imageUpdatedAt": "1790827472000",
         "number": 11
       },
       {
