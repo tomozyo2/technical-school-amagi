@@ -23,15 +23,15 @@ window.MANGA_CONTENT = {
       {
         "date": "2026年9月25日",
         "title": "カップ戦開始",
-        "image": "manga/episodex-1790177522000-0.png",
-        "imageUpdatedAt": "1790177522000",
+        "image": "manga/episode11-1790825513011-0.png",
+        "imageUpdatedAt": "1790825513011",
         "number": 11
       },
       {
         "date": "2026年9月15日",
         "title": "天然ライバル",
-        "image": "manga/episode10-1790177012000-0.png",
-        "imageUpdatedAt": "1790177012000",
+        "image": "manga/episode10-1790825513010-0.png",
+        "imageUpdatedAt": "1790825513010",
         "number": 10
       },
       {
