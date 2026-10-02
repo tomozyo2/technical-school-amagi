@@ -108,8 +108,8 @@ window.MANGA_CONTENT = {
       {
         "date": "2026年9月15日",
         "title": "勝負のカウンター！",
-        "image": "manga/episodex-1790226500000-0.png",
-        "imageUpdatedAt": "1790226500000"
+        "image": "manga/episode14-1790959289000-0.png",
+        "imageUpdatedAt": "1790959289000"
       },
       {
         "date": "2026年9月15日",
