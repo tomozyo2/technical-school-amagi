@@ -213,6 +213,12 @@ window.MANGA_CONTENT = {
         "title": "残り5分まで待て！",
         "image": "manga/episodex-1790350000000-0.png",
         "imageUpdatedAt": "1790350000000"
+      },
+      {
+        "date": "2026年10月5日",
+        "title": "レオのプライド",
+        "image": "manga/episode32-1791169881000-0.png",
+        "imageUpdatedAt": "1791169881000"
       }
     ]
   }
