@@ -231,6 +231,12 @@ window.MANGA_CONTENT = {
         "title": "ニャーランドの弱点",
         "image": "manga/episode34-1791248718000-0.png",
         "imageUpdatedAt": "1791248718000"
+      },
+      {
+        "date": "2026年10月6日",
+        "title": "ブルドーザー・ニャーランド",
+        "image": "manga/episode35-1791253823000-0.png",
+        "imageUpdatedAt": "1791253823000"
       }
     ]
   }
