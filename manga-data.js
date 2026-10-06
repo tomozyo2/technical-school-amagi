@@ -133,8 +133,8 @@ window.MANGA_CONTENT = {
       {
         "date": "2026年9月15日",
         "title": "ネコの猛攻!?",
-        "image": "manga/episodex-1790221576000-0.png",
-        "imageUpdatedAt": "1790221576000"
+        "image": "manga/episode18-1791261662000-0.png",
+        "imageUpdatedAt": "1791261662000"
       },
       {
         "date": "2026年9月17日",
