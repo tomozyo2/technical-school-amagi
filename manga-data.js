@@ -127,8 +127,8 @@ window.MANGA_CONTENT = {
       {
         "date": "2026年9月15日",
         "title": "反撃のカウンター！",
-        "image": "manga/episodex-1790225500000-0.png",
-        "imageUpdatedAt": "1790225500000"
+        "image": "manga/episode17-1791261378000-0.png",
+        "imageUpdatedAt": "1791261378000"
       },
       {
         "date": "2026年9月15日",
