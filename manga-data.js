@@ -121,8 +121,8 @@ window.MANGA_CONTENT = {
       {
         "date": "2026年9月15日",
         "title": "キックオフ！そして…レオの守り！",
-        "image": "manga/episodex-1790222500000-0.png",
-        "imageUpdatedAt": "1790222500000"
+        "image": "manga/episode16-1791260049000-0.png",
+        "imageUpdatedAt": "1791260049000"
       },
       {
         "date": "2026年9月15日",
