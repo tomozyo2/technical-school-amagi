@@ -237,6 +237,12 @@ window.MANGA_CONTENT = {
         "title": "ブルドーザー・ニャーランド",
         "image": "manga/episode35-1791253823000-0.png",
         "imageUpdatedAt": "1791253823000"
+      },
+      {
+        "date": "2026年10月6日",
+        "title": "最後の攻防",
+        "image": "manga/episode36-1791259978000-0.png",
+        "imageUpdatedAt": "1791259978000"
       }
     ]
   }
