@@ -225,6 +225,12 @@ window.MANGA_CONTENT = {
         "title": "ニャーランドの実力",
         "image": "manga/episode33-1791210256000-0.png",
         "imageUpdatedAt": "1791210256000"
+      },
+      {
+        "date": "2026年10月6日",
+        "title": "ニャーランドの弱点",
+        "image": "manga/episode34-1791248718000-0.png",
+        "imageUpdatedAt": "1791248718000"
       }
     ]
   }
