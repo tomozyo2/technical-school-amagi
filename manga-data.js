@@ -13,13 +13,20 @@
 window.MANGA_CONTENT = {
   "series": {
     "latest": {
-      "date": "2026年10月5日",
-      "title": "ビッグスロー",
-      "image": "manga/episode13-1790957703000-0.png",
-      "imageUpdatedAt": "1790957703000",
-      "number": 13
+      "date": "2026年10月8日",
+      "title": "勝負のカウンター！",
+      "image": "manga/episode14-1790959289000-0.png",
+      "imageUpdatedAt": "1790959289000",
+      "number": 14
     },
     "archive": [
+      {
+        "date": "2026年10月5日",
+        "title": "ビッグスロー",
+        "image": "manga/episode13-1790957703000-0.png",
+        "imageUpdatedAt": "1790957703000",
+        "number": 13
+      },
       {
         "date": "2026年9月28日",
         "title": "キックオフシュート",
@@ -106,12 +113,6 @@ window.MANGA_CONTENT = {
       }
     ],
     "queue": [
-      {
-        "date": "2026年9月15日",
-        "title": "勝負のカウンター！",
-        "image": "manga/episode14-1790959289000-0.png",
-        "imageUpdatedAt": "1790959289000"
-      },
       {
         "date": "2026年9月15日",
         "title": "ネコネココネコシュート!?",
