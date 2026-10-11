@@ -77,12 +77,12 @@ window.SITE_CONTENT = {
   "training": {
     "items": [
       {
-        "icon": "⚽10月6日㈫",
+        "icon": "⚽10月13日㈫",
         "title": "練習メニュー",
         "bold": "",
         "text": "クラマーとラダー\n後ろ向ボールのトラップ\nミドルシュート\nミニゲーム\n",
         "kind": "menu",
-        "date": "10月6日㈫"
+        "date": "10月13日㈫"
       },
       {
         "kind": "theme",
