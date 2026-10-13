@@ -13,13 +13,20 @@
 window.MANGA_CONTENT = {
   "series": {
     "latest": {
-      "date": "2026年10月11日",
-      "title": "ネコネココネコシュート!?",
-      "image": "manga/episode15-1790960768000-0.png",
-      "imageUpdatedAt": "1790960768000",
-      "number": 15
+      "date": "2026年10月14日",
+      "title": "キックオフ！そして…レオの守り！",
+      "image": "manga/episode16-1791260049000-0.png",
+      "imageUpdatedAt": "1791260049000",
+      "number": 16
     },
     "archive": [
+      {
+        "date": "2026年10月11日",
+        "title": "ネコネココネコシュート!?",
+        "image": "manga/episode15-1790960768000-0.png",
+        "imageUpdatedAt": "1790960768000",
+        "number": 15
+      },
       {
         "date": "2026年10月8日",
         "title": "勝負のカウンター！",
@@ -120,12 +127,6 @@ window.MANGA_CONTENT = {
       }
     ],
     "queue": [
-      {
-        "date": "2026年9月15日",
-        "title": "キックオフ！そして…レオの守り！",
-        "image": "manga/episode16-1791260049000-0.png",
-        "imageUpdatedAt": "1791260049000"
-      },
       {
         "date": "2026年9月15日",
         "title": "反撃のカウンター！",
