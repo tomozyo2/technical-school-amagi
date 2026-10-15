@@ -252,6 +252,12 @@ window.MANGA_CONTENT = {
         "title": "止まらないニャーランド",
         "image": "manga/episode37-1791510497000-0.png",
         "imageUpdatedAt": "1791510497000"
+      },
+      {
+        "date": "2026年10月16日",
+        "title": "最後の一撃",
+        "image": "manga/episode38-1792083964000-0.png",
+        "imageUpdatedAt": "1792083964000"
       }
     ]
   }
