@@ -258,6 +258,12 @@ window.MANGA_CONTENT = {
         "title": "最後の一撃",
         "image": "manga/episode38-1792083964000-0.png",
         "imageUpdatedAt": "1792083964000"
+      },
+      {
+        "date": "2026年10月16日",
+        "title": "仲間の離脱",
+        "image": "manga/episode39-1792134469125-0.png",
+        "imageUpdatedAt": "1792134469125"
       }
     ]
   }
