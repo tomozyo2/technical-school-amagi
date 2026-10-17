@@ -264,6 +264,12 @@ window.MANGA_CONTENT = {
         "title": "仲間の離脱",
         "image": "manga/episode39-1792134469125-0.png",
         "imageUpdatedAt": "1792134469125"
+      },
+      {
+        "date": "2026年10月18日",
+        "title": "ザイウォーン参上",
+        "image": "manga/episode40-1792254483384-0.png",
+        "imageUpdatedAt": "1792254483384"
       }
     ]
   }
