@@ -268,8 +268,8 @@ window.MANGA_CONTENT = {
       {
         "date": "2026年10月18日",
         "title": "ザイウォーン参上",
-        "image": "manga/episode40-1792254483384-0.png",
-        "imageUpdatedAt": "1792254483384"
+        "image": "manga/episode40-1792255457668-0.png",
+        "imageUpdatedAt": "1792255457668"
       }
     ]
   }
