@@ -148,7 +148,7 @@ window.SITE_CONTENT = {
     "copyright": "© 2026 テクニカルスクール甘木"
   },
   "lineTemplate": {
-    "placeLabel": "📍 場所：甘木公園多目的",
+    "placeLabel": "📍 場所：",
     "timeLabel": "🕐 時間："
   }
 };
