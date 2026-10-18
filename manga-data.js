@@ -143,8 +143,8 @@ window.MANGA_CONTENT = {
       {
         "date": "2026年9月17日",
         "title": "イヌチーム反撃",
-        "image": "manga/episodex-1790224500000-0.png",
-        "imageUpdatedAt": "1790224500000"
+        "image": "manga/episode19-1792303231938-0.png",
+        "imageUpdatedAt": "1792303231938"
       },
       {
         "date": "2026年9月17日",
