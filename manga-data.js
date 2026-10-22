@@ -155,9 +155,9 @@ window.MANGA_CONTENT = {
       },
       {
         "date": "2026年9月17日",
-        "title": "プリティパス",
-        "image": "manga/episodex-1790227500000-0.png",
-        "imageUpdatedAt": "1790227500000"
+        "title": "プリティーパス",
+        "image": "manga/episode21-1792654111000-0.png",
+        "imageUpdatedAt": "1792654111000"
       },
       {
         "date": "2026年9月20日",
