@@ -162,8 +162,8 @@ window.MANGA_CONTENT = {
       {
         "date": "2026年9月20日",
         "title": "仲間との出会い",
-        "image": "manga/episodex-1790228500000-0.png",
-        "imageUpdatedAt": "1790228500000"
+        "image": "manga/episode22-1792743066000-0.png",
+        "imageUpdatedAt": "1792743066000"
       },
       {
         "date": "2026年9月20日",
