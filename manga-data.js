@@ -174,8 +174,8 @@ window.MANGA_CONTENT = {
       {
         "date": "2026年9月20日",
         "title": "ゴールはまかせろ！？",
-        "image": "manga/episodex-1790301000000-0.png",
-        "imageUpdatedAt": "1790301000000"
+        "image": "manga/episode24-1792746423000-0.png",
+        "imageUpdatedAt": "1792746423000"
       },
       {
         "date": "2026年9月23日",
