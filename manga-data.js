@@ -168,8 +168,8 @@ window.MANGA_CONTENT = {
       {
         "date": "2026年9月20日",
         "title": "絶対チームには入らない",
-        "image": "manga/episodex-1790229500000-0.png",
-        "imageUpdatedAt": "1790229500000"
+        "image": "manga/episode23-1792745285000-0.png",
+        "imageUpdatedAt": "1792745285000"
       },
       {
         "date": "2026年9月20日",
