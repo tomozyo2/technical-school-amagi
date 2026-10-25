@@ -282,8 +282,8 @@ window.MANGA_CONTENT = {
       {
         "date": "2026年10月26日",
         "title": "ぷるぷる丸の実力",
-        "image": "manga/episode42-1792941426000-0.png",
-        "imageUpdatedAt": "1792941426000"
+        "image": "manga/episode42-1792942036000-0.png",
+        "imageUpdatedAt": "1792942036000"
       }
     ]
   }
