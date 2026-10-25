@@ -278,6 +278,12 @@ window.MANGA_CONTENT = {
         "title": "寒くないしっ！",
         "image": "manga/episode41-1792930776000-0.png",
         "imageUpdatedAt": "1792930776000"
+      },
+      {
+        "date": "2026年10月26日",
+        "title": "ぷるぷる丸の実力",
+        "image": "manga/episode42-1792941426000-0.png",
+        "imageUpdatedAt": "1792941426000"
       }
     ]
   }
