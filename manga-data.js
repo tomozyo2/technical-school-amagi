@@ -272,6 +272,12 @@ window.MANGA_CONTENT = {
         "title": "ザイウォーン参上",
         "image": "manga/episode40-1792255457668-0.png",
         "imageUpdatedAt": "1792255457668"
+      },
+      {
+        "date": "2026年10月25日",
+        "title": "寒くないしっ！",
+        "image": "manga/episode41-1792930776000-0.png",
+        "imageUpdatedAt": "1792930776000"
       }
     ]
   }
