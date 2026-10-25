@@ -1,0 +1,62 @@
+{
+  "_説明": "キャラごとの声の固定設定。ここを変えない限り、どの話でも同じ声になる。voice=Kokoroの声の種類、speed=話す速さ(1.0が普通)、pitch=声の高さ(1.0が元のまま、1.1で少し高く)。変えるときは社長に確認してから。 color=字幕の名札の色。",
+  "_engine": "Kokoro-82M (npx hyperframes tts) / Python: %USERPROFILE%\\.claude\\kokoro-venv",
+  "characters": {
+    "チロ": {
+      "voice": "jf_nezumi",
+      "speed": 1.0,
+      "pitch": 1.12,
+      "memo": "甘えん坊で泣き虫。高めでかわいい声",
+      "color": "#b8692a"
+    },
+    "メロ": {
+      "voice": "jf_gongitsune",
+      "speed": 1.1,
+      "pitch": 1.0,
+      "memo": "熱血で自信家。元気で勢いのある声",
+      "color": "#d9500a"
+    },
+    "レオ": {
+      "voice": "jf_tebukuro",
+      "speed": 1.0,
+      "pitch": 0.97,
+      "memo": "未調整(初登場の回で社長と決める)",
+      "color": "#8a8a8a"
+    },
+    "審判": {
+      "voice": "jf_alpha",
+      "speed": 0.95,
+      "pitch": 1.0,
+      "memo": "ウサギ。冷静なツッコミ。落ち着いた声",
+      "color": "#555555"
+    },
+    "キーパー": {
+      "voice": "jm_kumo",
+      "speed": 1.05,
+      "pitch": 1.0,
+      "memo": "1話などの相手キーパー(青チーム)や男の子っぽい脇役",
+      "color": "#2f6fd6"
+    },
+    "ナレーション": {
+      "voice": "jf_alpha",
+      "speed": 1.0,
+      "pitch": 0.95,
+      "memo": "タイトル読み上げ用",
+      "color": "#2fb36b"
+    },
+    "ネコ": {
+      "voice": "jf_tebukuro",
+      "speed": 1.0,
+      "pitch": 1.08,
+      "memo": "名前なしのネコ(青チーム)。4話で初登場。2026-10-20社長OK",
+      "color": "#3b5bdb"
+    },
+    "イヌばやしくん": {
+      "voice": "jm_kumo",
+      "speed": 1.05,
+      "pitch": 1.0,
+      "memo": "犬・ゴールキーパー。まじめで頼れる。旧「犬キーパー(仮)」。声はキーパーと同じ。2026-10-20社長OK(6話)",
+      "color": "#b03030"
+    }
+  }
+}
