@@ -309,6 +309,12 @@ window.MANGA_CONTENT = {
         "title": "スライディング部隊、突撃！",
         "image": "manga/episode46-1792996951000-0.png",
         "imageUpdatedAt": "1792996951000"
+      },
+      {
+        "date": "2026年10月26日",
+        "title": "ぷるぷる丸のホンキ",
+        "image": "manga/episode47-1793004362000-0.png",
+        "imageUpdatedAt": "1793004362000"
       }
     ]
   }
