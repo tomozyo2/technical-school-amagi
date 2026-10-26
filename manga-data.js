@@ -303,6 +303,12 @@ window.MANGA_CONTENT = {
         "title": "1回戦、キックオフ前",
         "image": "manga/episode45-1792995489000-0.png",
         "imageUpdatedAt": "1792995489000"
+      },
+      {
+        "date": "2026年10月26日",
+        "title": "スライディング部隊、突撃！",
+        "image": "manga/episode46-1792996951000-0.png",
+        "imageUpdatedAt": "1792996951000"
       }
     ]
   }
