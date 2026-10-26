@@ -291,6 +291,12 @@ window.MANGA_CONTENT = {
         "title": "公式戦前の猛練習",
         "image": "manga/episode43-1792980736000-0.png",
         "imageUpdatedAt": "1792980736000"
+      },
+      {
+        "date": "2026年10月26日",
+        "title": "全日どうぶつ選手権、開幕！",
+        "image": "manga/episode44-1792993955000-0.png",
+        "imageUpdatedAt": "1792993955000"
       }
     ]
   }
