@@ -13,13 +13,20 @@
 window.MANGA_CONTENT = {
   "series": {
     "latest": {
-      "date": "2026年10月22日",
-      "title": "ネコの猛攻!?",
-      "image": "manga/episode18-1791261662000-0.png",
-      "imageUpdatedAt": "1791261662000",
-      "number": 18
+      "date": "2026年10月26日",
+      "title": "イヌチーム反撃",
+      "image": "manga/episode19-1792303231938-0.png",
+      "imageUpdatedAt": "1792303231938",
+      "number": 19
     },
     "archive": [
+      {
+        "date": "2026年10月22日",
+        "title": "ネコの猛攻!?",
+        "image": "manga/episode18-1791261662000-0.png",
+        "imageUpdatedAt": "1791261662000",
+        "number": 18
+      },
       {
         "date": "2026年10月18日",
         "title": "反撃のカウンター！",
@@ -141,12 +148,6 @@ window.MANGA_CONTENT = {
       }
     ],
     "queue": [
-      {
-        "date": "2026年9月17日",
-        "title": "イヌチーム反撃",
-        "image": "manga/episode19-1792303231938-0.png",
-        "imageUpdatedAt": "1792303231938"
-      },
       {
         "date": "2026年9月17日",
         "title": "ネコの猛攻守れるか？",
