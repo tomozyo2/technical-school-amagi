@@ -297,6 +297,12 @@ window.MANGA_CONTENT = {
         "title": "全日どうぶつ選手権、開幕！",
         "image": "manga/episode44-1792993955000-0.png",
         "imageUpdatedAt": "1792993955000"
+      },
+      {
+        "date": "2026年10月26日",
+        "title": "1回戦、キックオフ前",
+        "image": "manga/episode45-1792995489000-0.png",
+        "imageUpdatedAt": "1792995489000"
       }
     ]
   }
