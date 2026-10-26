@@ -284,6 +284,12 @@ window.MANGA_CONTENT = {
         "title": "ぷるぷる丸の実力",
         "image": "manga/episode42-1792942036000-0.png",
         "imageUpdatedAt": "1792942036000"
+      },
+      {
+        "date": "2026年10月26日",
+        "title": "公式戦前の猛練習",
+        "image": "manga/episode43-1792980736000-0.png",
+        "imageUpdatedAt": "1792980736000"
       }
     ]
   }
