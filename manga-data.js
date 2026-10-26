@@ -181,8 +181,8 @@ window.MANGA_CONTENT = {
       {
         "date": "2026年9月23日",
         "title": "イヌばやしの実力",
-        "image": "manga/episodex-1790140387000-0.png",
-        "imageUpdatedAt": "1790140387000"
+        "image": "manga/episode25-1793004153000-0.png",
+        "imageUpdatedAt": "1793004153000"
       },
       {
         "date": "2026年9月25日",
