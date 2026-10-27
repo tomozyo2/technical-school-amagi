@@ -690,6 +690,93 @@
       }
     }
 
+    // ---- お知らせ（最初の画面。新しい順に3件まで、残りは「もっと見る」） ----
+    if (c.news) {
+      var newsBox = byId("news-box");
+      var newsList = byId("news-list");
+      if (newsBox && newsList) {
+        if (!Array.isArray(c.news.items)) c.news.items = [];
+        var newsItems = c.news.items;
+        text("news-heading", c.news, "heading");
+        clear(newsList);
+        newsBox.hidden = !editable && newsItems.length === 0;
+        var newsShowAll = !!window.__newsShowAll;
+        var NEWS_LIMIT = 3;
+        newsItems.forEach(function (item, idx) {
+          var li = document.createElement("li");
+          li.className = "news-item" + (item.important ? " is-important" : "") + (editable ? " admin-editing-item" : "");
+          if (!editable && !newsShowAll && idx >= NEWS_LIMIT) li.hidden = true;
+          var det = document.createElement("details");
+          var sum = document.createElement("summary");
+          var dateEl = document.createElement("span");
+          dateEl.className = "news-date";
+          var tagEl = document.createElement("span");
+          tagEl.className = "news-tag";
+          tagEl.textContent = "重要";
+          tagEl.hidden = !item.important;
+          var titleEl = document.createElement("span");
+          titleEl.className = "news-title";
+          dateEl.textContent = item.date || "";
+          titleEl.textContent = item.title || "";
+          sum.appendChild(dateEl);
+          sum.appendChild(tagEl);
+          sum.appendChild(titleEl);
+          var bodyEl = document.createElement("p");
+          bodyEl.className = "news-body";
+          bodyEl.textContent = item.body || "";
+          det.appendChild(sum);
+          det.appendChild(bodyEl);
+          if (editable) {
+            det.open = true;
+            bindEditable(dateEl, item, "date");
+            bindEditable(titleEl, item, "title");
+            bindEditable(bodyEl, item, "body", { multiline: true });
+            // 編集中は文字をタップしても閉じないようにする
+            sum.addEventListener("click", function (e) { e.preventDefault(); });
+            var impBtn = document.createElement("button");
+            impBtn.type = "button";
+            impBtn.className = "admin-add-btn on-dark news-imp-btn";
+            impBtn.textContent = item.important ? "★重要（タップで外す）" : "☆重要にする";
+            impBtn.addEventListener("click", function (e) {
+              e.preventDefault();
+              item.important = !item.important;
+              onChange();
+            });
+            det.appendChild(impBtn);
+            addMoveButtons(li, newsItems, idx, onChange, { onDark: true });
+            addRemoveButton(li, function () { newsItems.splice(idx, 1); onChange(); }, { onDark: true });
+          } else if (!item.body) {
+            sum.classList.add("no-body");
+            sum.addEventListener("click", function (e) { e.preventDefault(); });
+          }
+          li.appendChild(det);
+          newsList.appendChild(li);
+        });
+        if (!editable && newsItems.length > NEWS_LIMIT && !newsShowAll) {
+          var moreLi = document.createElement("li");
+          moreLi.className = "news-more";
+          var moreBtn = document.createElement("button");
+          moreBtn.type = "button";
+          moreBtn.textContent = "もっと見る（あと" + (newsItems.length - NEWS_LIMIT) + "件）";
+          moreBtn.addEventListener("click", function () {
+            window.__newsShowAll = true;
+            newsList.querySelectorAll("li[hidden]").forEach(function (x) { x.hidden = false; });
+            moreLi.remove();
+          });
+          moreLi.appendChild(moreBtn);
+          newsList.appendChild(moreLi);
+        }
+        if (editable) {
+          addAddButton(newsList, "＋ お知らせを追加（いちばん上に入ります）", function () {
+            var now = new Date();
+            var pad = function (n) { return ("0" + n).slice(-2); };
+            newsItems.unshift({ date: now.getFullYear() + "." + pad(now.getMonth() + 1) + "." + pad(now.getDate()), important: false, title: "新しいお知らせ", body: "" });
+            onChange();
+          }, { onDark: true });
+        }
+      }
+    }
+
     // ---- よくある質問 ----
     if (c.faq) {
       text("faq-heading", c.faq, "heading");

@@ -1674,3 +1674,31 @@ body.admin-mode-on { padding-bottom: 76px; }
 .cf-submit { width: 100%; cursor: pointer; border: none; }
 .cf-submit:disabled { opacity: .6; cursor: default; }
 .cf-done { color: #fff; font-weight: 700; line-height: 1.9; text-align: center; margin: 20px 0; }
+
+/* ===== お知らせ（最初の画面） ===== */
+.news-box {
+  max-width: 640px; margin: 22px auto 8px; text-align: left;
+  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.22);
+  border-radius: 14px; padding: 12px 14px;
+}
+.news-box[hidden] { display: none; }
+.news-head { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 1.05rem; color: var(--white); padding: 0 2px 8px; border-bottom: 1px solid rgba(255,255,255,.2); }
+.news-list { list-style: none; margin: 0; padding: 0; }
+.news-item { border-bottom: 1px dashed rgba(255,255,255,.18); position: relative; }
+.news-item:last-child { border-bottom: none; }
+.news-item[hidden] { display: none; }
+.news-item summary { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; padding: 10px 2px; cursor: pointer; list-style: none; color: var(--white); line-height: 1.5; }
+.news-item summary::-webkit-details-marker { display: none; }
+.news-item summary::after { content: "▾"; flex: none; margin-left: auto; color: var(--green-bright); font-weight: 700; }
+.news-item details[open] summary::after { content: "▴"; }
+.news-item summary.no-body { cursor: default; }
+.news-item summary.no-body::after { content: ""; }
+.news-date { font-size: .82rem; color: var(--green-bright); font-weight: 700; white-space: nowrap; }
+.news-tag { background: #e53935; color: #fff; font-size: .7rem; font-weight: 800; padding: 1px 8px; border-radius: 999px; }
+.news-tag[hidden] { display: none; }
+.news-title { font-weight: 700; flex: 1 1 12em; }
+.news-item.is-important .news-title { color: #ffd54f; }
+.news-body { margin: 0 2px 12px; font-size: .92rem; color: var(--gray); white-space: pre-wrap; }
+.news-more { text-align: center; padding: 8px 0 2px; }
+.news-more button { background: none; border: 1px solid rgba(255,255,255,.35); color: var(--white); border-radius: 999px; padding: 6px 18px; font-size: .88rem; cursor: pointer; }
+.news-imp-btn { margin: 0 2px 10px; }
