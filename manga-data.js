@@ -313,8 +313,8 @@ window.MANGA_CONTENT = {
       {
         "date": "2026年10月26日",
         "title": "ぷるぷる丸のホンキ",
-        "image": "manga/episode47-1793004362000-0.png",
-        "imageUpdatedAt": "1793004362000"
+        "image": "manga/episode47-1793117207000-0.png",
+        "imageUpdatedAt": "1793117207000"
       }
     ]
   }
