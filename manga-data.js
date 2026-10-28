@@ -333,6 +333,12 @@ window.MANGA_CONTENT = {
         "title": "メロ、がまんの一撃",
         "image": "manga/episode50-1793178474174-0.png",
         "imageUpdatedAt": "1793178474174"
+      },
+      {
+        "date": "2026年10月28日",
+        "title": "あと7日！",
+        "image": "manga/episode51-1793191873502-0.png",
+        "imageUpdatedAt": "1793191873502"
       }
     ]
   }
