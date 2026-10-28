@@ -339,6 +339,12 @@ window.MANGA_CONTENT = {
         "title": "あと7日！",
         "image": "manga/episode51-1793191873502-0.png",
         "imageUpdatedAt": "1793191873502"
+      },
+      {
+        "date": "2026年10月28日",
+        "title": "ロ・ナ・ド！",
+        "image": "manga/episode52-1793194876182-0.png",
+        "imageUpdatedAt": "1793194876182"
       }
     ]
   }
