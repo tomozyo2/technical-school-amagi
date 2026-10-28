@@ -321,6 +321,18 @@ window.MANGA_CONTENT = {
         "title": "ペンギンすべる",
         "image": "manga/episode48-1793117653000-0.png",
         "imageUpdatedAt": "1793117653000"
+      },
+      {
+        "date": "2026年10月28日",
+        "title": "ごほうびは試合のあとで",
+        "image": "manga/episode49-1793178470001-0.png",
+        "imageUpdatedAt": "1793178470001"
+      },
+      {
+        "date": "2026年10月28日",
+        "title": "メロ、がまんの一撃",
+        "image": "manga/episode50-1793178474174-0.png",
+        "imageUpdatedAt": "1793178474174"
       }
     ]
   }
