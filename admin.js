@@ -563,7 +563,7 @@
   }
 
   /* ===== 漫画更新のLINEお知らせ（管理者の漫画・下書き画面から） ===== */
-  var mangaLineModalEl, mangaLinePreviewEl, mangaLineSendLink, mangaLineNoInput;
+  var mangaLineModalEl, mangaLinePreviewEl, mangaLineSendLink, mangaLineNoInput, mangaLineMemoInput;
 
   function buildMangaLineModal() {
     mangaLineModalEl = document.createElement("div");
@@ -575,6 +575,7 @@
       '  <p class="admin-modal-desc">話数を確認・変更して、内容を確認してから送信してください。</p>' +
       '  <label class="line-tpl-label">何話（自由に変えられます）<input type="text" id="manga-line-no" inputmode="numeric" autocomplete="off" placeholder="例: 11"></label>' +
       '  <p class="line-tpl-note">お知らせ文の中の {話数} が、この数字に置き換わります。</p>' +
+      '  <label class="line-tpl-label">備考（任意・お知らせ文の下に付きます）<textarea id="manga-line-memo" rows="3" autocomplete="off" placeholder="例: 今回から動く漫画版もあります！"></textarea></label>' +
       '  <pre id="manga-line-preview" class="line-preview-box"></pre>' +
       '  <div class="admin-modal-actions">' +
       '    <button type="button" class="admin-modal-btn ghost" id="manga-line-close-btn">閉じる</button>' +
@@ -587,6 +588,8 @@
     mangaLineSendLink = mangaLineModalEl.querySelector("#manga-line-send-link");
     mangaLineNoInput = mangaLineModalEl.querySelector("#manga-line-no");
     mangaLineNoInput.addEventListener("input", updateMangaLinePreview);
+    mangaLineMemoInput = mangaLineModalEl.querySelector("#manga-line-memo");
+    mangaLineMemoInput.addEventListener("input", updateMangaLinePreview);
     mangaLineModalEl.querySelector("#manga-line-close-btn").addEventListener("click", closeMangaLineModal);
     mangaLineModalEl.addEventListener("click", function (e) { if (e.target === mangaLineModalEl) closeMangaLineModal(); });
   }
@@ -594,6 +597,8 @@
   // {話数} を、入力欄の数字に置き換えてプレビューとLINEの送信リンクに反映する
   function updateMangaLinePreview() {
     var text = SITE_URL + "\n\n" + lineTpl("mangaNotice").split("{話数}").join(mangaLineNoInput.value.trim());
+    var memo = mangaLineMemoInput.value.trim();
+    if (memo) text += "\n\n" + memo; // 備考は、お知らせ文の下に付ける
     mangaLinePreviewEl.textContent = text;
     mangaLineSendLink.href = "https://line.me/R/msg/text/?" + encodeURIComponent(text);
   }
@@ -602,6 +607,7 @@
     // 最初は、いま公開されている最新話の数字を入れておく（あとから自由に変えられる）
     var latest = data && data.manga && data.manga.series && data.manga.series.latest;
     mangaLineNoInput.value = (latest && latest.number) || "";
+    mangaLineMemoInput.value = ""; // 備考は毎回空から（前回の文が残らないように）
     updateMangaLinePreview();
     mangaLineModalEl.style.display = "flex";
   }
