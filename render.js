@@ -1741,7 +1741,124 @@
     else pv.img.src = src;
   }
 
-  window.openMangaViewer = function (entry, label) {
+  // ---- 「漫画」か「プチ動画版」かを選ぶ ----
+  // manga-videos.js（window.MANGA_VIDEOS = { 話数: "YouTubeのURL または 動画ファイルのパス" }）に登録のある話だけ、
+  // 開く前に選ばせる。登録が無い話は、これまでどおり漫画がすぐ開く。
+  var mvChoice = null; // 選ぶ画面
+  var mvPlayer = null; // 動画の画面
+
+  function mangaVideoOf(entry) {
+    var all = window.MANGA_VIDEOS;
+    var v = all && entry && entry.number != null && all[entry.number];
+    return (typeof v === "string" && v) ? v : null;
+  }
+
+  // YouTubeのURLから、埋め込み用のURLを作る（YouTubeでなければ null）
+  function mangaYoutubeEmbed(url) {
+    var m = /(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|live\/))([A-Za-z0-9_-]{11})/.exec(url);
+    return m ? "https://www.youtube-nocookie.com/embed/" + m[1] + "?rel=0&playsinline=1&autoplay=1" : null;
+  }
+
+  function closeMangaVideo() {
+    if (!mvPlayer) return;
+    mvPlayer.root.hidden = true;
+    mvPlayer.stage.innerHTML = ""; // 再生を止める
+    if (!mvChoice || mvChoice.hidden) document.body.style.overflow = "";
+  }
+
+  function openMangaVideo(entry, label, url) {
+    if (!mvPlayer) {
+      var root = document.createElement("div");
+      root.className = "pv-overlay mv-overlay";
+      root.hidden = true;
+      root.innerHTML =
+        '<div class="pv-top">' +
+        '  <span class="pv-title"></span>' +
+        '  <button type="button" class="pv-btn mv-to-manga">📖 漫画で読む</button>' +
+        '  <button type="button" class="pv-close" aria-label="閉じる">✕</button>' +
+        '</div>' +
+        '<div class="mv-stage"></div>';
+      document.body.appendChild(root);
+      mvPlayer = { root: root, stage: root.querySelector(".mv-stage"), title: root.querySelector(".pv-title"), entry: null, label: "" };
+      root.querySelector(".pv-close").addEventListener("click", function () { closeMangaVideo(); document.body.style.overflow = ""; });
+      root.querySelector(".mv-to-manga").addEventListener("click", function () {
+        var e = mvPlayer.entry, l = mvPlayer.label;
+        closeMangaVideo();
+        if (e) openMangaBook(e, l);
+      });
+      document.addEventListener("keydown", function (ev) {
+        if (ev.key === "Escape" && !mvPlayer.root.hidden) { closeMangaVideo(); document.body.style.overflow = ""; }
+      });
+    }
+    mvPlayer.entry = entry;
+    mvPlayer.label = label;
+    mvPlayer.title.textContent = label + (entry.title ? "「" + entry.title + "」" : "") + " 🎬";
+    var embed = mangaYoutubeEmbed(url);
+    var box = mvPlayer.stage;
+    box.innerHTML = "";
+    if (embed) {
+      var f = document.createElement("iframe");
+      f.src = embed;
+      f.title = label + " プチ動画版";
+      f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+      f.setAttribute("allowfullscreen", "");
+      box.appendChild(f);
+    } else {
+      var vd = document.createElement("video");
+      vd.src = url;
+      vd.controls = true;
+      vd.autoplay = true;
+      vd.playsInline = true;
+      vd.setAttribute("playsinline", "");
+      box.appendChild(vd);
+    }
+    mvPlayer.root.hidden = false;
+    document.body.style.overflow = "hidden";
+    if (window.goatcounter && window.goatcounter.count) {
+      window.goatcounter.count({ path: "manga-video-open", title: "プチ動画版を開いた", event: true });
+    }
+  }
+
+  function openMangaChoice(entry, label, url) {
+    if (!mvChoice) {
+      var root = document.createElement("div");
+      root.className = "manga-modal-overlay mv-choice";
+      root.hidden = true;
+      root.innerHTML =
+        '<div class="manga-modal-box mv-choice-box">' +
+        '  <button type="button" class="manga-modal-close mv-choice-close" aria-label="閉じる">✕</button>' +
+        '  <p class="manga-modal-title mv-choice-title"></p>' +
+        '  <p class="mv-choice-note">どっちで見る？</p>' +
+        '  <button type="button" class="pv-end-btn mv-choose-manga">📖 漫画で読む</button>' +
+        '  <button type="button" class="pv-end-btn pv-next-ep mv-choose-video">🎬 プチ動画版で見る</button>' +
+        '</div>';
+      document.body.appendChild(root);
+      mvChoice = { root: root, entry: null, label: "", url: "" };
+      Object.defineProperty(mvChoice, "hidden", { get: function () { return root.hidden; } });
+      function closeChoice() { root.hidden = true; document.body.style.overflow = ""; }
+      root.querySelector(".mv-choice-close").addEventListener("click", closeChoice);
+      root.addEventListener("click", function (ev) { if (ev.target === root) closeChoice(); });
+      root.querySelector(".mv-choose-manga").addEventListener("click", function () {
+        var e = mvChoice.entry, l = mvChoice.label;
+        root.hidden = true;
+        openMangaBook(e, l);
+      });
+      root.querySelector(".mv-choose-video").addEventListener("click", function () {
+        var e = mvChoice.entry, l = mvChoice.label, u = mvChoice.url;
+        root.hidden = true;
+        openMangaVideo(e, l, u);
+      });
+    }
+    mvChoice.entry = entry;
+    mvChoice.label = label;
+    mvChoice.url = url;
+    mvChoice.root.querySelector(".mv-choice-title").textContent = label + (entry.title ? "「" + entry.title + "」" : "") + " ⚽";
+    mvChoice.root.hidden = false;
+    document.body.style.overflow = "hidden";
+  }
+
+  // 漫画そのものを開く（これまでの動き）
+  function openMangaBook(entry, label) {
     var boxes = mangaPanelsOf(entry);
     if (boxes) {
       openPanelViewer(entry, label, boxes);
@@ -1753,6 +1870,16 @@
     if (window.goatcounter && window.goatcounter.count) {
       window.goatcounter.count({ path: "manga-open", title: "4コマ漫画を開いた", event: true });
     }
+  }
+
+  window.openMangaViewer = function (entry, label) {
+    var video = mangaVideoOf(entry);
+    if (video) {
+      hidePanelViewer(); // 「次の話へ」で来たときに、1コマ表示が手前に残らないよう先に閉じる
+      openMangaChoice(entry, label, video);
+      return;
+    }
+    openMangaBook(entry, label);
   };
 
   // ---- チロ・メロのアイコンを押したときの「お知らせ＋話数タイトル一覧」 ----
