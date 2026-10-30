@@ -346,6 +346,12 @@ window.MANGA_CONTENT = {
         "title": "ロ・ナ・ド！",
         "image": "manga/episode52-1793194876182-0.png",
         "imageUpdatedAt": "1793194876182"
+      },
+      {
+        "date": "2026年10月30日",
+        "title": "ロナド、ロナド",
+        "image": "manga/episode53-1793327418205-0.png",
+        "imageUpdatedAt": "1793327418205"
       }
     ]
   }
