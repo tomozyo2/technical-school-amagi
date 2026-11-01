@@ -13,13 +13,20 @@
 window.MANGA_CONTENT = {
   "series": {
     "latest": {
-      "date": "2026年10月29日",
-      "title": "ネコの猛攻守れるか？",
-      "image": "manga/episode20-1792336354970-0.png",
-      "imageUpdatedAt": "1792336354970",
-      "number": 20
+      "date": "2026年11月2日",
+      "title": "プリティーパス",
+      "image": "manga/episode21-1792654111000-0.png",
+      "imageUpdatedAt": "1792654111000",
+      "number": 21
     },
     "archive": [
+      {
+        "date": "2026年10月29日",
+        "title": "ネコの猛攻守れるか？",
+        "image": "manga/episode20-1792336354970-0.png",
+        "imageUpdatedAt": "1792336354970",
+        "number": 20
+      },
       {
         "date": "2026年10月26日",
         "title": "イヌチーム反撃",
@@ -155,12 +162,6 @@ window.MANGA_CONTENT = {
       }
     ],
     "queue": [
-      {
-        "date": "2026年9月17日",
-        "title": "プリティーパス",
-        "image": "manga/episode21-1792654111000-0.png",
-        "imageUpdatedAt": "1792654111000"
-      },
       {
         "date": "2026年9月20日",
         "title": "仲間との出会い",
