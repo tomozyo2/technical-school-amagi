@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/auto-pull.sh\"",
+            "timeout": 60,
+            "statusMessage": "GitHubの最新を確認中..."
+          }
+        ]
+      }
+    ]
+  }
+}

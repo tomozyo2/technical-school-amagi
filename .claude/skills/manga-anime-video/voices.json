@@ -1,62 +1,175 @@
 {
-  "_説明": "キャラごとの声の固定設定。ここを変えない限り、どの話でも同じ声になる。voice=Kokoroの声の種類、speed=話す速さ(1.0が普通)、pitch=声の高さ(1.0が元のまま、1.1で少し高く)。変えるときは社長に確認してから。 color=字幕の名札の色。",
-  "_engine": "Kokoro-82M (npx hyperframes tts) / Python: %USERPROFILE%\\.claude\\kokoro-venv",
+  "_説明": "キャラごとの声の固定設定(VOICEVOX版・2026-10-31に全面切替)。speaker=VOICEVOXの声のID、speed=速さ(1.0が普通)、pitch=高さ(0が元のまま・±0.15くらいまで)、intonation=抑揚、volume=音量、color=字幕の名札の色。変えるときは社長に確認してから。speakerが空のキャラは未決定。",
+  "_engine": "VOICEVOX 0.25.2 (漫画アニメ動画\u000boicevox\\VOICEVOX\u000bv-engine\run.exe を起動 → http://127.0.0.1:50021) / scripts\\make_voices.py",
   "characters": {
     "チロ": {
-      "voice": "jf_nezumi",
-      "speed": 1.0,
-      "pitch": 1.12,
       "memo": "甘えん坊で泣き虫。高めでかわいい声",
-      "color": "#b8692a"
+      "color": "#b8692a",
+      "speaker": 72,
+      "speed": 1.0,
+      "pitch": 0.0,
+      "intonation": 1.2,
+      "volume": 1.0,
+      "label": "満別花丸 ぶりっ子"
     },
     "メロ": {
-      "voice": "jf_gongitsune",
-      "speed": 1.1,
-      "pitch": 1.0,
       "memo": "熱血で自信家。元気で勢いのある声",
-      "color": "#d9500a"
+      "color": "#d9500a",
+      "speaker": 32,
+      "speed": 1.05,
+      "pitch": 0.0,
+      "intonation": 1.2,
+      "volume": 1.0,
+      "label": "白上虎太郎 わーい"
     },
     "レオ": {
-      "voice": "jf_tebukuro",
+      "memo": "クールぶった男の子。2026-10-31 VOICEVOXで決定(11話・玄野武宏ノーマル。つぶやきはセリフごとに volume 0.6・speed 0.95 で小声)",
+      "color": "#8a8a8a",
+      "speaker": 11,
       "speed": 1.0,
-      "pitch": 0.97,
-      "memo": "未調整(初登場の回で社長と決める)",
-      "color": "#8a8a8a"
+      "pitch": 0.0,
+      "intonation": 1.1,
+      "volume": 1.0,
+      "label": "玄野武宏 ノーマル"
     },
     "審判": {
-      "voice": "jf_alpha",
-      "speed": 0.95,
-      "pitch": 1.0,
-      "memo": "ウサギ。冷静なツッコミ。落ち着いた声",
-      "color": "#555555"
+      "memo": "ウサギの審判。サッカーの審判らしく、普通のしゃべり方。2026-11-01 社長指示で中国うさぎ→青山龍星に変更(12話・候補B=剣崎雌雄(21)、C=雀松朱司(52))",
+      "color": "#555555",
+      "speaker": 13,
+      "speed": 1.05,
+      "pitch": 0.0,
+      "intonation": 1.1,
+      "volume": 1.0,
+      "label": "青山龍星 ノーマル"
     },
     "キーパー": {
-      "voice": "jm_kumo",
-      "speed": 1.05,
-      "pitch": 1.0,
-      "memo": "1話などの相手キーパー(青チーム)や男の子っぽい脇役",
-      "color": "#2f6fd6"
+      "memo": "犬チームのゴールキーパー(名前なし・赤ユニ背番号1)や男の子っぽい脇役。2026-11-02 14話で仮決定(候補B=剣崎雌雄(21)、C=麒ヶ島宗麟(53))",
+      "color": "#2f6fd6",
+      "speaker": 52,
+      "speed": 1.0,
+      "pitch": 0.0,
+      "intonation": 1.2,
+      "volume": 1.0,
+      "label": "雀松朱司 ノーマル"
     },
     "ナレーション": {
-      "voice": "jf_alpha",
-      "speed": 1.0,
-      "pitch": 0.95,
       "memo": "タイトル読み上げ用",
-      "color": "#2fb36b"
+      "color": "#2fb36b",
+      "speaker": 8,
+      "speed": 1.0,
+      "pitch": 0.0,
+      "intonation": 1.1,
+      "volume": 1.0,
+      "label": "春日部つむぎ ノーマル"
     },
     "ネコ": {
-      "voice": "jf_tebukuro",
+      "memo": "名前なしのネコ(青チーム)。「おおー」などみんなで言うときは \"group\": true(猫使アル・ビィ4人の声を重ねる)。2026-11-01社長OK(12話)",
+      "color": "#3b5bdb",
+      "speaker": 55,
       "speed": 1.0,
-      "pitch": 1.08,
-      "memo": "名前なしのネコ(青チーム)。4話で初登場。2026-10-20社長OK",
-      "color": "#3b5bdb"
+      "pitch": 0.0,
+      "intonation": 1.15,
+      "volume": 1.0,
+      "label": "猫使アル ノーマル",
+      "group": [
+        {
+          "speaker": 55,
+          "pitch": 0.0
+        },
+        {
+          "speaker": 58,
+          "pitch": 0.0
+        },
+        {
+          "speaker": 110,
+          "pitch": 0.0
+        },
+        {
+          "speaker": 112,
+          "pitch": 0.0
+        }
+      ]
     },
     "イヌばやしくん": {
-      "voice": "jm_kumo",
-      "speed": 1.05,
-      "pitch": 1.0,
       "memo": "犬・ゴールキーパー。まじめで頼れる。旧「犬キーパー(仮)」。声はキーパーと同じ。2026-10-20社長OK(6話)",
-      "color": "#b03030"
+      "color": "#b03030",
+      "speaker": null,
+      "未決定": "VOICEVOXの声がまだ無い。しゃべる回になったら試聴→社長OK→ここに speaker/speed/pitch/intonation を書く。旧Kokoroの設定は voices_kokoro_旧.json"
+    },
+    "ザイウォーン": {
+      "memo": "犬チームの巨漢キーパー(巻き毛アフロ・黄色服1番)。低くて重い声。2026-10-26社長OK(47話)",
+      "color": "#c9a100",
+      "speaker": null,
+      "未決定": "VOICEVOXの声がまだ無い。しゃべる回になったら試聴→社長OK→ここに speaker/speed/pitch/intonation を書く。旧Kokoroの設定は voices_kokoro_旧.json"
+    },
+    "ぷるぷる丸": {
+      "memo": "まっ黒・赤マフラーのビビリ。高くて早口。2026-10-26社長OK(47話)",
+      "color": "#222222",
+      "speaker": null,
+      "未決定": "VOICEVOXの声がまだ無い。しゃべる回になったら試聴→社長OK→ここに speaker/speed/pitch/intonation を書く。旧Kokoroの設定は voices_kokoro_旧.json"
+    },
+    "赤犬": {
+      "memo": "名前なしの赤い犬たち。「おおー」などみんなで言うときは lines.json に \"group\": true(4人の声を重ねる)。1人で言うときはチロと同じ声。2026-11-01社長OK(12話)",
+      "color": "#c0392b",
+      "speaker": 72,
+      "speed": 1.0,
+      "pitch": 0.0,
+      "intonation": 1.2,
+      "volume": 1.0,
+      "label": "満別花丸 ぶりっ子(チロと同じ声)",
+      "group": [
+        {
+          "speaker": 72,
+          "pitch": 0.0,
+          "intonation": 1.2
+        },
+        {
+          "speaker": 3,
+          "pitch": 0.02
+        },
+        {
+          "speaker": 12,
+          "pitch": 0.0
+        },
+        {
+          "speaker": 8,
+          "pitch": 0.05
+        }
+      ]
+    },
+    "ペンギン手下": {
+      "memo": "ペンギンの手下。少し高めの男の子。2026-10-26社長OK(47話)",
+      "color": "#3a7bd5",
+      "speaker": null,
+      "未決定": "VOICEVOXの声がまだ無い。しゃべる回になったら試聴→社長OK→ここに speaker/speed/pitch/intonation を書く。旧Kokoroの設定は voices_kokoro_旧.json"
+    },
+    "ペンギンキーパー": {
+      "memo": "ペンギンの赤帽子キーパー(背番号1)。少し低めで落ち着いた声。2026-10-26社長OK(47話)",
+      "color": "#1f4e8c",
+      "speaker": null,
+      "未決定": "VOICEVOXの声がまだ無い。しゃべる回になったら試聴→社長OK→ここに speaker/speed/pitch/intonation を書く。旧Kokoroの設定は voices_kokoro_旧.json"
+    },
+    "ペンギン大将": {
+      "memo": "ペンギン大将(背番号20)。いちばん低い悪役っぽい声。2026-10-26社長OK(47話)",
+      "color": "#14325c",
+      "speaker": null,
+      "未決定": "VOICEVOXの声がまだ無い。しゃべる回になったら試聴→社長OK→ここに speaker/speed/pitch/intonation を書く。旧Kokoroの設定は voices_kokoro_旧.json"
+    },
+    "解説者": {
+      "memo": "試合の解説者の男の子。元気な声。2026-10-26社長OK(47話)",
+      "color": "#8e44ad",
+      "speaker": null,
+      "未決定": "VOICEVOXの声がまだ無い。しゃべる回になったら試聴→社長OK→ここに speaker/speed/pitch/intonation を書く。旧Kokoroの設定は voices_kokoro_旧.json"
+    },
+    "アナウンサー": {
+      "memo": "試合の実況アナウンサー。2026-11-02 14話で仮決定(候補B=もち子さん(20)、C=九州そら(16))",
+      "color": "#8e44ad",
+      "speaker": 30,
+      "speed": 1.1,
+      "pitch": 0.0,
+      "intonation": 1.15,
+      "volume": 1.0,
+      "label": "No.7 アナウンス"
     }
   }
 }

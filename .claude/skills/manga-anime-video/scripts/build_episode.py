@@ -22,6 +22,10 @@ ep = json.loads((proj / "episode.json").read_text(encoding="utf-8"))
 voices = {v["id"]: v for v in json.loads((proj / "assets/voice/voices_meta.json").read_text(encoding="utf-8"))}
 chars = json.loads((HERE.parent / "voices.json").read_text(encoding="utf-8"))["characters"]
 sfx_vol = ep.get("sfx_volume", 0.5)
+# テンポの調整(省略すると今まで通り)：gap=セリフの間(秒)、enter=コマの入る時間、tempo=間(tail/hold/pause)の倍率(小さいほど速い)
+ENTER = ep.get("enter", ENTER)
+GAP = ep.get("gap", GAP)
+TEMPO = ep.get("tempo", 1.0)
 
 dom, audio, js = [], [], []
 t = 0.0
@@ -114,7 +118,7 @@ for i, sc in enumerate(scenes):
     for name in sc.get("sfx", []):
         add_sfx(name, t)
     for b in sc.get("beats", []):
-        t += b.get("pause", 0)
+        t += b.get("pause", 0) * TEMPO
         if "cam" in b:
             d = b.get("camDur", 0.45)
             js.append(f'tl.to("#{img}",{{...{cam_js(img, *b["cam"], w, h, iw, ih)},duration:{d},ease:"power2.inOut"}},{t:.2f});')
@@ -127,14 +131,14 @@ for i, sc in enumerate(scenes):
             js.append(f'tl.fromTo("#{win}",{{scale:1}},{{scale:1.04,duration:0.12,yoyo:true,repeat:1,ease:"power2.out"}},{t:.2f});')
         if "line" in b:
             t += add_line(b["line"], t, sub=not is_cover, sub_top=sub_top) + GAP
-        t += b.get("hold", 0)
+        t += b.get("hold", 0) * TEMPO
     if "cam_end" in sc:
         d = sc.get("camEndDur", 0.6)
         js.append(f'tl.to("#{img}",{{...{cam_js(img, *sc["cam_end"], w, h, iw, ih)},duration:{d},ease:"power2.inOut"}},{t:.2f});')
         t += d
     if is_cover:  # 表紙はずっとゆっくり寄っていく
-        js.append(f'tl.to("#{win}",{{scale:1.04,duration:{t + sc.get("tail", 0.5):.2f},ease:"none"}},0.6);')
-    t += sc.get("tail", 0.5)
+        js.append(f'tl.to("#{win}",{{scale:1.04,duration:{t + sc.get("tail", 0.5) * TEMPO:.2f},ease:"none"}},0.6);')
+    t += sc.get("tail", 0.5) * TEMPO
     end = t
     dur = end - start + ENTER
     js.append(f'tl.to("#{sid} .slide",{{x:-{W},duration:{ENTER},ease:"power3.in"}},{end:.2f});')
