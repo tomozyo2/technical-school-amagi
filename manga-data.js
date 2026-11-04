@@ -359,6 +359,12 @@ window.MANGA_CONTENT = {
         "title": "さすがイヌばやし",
         "image": "manga/episode54-1793804239000-0.png",
         "imageUpdatedAt": "1793804239000"
+      },
+      {
+        "date": "2026年11月5日",
+        "title": "ロナドの本気",
+        "image": "manga/episode55-1793804967000-0.png",
+        "imageUpdatedAt": "1793804967000"
       }
     ]
   }
