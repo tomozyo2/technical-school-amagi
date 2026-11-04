@@ -353,6 +353,12 @@ window.MANGA_CONTENT = {
         "title": "ロナド、ロナド",
         "image": "manga/episode53-1793328478108-0.png",
         "imageUpdatedAt": "1793328478108"
+      },
+      {
+        "date": "2026年11月4日",
+        "title": "さすがイヌばやし",
+        "image": "manga/episode54-1793804239000-0.png",
+        "imageUpdatedAt": "1793804239000"
       }
     ]
   }
