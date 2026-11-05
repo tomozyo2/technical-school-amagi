@@ -365,6 +365,12 @@ window.MANGA_CONTENT = {
         "title": "ロナドの本気",
         "image": "manga/episode55-1793804967000-0.png",
         "imageUpdatedAt": "1793804967000"
+      },
+      {
+        "date": "2026年11月5日",
+        "title": "憧れは忘れろ！",
+        "image": "manga/episode56-1793844112000-0.png",
+        "imageUpdatedAt": "1793844112000"
       }
     ]
   }
