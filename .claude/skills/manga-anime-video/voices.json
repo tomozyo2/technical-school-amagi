@@ -170,6 +170,15 @@
       "intonation": 1.15,
       "volume": 1.0,
       "label": "No.7 アナウンス"
+    },
+    "イヌマール": {
+      "color": "#8a5a2b",
+      "speaker": 100,
+      "speed": 1.05,
+      "pitch": 0.0,
+      "intonation": 1.25,
+      "volume": 1.0,
+      "label": "黒沢冴白 ノーマル(2026-11-06 社長が『任せる』で担当が選んだ・23話)"
     }
   }
 }
