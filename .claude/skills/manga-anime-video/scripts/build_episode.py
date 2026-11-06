@@ -101,6 +101,8 @@ for i, sc in enumerate(scenes):
         if im.width > im.height:
             # 横長のコマ：窓を縦に広げて絵を大きく映し、しゃべる人へ横にスライドする(字幕はコマのすぐ下)
             w, h = 1000, ep.get("landscape_h", 760)
+            if h == "fit":  # コマごとに窓の高さを絵にぴったり合わせる(切れない。27話で追加)
+                h = round(w * im.height / im.width)
         left, top = (W - w) // 2, PANEL_TOP + (PANEL_MAX_H - h) // 2
     ih = h
     iw = max(w, round(h * im.width / im.height))

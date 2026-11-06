@@ -5,6 +5,7 @@
 # lines.json: [{ "id": "p1_chiro", "chara": "チロ", "text": "ぱすだぁぁ！", "yomi": "ぱすだあああ！" }, ...]
 #   text = 画面に出す文字 / yomi = 読み方(ひらがな)。yomiが無いときはtextをそのまま読ませる。
 #   セリフごとに "speed" / "volume" / "pitch" を書くと、そのセリフだけ上書きできる(小声のつぶやきなど)。
+#   セリフに "member": 1 と書くと、groupの中の1人(0から数える)だけの声になる。
 #   セリフに "group": true を書くと、voices.json のそのキャラの "group"(声のリスト)を重ねて「みんなの声」にする。
 #   全体の速さは `python make_voices.py lines.json out --speed 1.12` のように倍率で変えられる(テンポを速くしたいとき)。
 # 出力: <出力フォルダ>/<id>.wav と voices_meta.json (各セリフの長さ秒)
@@ -35,7 +36,7 @@ def main():
             sys.exit(f"voices.json に「{ln['chara']}」のVOICEVOXの声がありません。先に試聴して社長と決めて追加してください。")
         text = ln.get("yomi") or ln["text"]
         raw = out / f"{ln['id']}.raw.wav"
-        members = c["group"] if ln.get("group") else [c]
+        members = c["group"] if ln.get("group") else ([c["group"][ln["member"]]] if "member" in ln else [c])  # "member": 番号 で「みんな」の声の中の1人だけ使う(27話)
         parts = []
         for k, m in enumerate(members):
             q = json.loads(post("/audio_query", {"text": text, "speaker": m["speaker"]}))
