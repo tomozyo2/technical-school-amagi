@@ -33,5 +33,7 @@ window.MANGA_VIDEOS = {
   18: "https://youtube.com/shorts/awX17K7Eo7I",
   19: "https://youtube.com/shorts/JaeJpwtUWyc",
   20: "https://youtube.com/shorts/5wBC38ziums",
-  21: "https://youtube.com/shorts/nQ5sc_8rr_A"
+  21: "https://youtube.com/shorts/nQ5sc_8rr_A",
+  22: "https://youtube.com/shorts/CnykUcMRbr4",
+  23: "https://youtube.com/shorts/y5V0YJXd-NE"
 };
