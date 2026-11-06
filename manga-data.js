@@ -191,32 +191,32 @@ window.MANGA_CONTENT = {
       {
         "date": "2026年9月25日",
         "title": "オーラの正体",
-        "image": "manga/episodex-1790300000000-0.png",
-        "imageUpdatedAt": "1790300000000"
+        "image": "manga/episode26-1793974517523-0.png",
+        "imageUpdatedAt": "1793974517523"
       },
       {
         "date": "2026年9月25日",
         "title": "練習試合キックオフ",
-        "image": "manga/episodex-1790310000000-0.png",
-        "imageUpdatedAt": "1790310000000"
+        "image": "manga/episode27-1793974530032-0.png",
+        "imageUpdatedAt": "1793974530032"
       },
       {
         "date": "2026年9月25日",
         "title": "メロのシュート炸裂",
-        "image": "manga/episodex-1790320000000-0.png",
-        "imageUpdatedAt": "1790320000000"
+        "image": "manga/episode28-1793974533833-0.png",
+        "imageUpdatedAt": "1793974533833"
       },
       {
         "date": "2026年9月25日",
         "title": "ゴールはまかせろ！",
-        "image": "manga/episodex-1790330000000-0.png",
-        "imageUpdatedAt": "1790330000000"
+        "image": "manga/episode29-1793974536583-0.png",
+        "imageUpdatedAt": "1793974536583"
       },
       {
         "date": "2026年9月25日",
         "title": "ネコだましの逆襲",
-        "image": "manga/episodex-1790340000000-0.png",
-        "imageUpdatedAt": "1790340000000"
+        "image": "manga/episode30-1793974540299-0.png",
+        "imageUpdatedAt": "1793974540299"
       },
       {
         "date": "2026年9月25日",
