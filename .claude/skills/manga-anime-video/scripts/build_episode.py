@@ -63,7 +63,7 @@ def add_sfx(name, at):
 def size_class(v):
     # 字幕の長さで文字の大きさを変える。名札＋セリフが長いときは2行に折り返す
     n = len(v["text"]) + len(v["chara"]) * 0.8
-    if n > 22:
+    if n > 20:  # 22だと「ニャーランド」の17字セリフが枠からはみ出た(26話で20に修正)
         return " long wrap"
     return " long" if len(v["text"]) > 11 else ""
 

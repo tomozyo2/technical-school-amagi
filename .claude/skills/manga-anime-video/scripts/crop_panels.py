@@ -20,7 +20,7 @@ for i, f in enumerate(files):
     top, bottom = int(h * 0.063), int(h * 0.935)  # 上の題名と下のページ番号をよける
     a = np.asarray(im)[top:bottom].astype(int)
     bright = a.max(axis=2) > 60  # 背景(とても暗い緑)より明るいところ＝コマ
-    rows = np.where(bright.mean(axis=1) > 0.5)[0]
+    rows = np.where(bright.mean(axis=1) > 0.3)[0]  # 横長コマは幅が画面の半分ほどなので0.3(26話で修正)
     # 列は「コマがある行の範囲」だけで調べる(横長のコマは画面の縦の半分も占めないため。18話で修正)
     cols = np.where(bright[rows[0]:rows[-1] + 1].mean(axis=0) > 0.5)[0]
     box = (cols[0] + 6, top + rows[0] + 6, cols[-1] - 5, top + rows[-1] - 5)  # 枠線を少し内側へ
