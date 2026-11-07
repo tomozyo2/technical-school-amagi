@@ -109,8 +109,13 @@
     "ぷるぷる丸": {
       "memo": "まっ黒・赤マフラーのビビリ。高くて早口。2026-10-26社長OK(47話)",
       "color": "#222222",
-      "speaker": null,
-      "未決定": "VOICEVOXの声がまだ無い。しゃべる回になったら試聴→社長OK→ここに speaker/speed/pitch/intonation を書く。旧Kokoroの設定は voices_kokoro_旧.json"
+      "speaker": 97,
+      "未決定": "VOICEVOXの声がまだ無い。しゃべる回になったら試聴→社長OK→ここに speaker/speed/pitch/intonation を書く。旧Kokoroの設定は voices_kokoro_旧.json",
+      "speed": 1.05,
+      "pitch": 0.0,
+      "intonation": 1.3,
+      "volume": 1.0,
+      "label": "中部つるぎ おどおど(2026-11-08 社長おまかせ・57話)"
     },
     "赤犬": {
       "memo": "名前なしの赤い犬たち。「おおー」などみんなで言うときは lines.json に \"group\": true(4人の声を重ねる)。1人で言うときはチロと同じ声。2026-11-01社長OK(12話)",
@@ -192,6 +197,26 @@
       "intonation": 1.1,
       "volume": 1.0,
       "label": "離途 シリアス(2026-11-06 社長OK・26話)"
+    },
+    "ロナド": {
+      "memo": "ダルメシアンのキャプテン。ナルシストでカッコつけ。2026-11-08 社長おまかせ(57話)",
+      "color": "#7b3fb3",
+      "speaker": 21,
+      "speed": 1.0,
+      "pitch": 0.0,
+      "intonation": 1.3,
+      "volume": 1.0,
+      "label": "剣崎雌雄 ノーマル"
+    },
+    "ダルメシアン8番": {
+      "memo": "ダルメシアンの副キャプテン風・困り顔の8番。2026-11-08 社長おまかせ(57話)",
+      "color": "#9a7bd1",
+      "speaker": 99,
+      "speed": 1.0,
+      "pitch": 0.0,
+      "intonation": 1.2,
+      "volume": 1.0,
+      "label": "離途 ノーマル"
     }
   }
 }
