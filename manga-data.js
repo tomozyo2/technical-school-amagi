@@ -373,6 +373,12 @@ window.MANGA_CONTENT = {
         "title": "憧れは忘れろ！",
         "image": "manga/episode56-1793844112000-0.png",
         "imageUpdatedAt": "1793844112000"
+      },
+      {
+        "date": "2026年11月8日",
+        "title": "ロナドは見ていない",
+        "image": "manga/episode57-1794066430665-0.png",
+        "imageUpdatedAt": "1794066430665"
       }
     ]
   }
