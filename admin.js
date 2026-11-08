@@ -435,7 +435,14 @@
   function updateLinePreview() {
     var text = buildLineMessage();
     if (linePreviewEl) linePreviewEl.textContent = text;
-    if (lineSendLink) lineSendLink.href = "https://line.me/R/msg/text/?" + encodeURIComponent(text);
+    var lineUrl = "https://line.me/R/msg/text/?" + encodeURIComponent(text);
+    if (lineSendLink) lineSendLink.href = lineUrl;
+    var longNote = lineModalEl && lineModalEl.querySelector("#line-long-note");
+    if (longNote) {
+      var tooLong = lineUrl.length > 1800;
+      longNote.textContent = tooLong ? "※ 文章が長いので「LINEで送る」だと開けないかも。「文章をコピー」してLINEに貼り付けるのがおすすめです。" : "";
+      longNote.style.display = tooLong ? "" : "none";
+    }
     if (lineBodyInput) localStorage.setItem(LINE_DRAFT_KEY, lineBodyInput.value);
     var offNote = lineModalEl && lineModalEl.querySelector("#line-off-note");
     if (offNote) {
@@ -469,11 +476,23 @@
       '  <div class="admin-modal-err"></div>' +
       '  <div class="admin-modal-actions">' +
       '    <button type="button" class="admin-modal-btn ghost" id="line-close-btn">閉じる</button>' +
+      '    <button type="button" class="admin-modal-btn ghost" id="line-copy-btn">📋 文章をコピー</button>' +
       '    <a href="#" target="_blank" rel="noopener" class="admin-modal-btn primary" id="line-send-link">LINEで送る</a>' +
       '  </div>' +
-      '  <p class="admin-modal-desc" style="margin:12px 0 0;">「LINEで送る」を押すとLINEが開くので、グループを選んで送信してください。</p>' +
+      '  <p class="line-tpl-note" id="line-long-note" style="display:none;color:#c0392b;"></p>' +
+      '  <p class="admin-modal-desc" style="margin:12px 0 0;">「LINEで送る」を押すとLINEが開くので、グループを選んで送信してください。文章が長くて開けない時は「文章をコピー」を押して、LINEのグループに貼り付けてください。</p>' +
       '</div>';
     document.body.appendChild(lineModalEl);
+    lineModalEl.querySelector("#line-copy-btn").addEventListener("click", function () {
+      var btn = this, txt = buildLineMessage();
+      var done = function (ok) {
+        btn.textContent = ok ? "✅ コピーしました" : "コピーできませんでした";
+        setTimeout(function () { btn.textContent = "📋 文章をコピー"; }, 2000);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(function () { done(true); }, function () { done(false); });
+      } else { done(false); }
+    });
 
     lineBodyInput = lineModalEl.querySelector("#line-body-input");
     linePreviewEl = lineModalEl.querySelector("#line-preview");
