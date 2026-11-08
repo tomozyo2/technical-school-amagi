@@ -396,15 +396,18 @@
   // ホームページに載っている「練習メニュー」（日付と内容）
   function trainingMenuInfo() {
     var items = (data && data.training && data.training.items) || [];
+    var result = [];
     for (var i = 0; i < items.length; i++) {
       var it = items[i];
       var isMenu = it.kind ? it.kind === "menu" : (it.title || "").indexOf("メニュー") !== -1;
       if (!isMenu) continue;
       var date = it.date != null ? it.date : (it.icon || "").replace(/^⚽\s*/, "");
       var lines = String(it.text || "").split("\n").map(function (l) { return l.trim(); }).filter(Boolean);
-      return { date: date, lines: lines };
+      if (!lines.length) continue;
+      result.push({ group: it.group === "low" ? "低学年" : "高学年", date: date, lines: lines });
     }
-    return null;
+    result.sort(function (a, b) { return (a.group === "低学年" ? 0 : 1) - (b.group === "低学年" ? 0 : 1); });
+    return result;
   }
 
   function buildLineMessage() {
@@ -420,11 +423,10 @@
       text += lineTpl("nextLabel") + next.label + "\n";
       text += lineTpl("placeLabel") + (lineTpl("placeValue") || info.place || "丸山公園多目的広場") + "\n";
       text += lineTpl("timeLabel") + (lineTpl("timeValue") || info.time || "17:45〜19:30");
-      var menu = trainingMenuInfo();
-      if (menu && menu.lines.length) {
-        text += "\n\n" + lineTpl("menuLabel") + (menu.date ? "（" + menu.date + "）" : "") + "\n";
+      trainingMenuInfo().forEach(function (menu) {
+        text += "\n\n" + lineTpl("menuLabel") + "【" + menu.group + "】" + (menu.date ? "（" + menu.date + "）" : "") + "\n";
         text += menu.lines.map(function (l, i) { return (i + 1) + ". " + l; }).join("\n");
-      }
+      });
     }
     if (body) text += "\n\n" + body;
     return text;

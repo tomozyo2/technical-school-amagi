@@ -569,8 +569,12 @@
         var trainingGroups = { menu: [], theme: [], lifting: [] };
         c.training.items.forEach(function (item) {
           item.kind = trainingKindOf(item);
+          // 練習メニューは「低学年(low)」「高学年(high)」の2種類。指定のない古いデータは高学年として扱う
+          if (item.kind === "menu" && item.group !== "low" && item.group !== "high") item.group = "high";
           trainingGroups[item.kind].push(item);
         });
+        trainingGroups.menu.sort(function (a, b) { return (a.group === "low" ? 0 : 1) - (b.group === "low" ? 0 : 1); });
+        var menuGradeLabel = { low: "低学年", high: "高学年" };
         // 並び順は「練習メニュー → テーマ → リフティング」。保存されるitemsもこの順に揃える
         var commitTraining = function () {
           c.training.items = trainingGroups.menu.concat(trainingGroups.theme, trainingGroups.lifting);
@@ -610,13 +614,15 @@
 
         // ① 練習メニュー（予定のトレーニング・1つの別枠）
         trainingGroups.menu.forEach(function (item, idx) {
+          if (!editable && !String(item.text || "").trim()) return; // 中身が空のメニューは公開側に出さない
           var box = document.createElement("div");
           box.className = "training-menu-box" + (editable ? " admin-editing-item" : "");
           box.innerHTML =
             '<div class="training-menu-head">' +
-            '<h3><span class="training-menu-ball">⚽</span> <span class="training-menu-title"></span></h3>' +
+            '<h3><span class="training-menu-ball">⚽</span> <span class="training-menu-grade"></span> <span class="training-menu-title"></span></h3>' +
             '<span class="training-menu-date"></span></div>' +
             '<div class="training-menu-body"></div>';
+          box.querySelector(".training-menu-grade").textContent = menuGradeLabel[item.group] || "";
           var menuTitleEl = box.querySelector(".training-menu-title");
           var menuDateEl = box.querySelector(".training-menu-date");
           var menuBodyEl = box.querySelector(".training-menu-body");
@@ -637,7 +643,6 @@
             menuHint.className = "training-menu-hint";
             menuHint.textContent = "↓ 練習メニューを1行に1つずつ入力してください";
             editableBody.parentNode.insertBefore(menuHint, editableBody);
-            addMoveButtons(box, trainingGroups.menu, idx, commitTraining);
             addRemoveButton(box, function () { trainingGroups.menu.splice(idx, 1); commitTraining(); });
             trainingContainer.appendChild(box);
           } else {
@@ -654,10 +659,14 @@
             trainingContainer.appendChild(box);
           }
         });
-        if (editable && trainingGroups.menu.length === 0) {
-          addAddButton(trainingContainer, "＋ 練習メニューを追加", function () {
-            trainingGroups.menu.push({ kind: "menu", icon: "⚽", date: "", title: "練習メニュー", bold: "", text: "" });
-            commitTraining();
+        if (editable) {
+          ["low", "high"].forEach(function (g) {
+            var has = trainingGroups.menu.some(function (m) { return m.group === g; });
+            if (has) return;
+            addAddButton(trainingContainer, "＋ " + menuGradeLabel[g] + "の練習メニューを追加", function () {
+              trainingGroups.menu.push({ kind: "menu", group: g, icon: "⚽", date: "", title: "練習メニュー", bold: "", text: "" });
+              commitTraining();
+            });
           });
         }
 
@@ -687,6 +696,76 @@
         addTrainingGroup("lifting", "⚽ リフティング記録", "＋ リフティング記録を追加", function () {
           return { kind: "lifting", icon: "⚽リフティング", title: "", bold: "", text: "" };
         });
+      }
+    }
+
+    // ---- 動画（YouTubeのURLを貼ると、サイトの中でそのまま再生できる） ----
+    var videosSection = byId("videos");
+    var videosContainer = byId("video-items");
+    if (videosSection && videosContainer) {
+      if (!c.videos) c.videos = { heading: "動画", lead: "", items: [] };
+      if (!Array.isArray(c.videos.items)) c.videos.items = [];
+      var videoItems = c.videos.items;
+      text("videos-heading", c.videos, "heading");
+      clear(videosContainer);
+      videosSection.hidden = !editable && videoItems.length === 0;
+      var navVideos = byId("nav-videos");
+      if (navVideos) navVideos.hidden = videosSection.hidden;
+      var videoIdOf = function (url) {
+        var m = /(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|live\/))([A-Za-z0-9_-]{11})/.exec(url || "");
+        return m ? m[1] : null;
+      };
+      videoItems.forEach(function (item, idx) {
+        var card = document.createElement("div");
+        card.className = "card video-card" + (editable ? " admin-editing-item" : "");
+        var id = videoIdOf(item.url);
+        var frameWrap = document.createElement("div");
+        var isShort = /youtube\.com\/shorts\//.test(item.url || "");
+        frameWrap.className = "video-frame" + (isShort ? " is-short" : "");
+        if (id) {
+          var ifr = document.createElement("iframe");
+          ifr.src = "https://www.youtube-nocookie.com/embed/" + id + "?rel=0&playsinline=1";
+          ifr.title = item.title || "動画";
+          ifr.loading = "lazy";
+          ifr.allow = "accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen";
+          ifr.allowFullscreen = true;
+          frameWrap.appendChild(ifr);
+        } else {
+          frameWrap.classList.add("is-empty");
+          frameWrap.textContent = editable ? "↓ 下の「動画のURL」にYouTubeのURLを貼ってください" : "";
+        }
+        var titleEl = document.createElement("h3");
+        titleEl.textContent = item.title || "";
+        var descEl = document.createElement("p");
+        descEl.className = "desc";
+        card.appendChild(frameWrap);
+        card.appendChild(titleEl);
+        card.appendChild(descEl);
+        if (editable) {
+          descEl.textContent = item.text || "";
+          bindEditable(titleEl, item, "title");
+          bindEditable(descEl, item, "text", { multiline: true });
+          var urlLabel = document.createElement("p");
+          urlLabel.className = "video-url-label";
+          urlLabel.textContent = "動画のURL（YouTubeのURLを貼り付け）";
+          var urlEl = document.createElement("p");
+          urlEl.className = "video-url";
+          urlEl.textContent = item.url || "";
+          card.appendChild(urlLabel);
+          card.appendChild(urlEl);
+          bindEditable(urlEl, item, "url");
+          addMoveButtons(card, videoItems, idx, onChange);
+          addRemoveButton(card, function () { videoItems.splice(idx, 1); onChange(); });
+        } else {
+          setTextWithBreaks(descEl, item.text);
+        }
+        videosContainer.appendChild(card);
+      });
+      if (editable) {
+        addAddButton(videosContainer, "＋ 動画を追加（いちばん上に入ります）", function () {
+          videoItems.unshift({ title: "新しい動画", url: "", text: "" });
+          onChange();
+        }, { fullGrid: true });
       }
     }
 
