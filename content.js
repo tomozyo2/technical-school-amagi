@@ -82,10 +82,19 @@ window.SITE_CONTENT = {
         "icon": "⚽10月13日㈫",
         "title": "練習メニュー",
         "bold": "",
-        "text": "ドリブルトレーニング\n後ろ向ボールのトラップからの守備の意識\n1対2カバー\nミドルシュート\nミニゲーム\n",
+        "text": "リフティング\nドリブルトレーニング\n後ろ向ボールのトラップからの守備の意識\n1対2カバー\nミドルシュート\nミニゲーム\n",
         "kind": "menu",
         "group": "high",
         "date": "10月13日㈫"
+      },
+      {
+        "kind": "menu",
+        "group": "low",
+        "icon": "⚽",
+        "date": "",
+        "title": "練習メニュー",
+        "bold": "",
+        "text": "リフティング\nドリブルトレーニング\nドリブルクーバー\nトラップコントロール\nきちんと当てるシュート\nミニゲーム"
       },
       {
         "kind": "theme",
@@ -112,7 +121,23 @@ window.SITE_CONTENT = {
   },
   "videos": {
     "heading": "動画",
-    "items": []
+    "items": [
+      {
+        "title": "新しい動画",
+        "url": "",
+        "text": ""
+      },
+      {
+        "title": "新しい動画",
+        "url": "https://youtu.be/5ZQTLqXGRSY",
+        "text": "飯塚vs東福岡 福岡決勝 ダイジェスト 勝負の分かれ目とゴール"
+      },
+      {
+        "title": "新しい動画",
+        "url": "https://youtu.be/at4pUbM0l1g",
+        "text": "佐賀東vs佐賀商業 佐賀決勝 得点と勝負の分かれ目"
+      }
+    ]
   },
   "news": {
     "heading": "お知らせ",
