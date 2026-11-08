@@ -379,6 +379,12 @@ window.MANGA_CONTENT = {
         "title": "ロナドは見ていない",
         "image": "manga/episode57-1794066430665-0.png",
         "imageUpdatedAt": "1794066430665"
+      },
+      {
+        "date": "2026年11月9日",
+        "title": "俺にパスを！",
+        "image": "manga/episode58-1794167809000-0.png",
+        "imageUpdatedAt": "1794167809000"
       }
     ]
   }
