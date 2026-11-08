@@ -13,13 +13,20 @@
 window.MANGA_CONTENT = {
   "series": {
     "latest": {
-      "date": "2026年11月5日",
-      "title": "絶対チームには入らない",
-      "image": "manga/episode23-1792745285000-0.png",
-      "imageUpdatedAt": "1792745285000",
-      "number": 23
+      "date": "2026年11月9日",
+      "title": "ゴールはまかせろ！？",
+      "image": "manga/episode24-1792746423000-0.png",
+      "imageUpdatedAt": "1792746423000",
+      "number": 24
     },
     "archive": [
+      {
+        "date": "2026年11月5日",
+        "title": "絶対チームには入らない",
+        "image": "manga/episode23-1792745285000-0.png",
+        "imageUpdatedAt": "1792745285000",
+        "number": 23
+      },
       {
         "date": "2026年11月5日",
         "title": "仲間との出会い",
@@ -176,12 +183,6 @@ window.MANGA_CONTENT = {
       }
     ],
     "queue": [
-      {
-        "date": "2026年9月20日",
-        "title": "ゴールはまかせろ！？",
-        "image": "manga/episode24-1792746423000-0.png",
-        "imageUpdatedAt": "1792746423000"
-      },
       {
         "date": "2026年9月23日",
         "title": "イヌばやしの実力",
