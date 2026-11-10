@@ -386,6 +386,12 @@ window.MANGA_CONTENT = {
         "title": "俺にパスを！",
         "image": "manga/episode58-1794167809000-0.png",
         "imageUpdatedAt": "1794167809000"
+      },
+      {
+        "date": "2026年11月10日",
+        "title": "メロの全力シュート",
+        "image": "manga/episode59-1794274307000-0.png",
+        "imageUpdatedAt": "1794274307000"
       }
     ]
   }
