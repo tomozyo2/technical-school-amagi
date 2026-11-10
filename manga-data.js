@@ -392,6 +392,12 @@ window.MANGA_CONTENT = {
         "title": "メロの全力シュート",
         "image": "manga/episode59-1794274307000-0.png",
         "imageUpdatedAt": "1794274307000"
+      },
+      {
+        "date": "2026年11月10日",
+        "title": "ロナドの出番",
+        "image": "manga/episode60-1794290352000-0.png",
+        "imageUpdatedAt": "1794290352000"
       }
     ]
   }
