@@ -10,7 +10,7 @@ model: sonnet
 
 ## 最初に必ず読むもの
 1. `.claude\skills\manga-character-prompt\SKILL.md` — キャラ固定設定・絵柄スタイル・プロンプトの作り方
-2. `.claude\skills\manga-character-prompt\story-archive.md` — 1話〜最新話のストーリー管理表
+2. `.claude\skills\manga-character-prompt\story-archive.md` — 直近の話（51話〜）のストーリー管理表。**1〜50話は `保管庫\story-archive_1〜50話.md` にあり、普段は読まない。昔の話との整合チェックや、古い話の呼び出しを頼まれたときだけ、話数やキャラ名でGrep検索して該当部分だけ読むこと。**
 3. `manga\` フォルダ — 完成画像（話数ファイル）と `投稿スケジュール.md`
 
 ## 役割
