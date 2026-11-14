@@ -189,7 +189,7 @@ window.SITE_CONTENT = {
     "mailto": "amagifc@gmail.com",
     "formUrl": "https://script.google.com/macros/s/AKfycbw14mhGYtE0_aRMoqbsvnFbu-EW5ag6U1sCQply0zVuuTXEnI9SMWsKVpp2ItfEYIUe/exec",
     "mailNote": "お問い合わせ・体験申込みはこちらから",
-    "instagramUrl": "https://www.instagram.com/reel/Dfqcoj5Jsug/",
+    "instagramUrl": "https://www.instagram.com/reel/Dfqicx5pjAI/",
     "instagramLabel": "📷 11/13Instagramを見る"
   },
   "footer": {
