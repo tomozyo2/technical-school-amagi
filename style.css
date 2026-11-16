@@ -1179,6 +1179,20 @@ footer .foot-logo {
 .admin-move-btn:hover { background: #176b30; }
 .admin-move-btn:disabled { opacity: .3; cursor: default; }
 .admin-move-btns.on-dark .admin-move-btn { border-color: var(--darker); }
+/* ▲▼の丸ボタン専用。下の方にある「漫画の管理ボタン(大きい四角)」用の .admin-move-btn に上書きされないよう、親(.admin-move-btns)つきで指定 */
+.admin-move-btns .admin-move-btn {
+  width: 22px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+  border: 2px solid var(--white);
+  font-size: .65rem;
+  font-weight: 900;
+  text-align: center;
+}
+.admin-move-btns .admin-move-btn:hover { background: #176b30; }
+.admin-move-btns.on-dark .admin-move-btn { border-color: var(--darker); }
 
 .admin-cell-del {
   background: none;

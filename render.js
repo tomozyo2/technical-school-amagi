@@ -1357,6 +1357,7 @@
             commentEl.textContent = p.comment || "";
             bindEditable(nameEl, p, "name");
             bindEditable(commentEl, p, "comment", { multiline: true });
+            addMoveButtons(div, d.players, idx, onChange, { onDark: true });
             addRemoveButton(div, function () { d.players.splice(idx, 1); onChange(); }, { onDark: true });
             playersContainer.appendChild(div);
           } else {
