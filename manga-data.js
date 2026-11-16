@@ -13,13 +13,27 @@
 window.MANGA_CONTENT = {
   "series": {
     "latest": {
-      "date": "2026年11月9日",
-      "title": "ゴールはまかせろ！？",
-      "image": "manga/episode24-1792746423000-0.png",
-      "imageUpdatedAt": "1792746423000",
-      "number": 24
+      "date": "2026年11月16日",
+      "title": "オーラの正体",
+      "image": "manga/episode26-1793974517523-0.png",
+      "imageUpdatedAt": "1793974517523",
+      "number": 26
     },
     "archive": [
+      {
+        "date": "2026年11月16日",
+        "title": "イヌばやしの実力",
+        "image": "manga/episode25-1793004153000-0.png",
+        "imageUpdatedAt": "1793004153000",
+        "number": 25
+      },
+      {
+        "date": "2026年11月9日",
+        "title": "ゴールはまかせろ！？",
+        "image": "manga/episode24-1792746423000-0.png",
+        "imageUpdatedAt": "1792746423000",
+        "number": 24
+      },
       {
         "date": "2026年11月5日",
         "title": "絶対チームには入らない",
@@ -183,18 +197,6 @@ window.MANGA_CONTENT = {
       }
     ],
     "queue": [
-      {
-        "date": "2026年9月23日",
-        "title": "イヌばやしの実力",
-        "image": "manga/episode25-1793004153000-0.png",
-        "imageUpdatedAt": "1793004153000"
-      },
-      {
-        "date": "2026年9月25日",
-        "title": "オーラの正体",
-        "image": "manga/episode26-1793974517523-0.png",
-        "imageUpdatedAt": "1793974517523"
-      },
       {
         "date": "2026年9月25日",
         "title": "練習試合キックオフ",
