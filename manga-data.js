@@ -13,13 +13,20 @@
 window.MANGA_CONTENT = {
   "series": {
     "latest": {
-      "date": "2026年11月16日",
-      "title": "オーラの正体",
-      "image": "manga/episode26-1793974517523-0.png",
-      "imageUpdatedAt": "1793974517523",
-      "number": 26
+      "date": "2026年11月23日",
+      "title": "練習試合キックオフ",
+      "image": "manga/episode27-1793974530032-0.png",
+      "imageUpdatedAt": "1793974530032",
+      "number": 27
     },
     "archive": [
+      {
+        "date": "2026年11月16日",
+        "title": "オーラの正体",
+        "image": "manga/episode26-1793974517523-0.png",
+        "imageUpdatedAt": "1793974517523",
+        "number": 26
+      },
       {
         "date": "2026年11月16日",
         "title": "イヌばやしの実力",
@@ -197,12 +204,6 @@ window.MANGA_CONTENT = {
       }
     ],
     "queue": [
-      {
-        "date": "2026年9月25日",
-        "title": "練習試合キックオフ",
-        "image": "manga/episode27-1793974530032-0.png",
-        "imageUpdatedAt": "1793974530032"
-      },
       {
         "date": "2026年9月25日",
         "title": "メロのシュート炸裂",
