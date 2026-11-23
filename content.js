@@ -79,6 +79,15 @@ window.SITE_CONTENT = {
   "training": {
     "items": [
       {
+        "kind": "menu",
+        "group": "low",
+        "icon": "⚽",
+        "date": "",
+        "title": "練習メニュー",
+        "bold": "",
+        "text": "リフティング\nマーカートレーニング\nトラップコントロール\nきちんと当てるシュート\nミニゲーム"
+      },
+      {
         "icon": "⚽10月13日㈫",
         "title": "練習メニュー",
         "bold": "",
@@ -88,27 +97,18 @@ window.SITE_CONTENT = {
         "date": "10月13日㈫"
       },
       {
-        "kind": "menu",
-        "group": "low",
-        "icon": "⚽",
-        "date": "",
-        "title": "練習メニュー",
-        "bold": "",
-        "text": "リフティング\nドリブルトレーニング\nドリブルクーバー\nトラップコントロール\nきちんと当てるシュート\nミニゲーム"
-      },
-      {
-        "kind": "theme",
-        "icon": "⚽",
-        "title": "１０月のテーマ",
-        "bold": "",
-        "text": "剥がす動きを工夫してボールを受けよう"
-      },
-      {
         "kind": "theme",
         "icon": "⚽",
         "title": "11月のテーマ",
         "bold": "",
         "text": "チームでの奪い方の強化\nカバーリングとポジショニング"
+      },
+      {
+        "kind": "theme",
+        "icon": "⚽",
+        "title": "12月のテーマ",
+        "bold": "",
+        "text": "近づかない\nパス出さない\n前を向かない"
       },
       {
         "kind": "lifting",
