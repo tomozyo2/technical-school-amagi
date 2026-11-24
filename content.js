@@ -125,33 +125,23 @@ window.SITE_CONTENT = {
     "items": [
       {
         "title": "新しい動画",
-        "url": "https://youtu.be/JLR4y1pMlPM",
-        "text": "ミナギカップ１試合前半"
+        "url": "https://youtu.be/mtPeEmrcyGk",
+        "text": "フレーテ１日２試合高木瀬"
       },
       {
         "title": "新しい動画",
-        "url": "https://youtu.be/Pjqm9Vp7nhc",
-        "text": "ミナギカップ１試合後半"
+        "url": "https://youtu.be/Rn-jpFr54XE",
+        "text": "フレーテ１日３試合寿山"
       },
       {
         "title": "新しい動画",
-        "url": "https://youtu.be/QKlZuqLzlq8",
-        "text": "ミナギカップ２試合前半"
+        "url": "https://youtu.be/2vV5hDV8pPI",
+        "text": "フレーテ２日１試合フレーテ"
       },
       {
         "title": "新しい動画",
-        "url": "https://youtu.be/Khn44Sayczo",
-        "text": "ミナギカップ２試合後半"
-      },
-      {
-        "title": "新しい動画",
-        "url": "https://youtu.be/nz4FuZa0sbs",
-        "text": "ミナギカップ３試合前半"
-      },
-      {
-        "title": "新しい動画",
-        "url": "https://youtu.be/RcwEBFna928",
-        "text": "ミナギカップ３試合後半"
+        "url": "https://youtu.be/VYTlyljeofU",
+        "text": "フレーテ２日レイヴ"
       }
     ]
   },
